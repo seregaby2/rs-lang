@@ -1,0 +1,69 @@
+.footer {
+  height: 56px;
+  background-color: $dark-gray-color;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
+  z-index: 1000;
+}
+
+.rs-logo svg {
+  height: 24px;
+  width: 100px;
+  fill: $white-color;
+  
+  &:hover {
+    fill: $accent-color;
+  }
+}
+
+.github-container {
+  max-width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  
+  & a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    
+    &:hover {
+      color: $accent-color;
+      
+      p,
+      i {
+        color: $accent-color;
+      }
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .github-container {
+    justify-content: center;
+  }
+}
+
+.github-container a:visited {
+  text-decoration: none;
+  color: $white-color;
+}
+
+.github {
+  text-decoration: none;
+}
+
+.github svg {
+  color: $white-color;
+  font-size: 24px;
+  
+  &:hover {
+    fill: $accent-color;
+  }
+}
