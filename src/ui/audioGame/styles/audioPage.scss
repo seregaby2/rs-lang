@@ -1,0 +1,40 @@
+@import "./audioGameSettings.scss";
+
+body {
+  background-color: rgb(1, 68, 46);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) #B3B3B3;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  text-decoration:none;
+  font-size: 14px;
+  width:120px;
+  line-height: 20px;
+  margin: 20px auto;
+  padding: 4px 12px;
+}
+
+.button:hover {
+  color: #fff;
+  background-color: #B3B3B3;
+}
+
+.button-volume {
+  background-image: url("../assets/images/volume.png");
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.main-wrapper {
+  text-align: center;
+}
+
