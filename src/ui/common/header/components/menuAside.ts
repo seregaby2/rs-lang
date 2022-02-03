@@ -58,7 +58,7 @@ export class MenuAside {
 
     let content = '';
     sections.forEach((item) => {
-      content += `<div class="menu-${item.className} menu-item">
+      content += `<div class="menu-${item.className} menu-item data-route="${item.className}">
                     <i class="fas fa-${item.iconClass} menu-icon"></i>
                     <div class="menu-text">${item.text}</div>
                   </div>`;
@@ -72,8 +72,8 @@ export class MenuAside {
     container.classList.add('wrapper-dropdown');
     const ul = document.createElement('ul') as HTMLUListElement;
     ul.classList.add('dropdown');
-    ul.innerHTML = `<li><div class="audiocall">Аудиовызов</div></li>
-                    <li><div class="sprint">Спринт</div></li>`;
+    ul.innerHTML = `<li><div class="audiocall" data-route="audiocall">Аудиовызов</div></li>
+                    <li><div class="sprint"  data-route="sprint">Спринт</div></li>`;
 
     container.addEventListener('click', () => {
       container.classList.toggle('active');
