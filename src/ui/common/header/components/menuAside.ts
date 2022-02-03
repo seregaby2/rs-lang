@@ -58,9 +58,9 @@ export class MenuAside {
 
     let content = '';
     sections.forEach((item) => {
-      content += `<div class="menu-${item.className} menu-item data-route="${item.className}">
-                    <i class="fas fa-${item.iconClass} menu-icon"></i>
-                    <div class="menu-text">${item.text}</div>
+      content += `<div class="menu-${item.className} menu-item" data-route="${item.className}">
+                    <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
+                    <div class="menu-text" data-route="${item.className}">${item.text}</div>
                   </div>`;
     });
     menu.innerHTML = content;

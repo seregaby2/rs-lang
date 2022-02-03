@@ -1,12 +1,7 @@
 export class HomePage {
-  drawPage(): void {
-    const body = document.querySelector('body') as HTMLElement;
-
-    const wrapper = document.createElement('div') as HTMLElement;
-    wrapper.classList.add('wrapper');
-
-    const main = document.createElement('main') as HTMLElement;
-    main.classList.add('main');
+  drawHomePage(): void {
+    const main = document.querySelector('.main') as HTMLElement;
+    main.innerHTML = '';
 
     const homePageBackground = document.createElement('div') as HTMLElement;
     homePageBackground.classList.add('home-page-bg', 'wrapper-main-content');
@@ -18,8 +13,6 @@ export class HomePage {
     mainContent.append(this.createMainHeading());
     mainContent.append(this.createOpportunityCards());
     main.append(homePageBackground);
-    wrapper.append(main);
-    body.append(wrapper);
   }
 
   private createMainHeading(): HTMLElement {
