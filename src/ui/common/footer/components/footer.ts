@@ -5,7 +5,7 @@ export class Footer {
     footer.classList.add('footer');
     footer.innerHTML = `<div class="github-container">
     <a href="https://github.com/Runeci" class="github">
-       <p>Runeci</p> 
+       <p>Runeci</p>
        <i class="fab fa-github"></i>
     </a>
     <a href="https://github.com/Alhladkiy" class="github">

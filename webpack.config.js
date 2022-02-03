@@ -1,10 +1,11 @@
+/* eslint-disable global-require */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
-const {merge} = require('webpack-merge');
+const CopyPlugin = require('copy-webpack-plugin');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
-
 
 const baseConfig = {
   entry: path.resolve(__dirname, './src/index.ts'),
@@ -23,14 +24,14 @@ const baseConfig = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          "style-loader",
-          "css-loader",
-          "sass-loader",
+          'style-loader',
+          'css-loader',
+          'sass-loader',
         ],
       },
       {
         test: /\.(png|jpg|svg|gif|.mp3)$/i,
-        use: ['file-loader']
+        use: ['file-loader'],
       },
     ],
   },
@@ -43,11 +44,11 @@ const baseConfig = {
   },
   plugins: [
     new ESLintPlugin({
-      extensions: '.ts'
+      extensions: '.ts',
     }),
     new CopyPlugin({
       patterns: [
-        {from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, 'dist/assets')},
+        { from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, 'dist/assets') },
       ],
     }),
 
@@ -60,7 +61,7 @@ const baseConfig = {
   ],
 };
 
-module.exports = ({mode}) => {
+module.exports = ({ mode }) => {
   const isProductionMode = mode === 'prod';
   const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
 

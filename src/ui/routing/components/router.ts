@@ -1,5 +1,6 @@
 import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
+import { LogicSprintGame } from '../../sprintGame/components';
 
 enum CurrentPage {
   Team = 'team',
@@ -15,6 +16,8 @@ export class Router {
   private homePage: HomePage = new HomePage();
 
   private team: TeamInfo = new TeamInfo();
+
+  private sprintGame: LogicSprintGame = new LogicSprintGame();
 
   public drawCurrentPage(): void {
     const currentHash = window.location.hash;
@@ -32,6 +35,7 @@ export class Router {
       case `#/${CurrentPage.Overview}`:
         break;
       case `#/${CurrentPage.SprintGame}`:
+        this.sprintGame.drawSprintGame();
         break;
       case `#/${CurrentPage.AudioGame}`:
         break;
@@ -73,6 +77,7 @@ export class Router {
         case CurrentPage.Overview:
           break;
         case CurrentPage.SprintGame:
+          this.sprintGame.drawSprintGame();
           break;
         case CurrentPage.AudioGame:
           break;

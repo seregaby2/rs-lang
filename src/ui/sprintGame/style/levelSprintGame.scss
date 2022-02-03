@@ -1,0 +1,76 @@
+.wrapper-choose-level-sprint-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 56px - 68px);
+  width: 100%;
+  background-color: rgb(68, 71, 71);
+  background-image: url("../assets/images/sprintGame/sprint.jpg");
+  background-size:cover;
+  background-repeat: no-repeat;
+}
+
+.container-choose-level-sprint-game {
+  width: 700px;
+  height: 300px;
+  background-color: #69a797;
+  padding: 20px;
+  display: flex;
+  border-radius: 30px;
+  border: 3px solid #f3efef;
+  opacity: 0.9;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.wrapper-square-choose-level-sprint-game {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.square-choose-level-sprint-game {
+  background-color: yellowgreen;
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 60px;
+  cursor: pointer;
+}
+
+.square-choose-level-sprint-game:nth-child(2) {
+  background-color: rgb(207, 219, 31);
+}
+
+.square-choose-level-sprint-game:nth-child(3) {
+  background-color: rgb(219, 169, 31);
+}
+
+.square-choose-level-sprint-game:nth-child(4) {
+  background-color: rgb(219, 144, 31);
+}
+
+.square-choose-level-sprint-game:nth-child(5) {
+  background-color: rgb(219, 98, 28);
+}
+
+.square-choose-level-sprint-game:nth-child(6) {
+  background-color: rgb(226, 24, 24);
+}
+
+.text-choose-level-sprint-game {
+  margin: 30px auto;
+  width: 600px;
+  font-size: 28px;
+  color: white;
+  text-align: center;
+}
+
+.header-choose-level-sprint-game, .header-square-choose-level-sprint-game {
+  font-size: 36px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
