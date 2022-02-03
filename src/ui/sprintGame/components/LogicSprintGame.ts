@@ -136,10 +136,12 @@ export class LogicSprintGame {
   }
 
   async drawSprintGame() {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    main.innerHTML = '';
     const templateSprintGame = new TemplateHtml();
-    const wrapper = document.body as HTMLBodyElement;
+    // const wrapper = document.body as HTMLBodyElement;
 
-    templateSprintGame.createChooseLevelSprintGame(wrapper);
+    templateSprintGame.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
     const wrapperChooseLevelSprintGame = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
     squareChooseLevel.forEach((e, i) => {
@@ -147,7 +149,7 @@ export class LogicSprintGame {
         const logic = new LogicSprintGame();
         await logic.createArrayEnglishAndRussianWords(i);
         wrapperChooseLevelSprintGame.style.display = 'none';
-        templateSprintGame.createTemplateCardGame(wrapper);
+        templateSprintGame.createTemplateCardGame(main);
         const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
         wrapperCardGame.style.display = 'flex';
         logic.countAnswer();

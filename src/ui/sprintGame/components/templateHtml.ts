@@ -5,7 +5,7 @@ export class TemplateHtml {
     return container.appendChild(Element);
   };
 
-  createTemplateCardGame(wrapperSprintGame:HTMLBodyElement): void {
+  createTemplateCardGame(wrapperSprintGame:HTMLDivElement): void {
     const wrapperCardSprintGame = this.createElement('wrapper-card-sprint-game', wrapperSprintGame, 'div');
     const cardSprintGame = this.createElement('card-sprint', wrapperCardSprintGame, 'div');
     const headerCardSprintGame = this.createElement('header-card-sprint-game', cardSprintGame, 'div');
@@ -35,7 +35,7 @@ export class TemplateHtml {
     wrapperCardSprintGame.style.display = 'none';
   }
 
-  createChooseLevelSprintGame(wrapperSprintGame:HTMLBodyElement) {
+  createChooseLevelSprintGame(wrapperSprintGame:HTMLDivElement) {
     const wrapperChooseLevelSprintGame = this.createElement('wrapper-choose-level-sprint-game', wrapperSprintGame, 'div');
 
     const containerCardChooseLevel = this.createElement('container-choose-level-sprint-game', wrapperChooseLevelSprintGame, 'div');

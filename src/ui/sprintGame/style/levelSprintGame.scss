@@ -2,7 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 56px - 68px);
+  width: 100%;
   background-color: rgb(68, 71, 71);
   background-image: url("../assets/images/sprintGame/sprint.jpg");
   background-size:cover;
