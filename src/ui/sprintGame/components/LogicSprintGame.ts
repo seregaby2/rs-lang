@@ -1,6 +1,15 @@
 import { SprintController } from './controller';
-import { getRandomPage, shuffle } from './HelpFunction';
+import { getRandomNumber, shuffle } from './HelpFunction';
 import { IWordsData } from './model';
+import { TemplateHtml } from './templateHtml';
+
+// import {
+//   getRandomPage,
+//   IWordsData,
+//   shuffle,
+//   SprintController,
+//   TemplateHtml,
+// } from '.';
 
 export class LogicSprintGame {
   arrayEnglishWord: string[] = [];
@@ -21,7 +30,7 @@ export class LogicSprintGame {
     const minCountPage = 0;
     const maxCountPage = 29;
     const controller = new SprintController();
-    const numberPage = getRandomPage(maxCountPage, minCountPage);
+    const numberPage = getRandomNumber(maxCountPage, minCountPage);
     const items = await controller.getWords('words', group, numberPage);
     return items;
   }
@@ -33,7 +42,7 @@ export class LogicSprintGame {
       const arrayRussianWordsRandomAnswer:string[] = [];
       arrayRussianWordsRandomAnswer.push(items[j].wordTranslate || '');
       for (let i = 0; i < 1; i += 1) {
-        const index = getRandomPage(shuffleWordsData.length - 1, 0);
+        const index = getRandomNumber(shuffleWordsData.length - 1, 0);
         arrayRussianWordsRandomAnswer.push(shuffleWordsData[index].wordTranslate || '');
       }
       arrayRussianWordsTotal.push(arrayRussianWordsRandomAnswer);
@@ -42,11 +51,12 @@ export class LogicSprintGame {
   }
 
   async createArrayEnglishAndRussianWords(group:number): Promise<void> {
-    const arrayData = [];
-    arrayData.push(await this.getWords(group));
-    arrayData.push(await this.getWords(group));
-    arrayData.push(await this.getWords(group));
-    this.items = arrayData.flat(1);
+    const promiseArray = [];
+    promiseArray.push(this.getWords(group));
+    promiseArray.push(this.getWords(group));
+    promiseArray.push(this.getWords(group));
+    const result = await Promise.all(promiseArray);
+    this.items = result.flat(1);
     this.arrayRussianWords = this.createArrayRussianWord(this.items);
     for (let j = 0; j < this.items.length; j += 1) {
       this.arrayEnglishWord.push(this.items[j].word || '');
@@ -82,7 +92,7 @@ export class LogicSprintGame {
 
   async countAnswer() {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
-    let count = getRandomPage(1, 0);
+    let count = getRandomNumber(1, 0);
     this.getAnswer(count);
     buttonWrongRight[0].addEventListener('click', async () => {
       console.log(
@@ -99,7 +109,7 @@ export class LogicSprintGame {
         this.continuousSeries = 0;
       }
       this.countProgressAnswer += 1;
-      count = getRandomPage(1, 0);
+      count = getRandomNumber(1, 0);
       this.getAnswer(count);
       console.log(this.countProgressAnswer, 'arr', this.resultAnswer);
     });
@@ -119,9 +129,29 @@ export class LogicSprintGame {
         this.continuousSeries = 0;
       }
       this.countProgressAnswer += 1;
-      count = getRandomPage(1, 0);
+      count = getRandomNumber(1, 0);
       this.getAnswer(count);
       console.log('arr', this.resultAnswer);
+    });
+  }
+
+  async drawSprintGame() {
+    const templateSprintGame = new TemplateHtml();
+    const wrapper = document.body as HTMLBodyElement;
+
+    templateSprintGame.createChooseLevelSprintGame(wrapper);
+    const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
+    const wrapperChooseLevelSprintGame = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
+    squareChooseLevel.forEach((e, i) => {
+      e.addEventListener('click', async () => {
+        const logic = new LogicSprintGame();
+        await logic.createArrayEnglishAndRussianWords(i);
+        wrapperChooseLevelSprintGame.style.display = 'none';
+        templateSprintGame.createTemplateCardGame(wrapper);
+        const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
+        wrapperCardGame.style.display = 'flex';
+        logic.countAnswer();
+      });
     });
   }
 }
