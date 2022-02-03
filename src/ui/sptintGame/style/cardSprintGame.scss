@@ -1,0 +1,78 @@
+.wrapper-card-sprint-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(68, 71, 71);
+  // background-image: url("../../../assets/images/sprintGame/englishSprint.jpg");
+}
+
+.card-sprint {
+  width: 450px;
+  height: 450px;
+  background-color: #69a797;
+  padding: 20px;
+  display: flex;
+  border-radius: 30px;
+  border: 3px solid #f3efef;
+  opacity: 0.6;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header-card-sprint-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-header-card-sprint-game {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+}
+
+.content-card-spring-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-content-card-sprint-game {
+  width: 300px;
+  height: 50px;
+  font-size: 44px;
+  margin-bottom: 20px;
+  color: white;
+  text-align: center;
+}
+
+.item-content-card-sprint-game:nth-child(1) {
+  font-size: 54px;
+  font-weight: bold;
+}
+
+.image-content-card-sprint-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-card-spring-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-footer-card-sprint-game {
+  width: 150px;
+  height: 40px;
+  background-color: rgb(223, 78, 20);
+  color: white;
+  font-size: 22px;
+  border-radius: 10px;
+  border: 2px solid #f3efef;
+}
+
+.item-footer-card-sprint-game:nth-child(2) {
+  background-color: rgb(20, 223, 64);
+}
+
+
