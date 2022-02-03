@@ -1,8 +1,4 @@
-import { MenuAside } from './menuAside';
-
 export class HeaderView {
-  private menuAside: MenuAside = new MenuAside();
-
   public drawHeader(): void {
     const wrapper = document.querySelector('.wrapper') as HTMLBodyElement;
     const header = this.createHeaderContainer();
@@ -19,8 +15,6 @@ export class HeaderView {
     header.append(headerSideCont);
 
     wrapper.prepend(header);
-
-    this.menuAside.drawMenuAside();
   }
 
   private createHeaderContainer(): HTMLElement {

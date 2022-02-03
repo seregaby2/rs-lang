@@ -6,7 +6,8 @@ interface MemberInfo {
 
 export class TeamInfo {
   public drawTeamInfo(): void {
-    const mainContent = document.querySelector('.main-content') as HTMLElement;
+    const main = document.querySelector('.main') as HTMLElement;
+    main.innerHTML = '';
 
     const teamInfo = document.createElement('div') as HTMLElement;
     teamInfo.classList.add('team-info');
@@ -14,7 +15,7 @@ export class TeamInfo {
     teamInfo.append(this.createTeamInfoHeading());
     teamInfo.append(this.createHeadingUnderline());
     teamInfo.append(this.createMembersInfoElements());
-    mainContent.append(teamInfo);
+    main.append(teamInfo);
   }
 
   private createTeamInfoHeading(): HTMLHeadingElement {
