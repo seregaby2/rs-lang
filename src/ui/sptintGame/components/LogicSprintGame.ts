@@ -13,12 +13,16 @@ export class LogicSprintGame {
 
   resultAnswer: number[] = [];
 
-  private async getWords(): Promise<IWordsData[]> {
+  score: number = 0;
+
+  continuousSeries: number = 0;
+
+  private async getWords(group:number): Promise<IWordsData[]> {
     const minCountPage = 0;
     const maxCountPage = 29;
     const controller = new SprintController();
     const numberPage = getRandomPage(maxCountPage, minCountPage);
-    const items = await controller.getWords('words', 0, numberPage);
+    const items = await controller.getWords('words', group, numberPage);
     return items;
   }
 
@@ -37,11 +41,11 @@ export class LogicSprintGame {
     return arrayRussianWordsTotal;
   }
 
-  async createArrayEnglishAndRussianWords(): Promise<void> {
+  async createArrayEnglishAndRussianWords(group:number): Promise<void> {
     const arrayData = [];
-    arrayData.push(await this.getWords());
-    arrayData.push(await this.getWords());
-    arrayData.push(await this.getWords());
+    arrayData.push(await this.getWords(group));
+    arrayData.push(await this.getWords(group));
+    arrayData.push(await this.getWords(group));
     this.items = arrayData.flat(1);
     this.arrayRussianWords = this.createArrayRussianWord(this.items);
     for (let j = 0; j < this.items.length; j += 1) {
@@ -56,10 +60,15 @@ export class LogicSprintGame {
   }
 
   getAnswer(count:number): void {
+    const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (this.countProgressAnswer >= 60) {
       this.countProgressAnswer = 0;
       this.resultAnswer = [];
+      this.score = 0;
+      this.continuousSeries = 0;
     }
+    itemHeader[2].textContent = `Score:${(this.score).toString()}`;
+    itemHeader[1].textContent = `Continuous series: ${this.continuousSeries}`;
     this.writeEnglishAndRussianWord(
       this.arrayRussianWords[this.countProgressAnswer][count],
       this.arrayEnglishWord[this.countProgressAnswer],
@@ -83,8 +92,11 @@ export class LogicSprintGame {
       if (this.items[this.countProgressAnswer].wordTranslate
           !== this.arrayRussianWords[this.countProgressAnswer][count]) {
         this.resultAnswer.push(1);
+        this.score += 10;
+        this.continuousSeries += 1;
       } else {
         this.resultAnswer.push(0);
+        this.continuousSeries = 0;
       }
       this.countProgressAnswer += 1;
       count = getRandomPage(1, 0);
@@ -100,8 +112,11 @@ export class LogicSprintGame {
       if (this.items[this.countProgressAnswer].wordTranslate
           === this.arrayRussianWords[this.countProgressAnswer][count]) {
         this.resultAnswer.push(1);
+        this.score += 10;
+        this.continuousSeries += 1;
       } else {
         this.resultAnswer.push(0);
+        this.continuousSeries = 0;
       }
       this.countProgressAnswer += 1;
       count = getRandomPage(1, 0);

@@ -5,7 +5,7 @@ export class TemplateHtml {
     return container.appendChild(Element);
   };
 
-  createTemplate(wrapperSprintGame:HTMLBodyElement) {
+  createTemplateCardGame(wrapperSprintGame:HTMLBodyElement): void {
     const wrapperCardSprintGame = this.createElement('wrapper-card-sprint-game', wrapperSprintGame, 'div');
     const cardSprintGame = this.createElement('card-sprint', wrapperCardSprintGame, 'div');
     const headerCardSprintGame = this.createElement('header-card-sprint-game', cardSprintGame, 'div');
@@ -31,6 +31,29 @@ export class TemplateHtml {
       } else {
         buttonNextPrev.textContent = 'Верно';
       }
+    }
+    wrapperCardSprintGame.style.display = 'none';
+  }
+
+  createChooseLevelSprintGame(wrapperSprintGame:HTMLBodyElement) {
+    const wrapperChooseLevelSprintGame = this.createElement('wrapper-choose-level-sprint-game', wrapperSprintGame, 'div');
+
+    const containerCardChooseLevel = this.createElement('container-choose-level-sprint-game', wrapperChooseLevelSprintGame, 'div');
+    const containerTextChooseLevel = this.createElement('container-text-choose-level-sprint-game', containerCardChooseLevel, 'div');
+
+    const headerChooseLevelSprintGame = this.createElement('header-choose-level-sprint-game', containerTextChooseLevel, 'div');
+    const textChooseLevelSprintGame = this.createElement('text-choose-level-sprint-game', containerTextChooseLevel, 'div');
+
+    const containerSquareChooseLevelSprint = this.createElement('container-square-choose-level-sprint-game', containerCardChooseLevel, 'div');
+    const headerSquareChooseLevelSprintGame = this.createElement('header-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
+    const wrapperSquareChooseLevelSprintGame = this.createElement('wrapper-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
+
+    textChooseLevelSprintGame.textContent = 'Выбирайте соответсьвующий перевод предложенным словам. Эта игра поможет вам развить навык быстрого перевода.';
+    headerChooseLevelSprintGame.textContent = 'Спринт вызов';
+    headerSquareChooseLevelSprintGame.textContent = 'Выберите уровень';
+    for (let i = 0; i < 6; i += 1) {
+      const square = this.createElement('square-choose-level-sprint-game', wrapperSquareChooseLevelSprintGame, 'div');
+      square.textContent = i.toString();
     }
   }
 }

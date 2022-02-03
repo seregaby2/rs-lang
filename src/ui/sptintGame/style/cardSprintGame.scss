@@ -15,7 +15,7 @@
   display: flex;
   border-radius: 30px;
   border: 3px solid #f3efef;
-  opacity: 0.6;
+  opacity: 0.8;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -26,10 +26,10 @@
 }
 
 .item-header-card-sprint-game {
-  width: 50px;
-  height: 50px;
-  background-color: white;
+  font-size: 22px;
+  color: white;
 }
+
 
 .content-card-spring-game {
   display: flex;
