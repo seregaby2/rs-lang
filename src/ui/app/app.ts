@@ -2,6 +2,7 @@ import { HeaderView } from '../common/header/components/header';
 import { Footer } from '../common/footer/components/footer';
 import { HomePage } from '../homePage/components/homePage';
 
+
 export class App {
   private header: HeaderView = new HeaderView();
 
