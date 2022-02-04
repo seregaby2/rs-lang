@@ -1,5 +1,4 @@
-
-.settings-game-main-container {
+.main-container-settings-audio-game {
   padding: 10px;
   max-width: 500px;
   max-height: 500px;
@@ -7,23 +6,68 @@
   border-radius: 4px;
 }
 
-.main-title {
-  font-size: 24px;
+.main-title-setting-audio-game {
+  font-size: 45px;
   border-bottom: solid 1px #232323;
   margin-bottom: 20px;
 }
 
-.support-title {
-  font-size: 20px;
+.support-title-setting-audio-game {
+  font-size: 30px;
 }
 
-.button-cancel {
+.button-cancel-audio-game{
   background-color: rgb(228, 218, 218);
 }
 
-.button-start {
+.button-start-audio-game {
   background-color: rgb(58, 75, 74);
 }
 
+.container-buttons-settings-audio-game {
+  text-align: center;
+}
 
+.button-level-audio-game {
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) #B3B3B3;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 24px;
+  width:60px;
+  line-height: 40px;
+  margin: 20px auto;
+  padding: 8px 12px;
+  margin-right: 15px;
+}
+
+.button-level-audio-game:hover {
+  color: #fff;
+  background-color: #B3B3B3;
+}
+
+.button-level-one-audio-game {
+    background-color: #004C99;
+}
+
+.button-level-two-audio-game {
+  background-color: #990099;
+}
+
+.button-level-three-audio-game {
+  background-color: #CC0000;
+}
+
+.button-level-four-audio-game {
+  background-color: #CC6600;
+}
+
+
+.button-level-five-audio-game {
+  background-color: #4C9900;
+}
+
+.button-level-six-audio-game {
+  background-color: #006600;
+}
 
