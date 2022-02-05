@@ -48,7 +48,7 @@ export class TemplateHtml {
     const headerSquareChooseLevelSprintGame = this.createElement('header-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
     const wrapperSquareChooseLevelSprintGame = this.createElement('wrapper-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
 
-    textChooseLevelSprintGame.textContent = 'Выбирайте соответсьвующий перевод предложенным словам. Эта игра поможет вам развить навык быстрого перевода.';
+    textChooseLevelSprintGame.textContent = 'Выбирайте соответсвующий перевод предложенным словам. Эта игра поможет Вам развить навык быстрого перевода.';
     headerChooseLevelSprintGame.textContent = 'Спринт вызов';
     headerSquareChooseLevelSprintGame.textContent = 'Выберите уровень';
     for (let i = 0; i < 6; i += 1) {
