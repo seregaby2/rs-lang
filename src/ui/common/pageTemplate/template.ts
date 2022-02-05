@@ -1,6 +1,7 @@
 import { HeaderView } from '../header/components/header';
 import { Footer } from '../footer/components/footer';
 import { MenuAside } from '../header/components/menuAside';
+import { AuthorizationView } from '../authorization/components/authorizationView';
 
 export class PageTemplate {
   private header: HeaderView = new HeaderView();
@@ -9,11 +10,14 @@ export class PageTemplate {
 
   private menuAside: MenuAside = new MenuAside();
 
+  private authorization: AuthorizationView = new AuthorizationView();
+
   public drawPageTemplate() {
     this.createWrapper();
     this.header.drawHeader();
     this.menuAside.drawMenuAside();
     this.footer.drawFooter();
+    this.authorization.drawAuthorization();
   }
 
   private createWrapper(): void {
