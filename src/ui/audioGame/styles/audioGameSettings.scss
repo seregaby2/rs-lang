@@ -41,33 +41,37 @@
   margin-right: 15px;
 }
 
-.button-level-audio-game:hover {
+.button-level-audio-game.active {
   color: #fff;
   background-color: #B3B3B3;
 }
 
-.button-level-one-audio-game {
+.button-level-audio-game:hover {
+  color: #fff;
+}
+
+.button-level-audio-game:nth-child(1) {
     background-color: #004C99;
 }
 
-.button-level-two-audio-game {
+.button-level-audio-game:nth-child(2) {
   background-color: #990099;
 }
 
-.button-level-three-audio-game {
+.button-level-audio-game:nth-child(3) {
   background-color: #CC0000;
 }
 
-.button-level-four-audio-game {
+.button-level-audio-game:nth-child(4) {
   background-color: #CC6600;
 }
 
 
-.button-level-five-audio-game {
+.button-level-audio-game:nth-child(5) {
   background-color: #4C9900;
 }
 
-.button-level-six-audio-game {
+.button-level-audio-game:nth-child(6) {
   background-color: #006600;
 }
 
