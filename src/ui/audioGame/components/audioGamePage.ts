@@ -83,18 +83,15 @@ export class AudioGamePage {
       // eslint-disable-next-line no-param-reassign
       option.disabled = true;
     });
-    const buttonWrapper = document.querySelector('.button-wrapper-audio-game') as HTMLButtonElement;
+    const container = document.querySelector('.answer-info-container') as HTMLDivElement;
     const img = document.createElement('img') as HTMLImageElement;
-    const div = document.createElement('div') as HTMLDivElement;
     const p = document.createElement('p') as HTMLSpanElement;
     img.classList.add('img-answer');
     img.src = this.url + this.words[this.activeWordIndex].image as string;
-    div.classList.add('answer-info');
     p.classList.add('answer-text');
     p.innerText = this.words[this.activeWordIndex].word as string;
-    div.appendChild(img);
-    div.appendChild(p);
-    buttonWrapper?.before(div);
+    container.appendChild(img);
+    container.appendChild(p);
     const buttonAnswer = this.pageContainer.querySelector('.button-answer-audio-game') as HTMLButtonElement;
     const buttonNext = this.pageContainer.querySelector('.button-next-card-audio-game') as HTMLButtonElement;
     buttonAnswer.style.display = 'none';
@@ -271,7 +268,9 @@ export class AudioGamePage {
     return `
     <div class="main-wrapper-audio-game">
       <div class="main-container-audio-game">
-        <button class="button-audio-game button-volume-audio-game"></button>
+        <div class="answer-info-container">
+          <button class="button-audio-game button-volume-audio-game"></button>
+        </div>
       </div>
       <button class="button-audio-game button-answer-audio-game">не знаю</button>
       <button class="button-audio-game button-next-card-audio-game"> → </button>

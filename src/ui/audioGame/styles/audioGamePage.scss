@@ -10,7 +10,6 @@
 }
 
 .button-audio-game {
-  width: 175px;
   border-color: #B3B3B3;
   border-radius: 4px;
   border-style: solid;
@@ -29,10 +28,13 @@
 
 .button-volume-audio-game {
   background-image: url("../assets/images/volume.png");
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-size: cover;
+  padding: 0;
+  margin: 0 0 5px 0;
+  align-self: center;
 }
 
 .main-wrapper-audio-game{
@@ -48,7 +50,7 @@
 }
 
 .answer-text {
-  font-size: 32px;
+  font-size: 38px;
   color: #ffffff;
 }
 
@@ -59,4 +61,19 @@
 
 .button-answer-audio-game {
   width: 100px;
+}
+
+.answer-info-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  height: 400px;
+}
+
+.main-container-audio-game {
+  text-align: -webkit-center;
+}
+
+.img-answer {
+  max-height: 270px;
 }

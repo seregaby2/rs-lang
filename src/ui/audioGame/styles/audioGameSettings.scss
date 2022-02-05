@@ -31,6 +31,10 @@
   margin-right: 15px;
 }
 
+.button-level-audio-game:nth:last-child {
+  margin-right: 0;
+}
+
 .button-level-audio-game.active {
   color: #fff;
   background-color: #B3B3B3;
