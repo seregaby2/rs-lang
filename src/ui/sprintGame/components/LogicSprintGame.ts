@@ -2,6 +2,7 @@ import { SprintController } from './controller';
 import { getRandomNumber, shuffle } from './HelpFunction';
 import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
+import { TimerSprintGame } from './timer';
 
 export class LogicSprintGame {
   arrayEnglishWord: string[] = [];
@@ -69,7 +70,7 @@ export class LogicSprintGame {
       this.score = 0;
       this.continuousSeries = 0;
     }
-    itemHeader[2].textContent = `Score:${(this.score).toString()}`;
+    itemHeader[2].textContent = `Score: ${(this.score).toString()}`;
     itemHeader[1].textContent = `Continuous series: ${this.continuousSeries}`;
     this.writeEnglishAndRussianWord(
       this.arrayRussianWords[this.countProgressAnswer][count],
@@ -129,15 +130,17 @@ export class LogicSprintGame {
 
     templateSprintGame.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
-    const wrapperChooseLevelSprintGame = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
     squareChooseLevel.forEach((e, i) => {
       e.addEventListener('click', async () => {
         const logic = new LogicSprintGame();
         await logic.createArrayEnglishAndRussianWords(i);
-        wrapperChooseLevelSprintGame.style.display = 'none';
+        main.innerHTML = '';
         templateSprintGame.createTemplateCardGame(main);
         const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
         wrapperCardGame.style.display = 'flex';
+        const timer = new TimerSprintGame();
+        timer.timer();
+        timer.addTimer();
         logic.countAnswer();
       });
     });
