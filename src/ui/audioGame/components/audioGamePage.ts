@@ -29,7 +29,7 @@ export class AudioGamePage {
   }
 
   public draw(): void {
-    const mainWrapper = document.createElement('div');
+    const mainWrapper = document.createElement('div') as HTMLDivElement;
     mainWrapper.classList.add('main-wrapper-audio-game-page');
     this.pageContainer.prepend(mainWrapper);
     mainWrapper.innerHTML = this.templateSettings;
@@ -57,6 +57,7 @@ export class AudioGamePage {
     container?.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isOption = target.classList.contains('button-word-audio-game');
+
       if (isOption) {
         const { id } = target.dataset;
         const activeWord = this.words[this.activeWordIndex];
@@ -70,29 +71,59 @@ export class AudioGamePage {
           correctButton.classList.add('correct');
         }
 
-        const options: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.button-word-audio-game');
-        options.forEach((option) => {
-          // need disable button
-          // eslint-disable-next-line no-param-reassign
-          option.disabled = true;
-        });
-        const buttonWrapper = document.querySelector('.button-wrapper');
-        const img = document.createElement('img') as HTMLImageElement;
-        const div = document.createElement('div') as HTMLDivElement;
-        img.classList.add('img-answer');
-        img.src = this.url + this.words[this.activeWordIndex].image as string;
-        div.classList.add('answer-info');
-        div.appendChild(img);
-        buttonWrapper?.before(div);
+        this.createAnswer();
       }
     });
   }
 
+  private createAnswer(): void {
+    const options = document.querySelectorAll('.button-word-audio-game') as NodeListOf<HTMLButtonElement>;
+    options.forEach((option) => {
+      // need disable button
+      // eslint-disable-next-line no-param-reassign
+      option.disabled = true;
+    });
+    const buttonWrapper = document.querySelector('.button-wrapper-audio-game') as HTMLButtonElement;
+    const img = document.createElement('img') as HTMLImageElement;
+    const div = document.createElement('div') as HTMLDivElement;
+    const p = document.createElement('p') as HTMLSpanElement;
+    img.classList.add('img-answer');
+    img.src = this.url + this.words[this.activeWordIndex].image as string;
+    div.classList.add('answer-info');
+    p.classList.add('answer-text');
+    p.innerText = this.words[this.activeWordIndex].word as string;
+    div.appendChild(img);
+    div.appendChild(p);
+    buttonWrapper?.before(div);
+    const buttonAnswer = this.pageContainer.querySelector('.button-answer-audio-game') as HTMLButtonElement;
+    const buttonNext = this.pageContainer.querySelector('.button-next-card-audio-game') as HTMLButtonElement;
+    buttonAnswer.style.display = 'none';
+    buttonNext.style.display = 'inline-block';
+  }
+
   private drawNextCard(): void {
-    const buttonNext = this.pageContainer.querySelector('.button-next-audio-game') as HTMLButtonElement;
-    buttonNext?.addEventListener('click', () => {
-      this.activeWordIndex += 1;
-      this.drawGameCard();
+    const buttonAnswer = this.pageContainer.querySelector('.button-answer-audio-game') as HTMLButtonElement;
+    const buttonNext = this.pageContainer.querySelector('.button-next-card-audio-game') as HTMLButtonElement;
+    buttonAnswer?.addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isSelectedButtonAnswer = target.classList.contains('button-answer-audio-game');
+
+      if (isSelectedButtonAnswer) {
+        buttonAnswer.style.display = 'none';
+        buttonNext.style.display = 'inline-block';
+        this.createAnswer();
+      }
+    });
+    buttonNext.addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isSelectedButtonNext = target.classList.contains('button-next-card-audio-game');
+
+      if (isSelectedButtonNext) {
+        buttonNext.style.display = 'none';
+        buttonAnswer.style.display = 'inline-block';
+        this.activeWordIndex += 1;
+        this.drawGameCard();
+      }
     });
   }
 
@@ -105,7 +136,7 @@ export class AudioGamePage {
     const activeWord = this.words[this.activeWordIndex];
     const options = this.generateOptions(activeWord);
     this.startAudio(activeWord);
-    this.createButtons(options);
+    this.createButtonsWithAnswer(options);
     const buttonVolume = this.pageContainer.querySelector('.button-volume-audio-game') as HTMLButtonElement;
     buttonVolume.addEventListener('click', () => {
       this.startAudio(activeWord);
@@ -135,13 +166,13 @@ export class AudioGamePage {
     return this.helpers.shuffleArray(optionsArr);
   }
 
-  private createButtons(options: OptionsType[]): void {
+  private createButtonsWithAnswer(options: OptionsType[]): void {
     const mainWrapper = document.querySelector('.main-wrapper-audio-game-page') as HTMLElement;
     mainWrapper.innerHTML = '';
     mainWrapper.innerHTML = this.baseTemplate;
-    const mainContainer = this.pageContainer.querySelector('.main-container') as HTMLDivElement;
+    const mainContainer = this.pageContainer.querySelector('.main-container-audio-game') as HTMLDivElement;
     const container = document.createElement('div') as HTMLDivElement;
-    container.classList.add('button-wrapper');
+    container.classList.add('button-wrapper-audio-game');
     options.forEach((item) => {
       const buttonWord = document.createElement('button') as HTMLButtonElement;
       buttonWord.classList.add('button-audio-game', 'button-word-audio-game');
@@ -196,6 +227,7 @@ export class AudioGamePage {
       button.innerHTML = item.label;
       button.dataset.group = String(item.group);
       container?.appendChild(button);
+
       if (this.activeGroup === item.group) {
         button.classList.add('active');
       }
@@ -207,6 +239,7 @@ export class AudioGamePage {
     container.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isClickedButton = target.classList.contains('button-level-audio-game');
+
       if (isClickedButton) {
         const activeButton = document.querySelector('.button-level-audio-game.active');
         activeButton?.classList.remove('active');
@@ -237,10 +270,12 @@ export class AudioGamePage {
   get baseTemplate(): string {
     return `
     <div class="main-wrapper-audio-game">
-      <div class="main-container">
+      <div class="main-container-audio-game">
         <button class="button-audio-game button-volume-audio-game"></button>
       </div>
-      <button class="button-audio-game button-next-audio-game">не знаю</button>
+      <button class="button-audio-game button-answer-audio-game">не знаю</button>
+      <button class="button-audio-game button-next-card-audio-game"> → </button>
+
     </div>
       `;
   }

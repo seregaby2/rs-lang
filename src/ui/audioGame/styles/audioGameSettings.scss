@@ -44,34 +44,35 @@
 .button-level-audio-game.active {
   color: #fff;
   background-color: #B3B3B3;
+  border: solid 3px #232323;
 }
 
 .button-level-audio-game:hover {
   color: #fff;
 }
 
-.button-level-audio-game:nth-child(1) {
-    background-color: #004C99;
+.button-level-one-audio-game {
+  background-color: #004C99;
 }
 
-.button-level-audio-game:nth-child(2) {
+.button-level-two-audio-game {
   background-color: #990099;
 }
 
-.button-level-audio-game:nth-child(3) {
+.button-level-three-audio-game {
   background-color: #CC0000;
 }
 
-.button-level-audio-game:nth-child(4) {
+.button-level-four-audio-game {
   background-color: #CC6600;
 }
 
 
-.button-level-audio-game:nth-child(5) {
+.button-level-five-audio-game {
   background-color: #4C9900;
 }
 
-.button-level-audio-game:nth-child(6) {
+.button-level-six-audio-game {
   background-color: #006600;
 }
 
