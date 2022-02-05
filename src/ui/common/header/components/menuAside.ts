@@ -14,26 +14,35 @@ export class MenuAside {
     this.createGamesDropdown();
   }
 
+  private closeMenuAside(): void {
+    const menu = document.querySelector('.menu-aside') as HTMLElement;
+    const menuGames = document.querySelector('.menu-games') as HTMLElement;
+
+    const overlay = document.querySelector('.overlay') as HTMLElement;
+
+    menu.classList.remove('open');
+    menuGames.classList.remove('active');
+    overlay.remove();
+  }
+
   private toggleBurgerMenu(): void {
     const body = document.querySelector('body') as HTMLBodyElement;
     const menuBtn = document.querySelector('.menu-btn') as HTMLElement;
     const menu = document.querySelector('.menu-aside') as HTMLElement;
-    const menuGames = document.querySelector('.menu-games') as HTMLElement;
-
     const overlay = this.createOverlay();
+    const menuBtns = document.getElementsByClassName('menu-item') as HTMLCollectionOf<HTMLButtonElement>;
+    // const dropdown = document.querySelector('.dropdown') as HTMLElement;
 
     menuBtn.addEventListener('click', () => {
       menu.classList.add('open');
       body.prepend(overlay);
     });
 
-    body.addEventListener('click', (event) => {
-      const element = event.target as HTMLElement;
-      if (element.classList.contains('overlay')) {
-        menu.classList.remove('open');
-        menuGames.classList.remove('active');
-        overlay.remove();
+    [overlay, ...menuBtns].forEach((btn) => {
+      if (btn.dataset.route === 'games') {
+        return;
       }
+      btn.addEventListener('click', () => this.closeMenuAside());
     });
   }
 
@@ -58,10 +67,10 @@ export class MenuAside {
 
     let content = '';
     sections.forEach((item) => {
-      content += `<div class="menu-${item.className} menu-item" data-route="${item.className}">
+      content += `<button class="menu-${item.className} menu-item" data-route="${item.className}">
                     <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
                     <div class="menu-text" data-route="${item.className}">${item.text}</div>
-                  </div>`;
+                  </button>`;
     });
     menu.innerHTML = content;
     return menu;
@@ -73,9 +82,13 @@ export class MenuAside {
     const ul = document.createElement('ul') as HTMLUListElement;
     ul.classList.add('dropdown');
     ul.innerHTML = `<li><div class="audiocall" data-route="audiocall">Аудиовызов</div></li>
-                    <li><div class="sprint"  data-route="sprint">Спринт</div></li>`;
+                    <li><div class="sprint page-btn"  data-route="sprint">Спринт</div></li>`;
 
     container.addEventListener('click', () => {
+      container.classList.toggle('active');
+    });
+    ul.addEventListener('click', () => {
+      this.closeMenuAside();
       container.classList.toggle('active');
     });
     container.append(ul);
