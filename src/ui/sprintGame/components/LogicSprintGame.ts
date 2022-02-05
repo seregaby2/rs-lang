@@ -4,14 +4,6 @@ import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
 import { TimerSprintGame } from './timer';
 
-// import {
-//   getRandomPage,
-//   IWordsData,
-//   shuffle,
-//   SprintController,
-//   TemplateHtml,
-// } from '.';
-
 export class LogicSprintGame {
   arrayEnglishWord: string[] = [];
 
@@ -84,55 +76,50 @@ export class LogicSprintGame {
       this.arrayRussianWords[this.countProgressAnswer][count],
       this.arrayEnglishWord[this.countProgressAnswer],
     );
-    console.log(
-      'rus',
-      this.arrayRussianWords[this.countProgressAnswer][count],
-      this.arrayEnglishWord[this.countProgressAnswer],
-    );
+  }
+
+  playSounds(audio:HTMLAudioElement, answer:string) {
+    const newAudio = audio;
+    newAudio.src = `../assets/sounds/${answer}`;
+    audio.play();
   }
 
   async countAnswer() {
-    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
-    let count = getRandomNumber(1, 0);
+    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>; let count = getRandomNumber(1, 0);
     this.getAnswer(count);
-    buttonWrongRight[0].addEventListener('click', async () => {
-      console.log(
-        this.items[this.countProgressAnswer].wordTranslate,
-        this.arrayRussianWords[this.countProgressAnswer][count],
-      );
+    const audio = new Audio();
+    buttonWrongRight[0].addEventListener('click', () => {
       if (this.items[this.countProgressAnswer].wordTranslate
           !== this.arrayRussianWords[this.countProgressAnswer][count]) {
         this.resultAnswer.push(1);
         this.score += 10;
         this.continuousSeries += 1;
+        this.playSounds(audio, 'RightAnswer.mp3');
       } else {
         this.resultAnswer.push(0);
         this.continuousSeries = 0;
+        this.playSounds(audio, 'WrongAnswer.mp3');
       }
       this.countProgressAnswer += 1;
       count = getRandomNumber(1, 0);
       this.getAnswer(count);
-      console.log(this.countProgressAnswer, 'arr', this.resultAnswer);
     });
 
     buttonWrongRight[1].addEventListener('click', async () => {
-      console.log(
-        this.items[this.countProgressAnswer].wordTranslate,
-        this.arrayRussianWords[this.countProgressAnswer][count],
-      );
       if (this.items[this.countProgressAnswer].wordTranslate
           === this.arrayRussianWords[this.countProgressAnswer][count]) {
         this.resultAnswer.push(1);
         this.score += 10;
         this.continuousSeries += 1;
+        this.playSounds(audio, 'RightAnswer.mp3');
       } else {
         this.resultAnswer.push(0);
         this.continuousSeries = 0;
+        this.playSounds(audio, 'WrongAnswer.mp3');
       }
       this.countProgressAnswer += 1;
       count = getRandomNumber(1, 0);
       this.getAnswer(count);
-      console.log('arr', this.resultAnswer);
     });
   }
 
