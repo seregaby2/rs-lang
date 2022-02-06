@@ -8,7 +8,9 @@
     "build": "npx webpack --config ./webpack.config.js --env mode=prod",
     "lint": "npx eslint . --ext .ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@material/textfield": "^13.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
