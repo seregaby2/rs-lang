@@ -1,12 +1,14 @@
 @import "./audioGameSettings.scss";
 
 .main-wrapper-audio-game-page {
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  width: 100%;
+  height: calc(100vh - 56px - 68px);
+  align-items: center;
   background-image: url("../assets/images/pexels-bg.jpg");
   background-size: cover;
+  box-shadow: inset 0 0 0 2000px rgb(41 45 52 / 80%);
 }
 
 .button-audio-game {
