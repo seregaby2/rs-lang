@@ -1,5 +1,5 @@
-import { SprintController } from '../../sptintGame/components/controller';
-import { IWordsData } from '../../sptintGame/components/model';
+import { SprintController } from '../../sprintGame/components/controller';
+import { IWordsData } from '../../sprintGame/components/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
@@ -29,9 +29,12 @@ export class AudioGamePage {
   }
 
   public draw(): void {
+    const main = document.querySelector('main') as HTMLElement;
+    main.innerHTML = '';
     const mainWrapper = document.createElement('div') as HTMLDivElement;
     mainWrapper.classList.add('main-wrapper-audio-game-page');
-    this.pageContainer.prepend(mainWrapper);
+
+    main.prepend(mainWrapper);
     mainWrapper.innerHTML = this.templateSettings;
     this.createLevelButtons();
     this.setListenerLevelButtons();
@@ -134,6 +137,8 @@ export class AudioGamePage {
     const options = this.generateOptions(activeWord);
     this.startAudio(activeWord);
     this.createButtonsWithAnswer(options);
+    const container = this.pageContainer.querySelector('.main-wrapper-audio-game-page') as HTMLDivElement;
+    container.style.boxShadow = 'none';
     const buttonVolume = this.pageContainer.querySelector('.button-volume-audio-game') as HTMLButtonElement;
     buttonVolume.addEventListener('click', () => {
       this.startAudio(activeWord);

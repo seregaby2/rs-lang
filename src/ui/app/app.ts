@@ -2,8 +2,6 @@ import { Router } from '../routing/components/router';
 import { PageTemplate } from '../common/pageTemplate/template';
 
 export class App {
-  public start(): void {
-
   private router: Router = new Router();
 
   private pageTemplate: PageTemplate = new PageTemplate();

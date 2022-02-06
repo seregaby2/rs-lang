@@ -1,3 +1,4 @@
+import { AudioGamePage } from '../../audioGame/components/audioGamePage';
 import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
 import { LogicSprintGame } from '../../sprintGame/components';
@@ -19,6 +20,8 @@ export class Router {
 
   private sprintGame: LogicSprintGame = new LogicSprintGame();
 
+  private audioGame: AudioGamePage = new AudioGamePage();
+
   public drawCurrentPage(): void {
     const currentHash = window.location.hash;
 
@@ -38,6 +41,7 @@ export class Router {
         this.sprintGame.drawSprintGame();
         break;
       case `#/${CurrentPage.AudioGame}`:
+        this.audioGame.draw();
         break;
       default:
         this.homePage.drawHomePage();
@@ -80,6 +84,7 @@ export class Router {
           this.sprintGame.drawSprintGame();
           break;
         case CurrentPage.AudioGame:
+          this.audioGame.draw();
           break;
         default:
           this.homePage.drawHomePage();
