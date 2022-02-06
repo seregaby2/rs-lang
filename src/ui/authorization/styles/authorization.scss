@@ -135,3 +135,28 @@ a {
   font-size: 14px;
 }
 
+#user_email,
+#user_name,
+#user_pass-sign {
+  &.wrong {
+    border: 1px solid $wrong-color;
+  }
+}
+
+//
+.user-greeting {
+  cursor: pointer;
+  position: relative;
+  padding: 0 10px;
+
+  &:hover {
+    color: $accent-color;
+  }
+}
+
+.log-out {
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  padding: 0 10px;
+}

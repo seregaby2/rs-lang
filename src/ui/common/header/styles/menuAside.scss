@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  max-width: 160px;
+  max-width: 200px;
+  gap: 10px;
 }
 
 //MENU STARTS
@@ -51,13 +51,13 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
-  
+
   &:hover {
     .menu-icon,
     .menu-text {
       color: $accent-color;
     }
-    
+
     .menu-games:after {
       border-color: $accent-color transparent;
     }
@@ -80,7 +80,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  
+
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-top: none;
@@ -91,7 +91,7 @@
   -ms-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
-  
+
   max-height: 0;
   overflow: hidden;
 }

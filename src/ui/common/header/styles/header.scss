@@ -1,94 +1,88 @@
 .header {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
 }
 
 .header {
-.authorization-btn {
+  .authorization-btn {
     text-transform: uppercase;
     border: none;
     width: 80px;
 
-&:hover {
-     color: $accent-color;
- }
-}
+    &:hover {
+      color: $accent-color;
+    }
+  }
 }
 
-.header__side-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    max-width: 160px;
-}
 
 //LOGO
-  .logo {
-      height: 42px;
-      width: 42px;
-      font-size: 24px;
-      font-weight: bold;
-      border: 1px solid $black-color;
-      border-radius: 50%;
-      padding: 5px;
+.logo {
+  height: 42px;
+  width: 42px;
+  font-size: 24px;
+  font-weight: bold;
+  border: 1px solid $black-color;
+  border-radius: 50%;
+  padding: 5px;
 
-&:hover {
-     border: 1px solid $accent-color;
-     color: $accent-color;
- }
+  &:hover {
+    border: 1px solid $accent-color;
+    color: $accent-color;
+  }
 }
+
 //LOGO ENDS
 
 //BURGER STARTS
-  .header .menu-btn{
-&:hover {
-.menu-btn__burger::before,
-.menu-btn__burger::after,
-.menu-btn__burger {
-    background: $accent-color;
-}
-}
+.header .menu-btn {
+  &:hover {
+    .menu-btn__burger::before,
+    .menu-btn__burger::after,
+    .menu-btn__burger {
+      background: $accent-color;
+    }
+  }
 }
 
 .menu-btn {
-    width: 42px;
-    height: 42px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: none;
+  width: 42px;
+  height: 42px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
 }
 
 .menu-btn__burger {
-    width: 24px;
-    height: 2px;
-    background: $black-color;
-    transition: all .2s ease-in-out;
+  width: 24px;
+  height: 2px;
+  background: $black-color;
+  transition: all .2s ease-in-out;
 }
 
 .menu-btn__burger::before,
 .menu-btn__burger::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 2px;
-    background: $black-color;
-    border-radius: 5px;
-    transition: all .2s ease-in-out;
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: $black-color;
+  border-radius: 5px;
+  transition: all .2s ease-in-out;
 }
 
 .menu-btn__burger::before {
-    transform: translateY(-6px);
+  transform: translateY(-6px);
 }
 
 .menu-btn__burger::after {
-    transform: translateY(6px);
+  transform: translateY(6px);
 }
 
 //BURGER ENDS
