@@ -1,19 +1,19 @@
+/* eslint-disable import/no-mutable-exports */
+/* eslint-disable import/no-cycle */
 import { SprintController } from './controller';
 import { getRandomNumber, shuffle } from './HelpFunction';
 import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
 import { TimerSprintGame } from './timer';
 
+export let itemsSprintGameData: IWordsData[] = [];
+export let resultAnswer: number[] = [];
 export class LogicSprintGame {
   arrayEnglishWord: string[] = [];
 
   arrayRussianWords: string[][] = [];
 
-  items: IWordsData[] = [];
-
   countProgressAnswer = 0;
-
-  resultAnswer: number[] = [];
 
   score: number = 0;
 
@@ -49,10 +49,10 @@ export class LogicSprintGame {
     promiseArray.push(this.getWords(group));
     promiseArray.push(this.getWords(group));
     const result = await Promise.all(promiseArray);
-    this.items = result.flat(1);
-    this.arrayRussianWords = this.createArrayRussianWord(this.items);
-    for (let j = 0; j < this.items.length; j += 1) {
-      this.arrayEnglishWord.push(this.items[j].word || '');
+    itemsSprintGameData = result.flat(1);
+    this.arrayRussianWords = this.createArrayRussianWord(itemsSprintGameData);
+    for (let j = 0; j < itemsSprintGameData.length; j += 1) {
+      this.arrayEnglishWord.push(itemsSprintGameData[j].word || '');
     }
   }
 
@@ -66,7 +66,7 @@ export class LogicSprintGame {
     const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (this.countProgressAnswer >= 60) {
       this.countProgressAnswer = 0;
-      this.resultAnswer = [];
+      resultAnswer = [];
       this.score = 0;
       this.continuousSeries = 0;
     }
@@ -78,25 +78,26 @@ export class LogicSprintGame {
     );
   }
 
-  playSounds(audio:HTMLAudioElement, answer:string) {
+  playSounds(audio:HTMLAudioElement, answer:string): void {
     const newAudio = audio;
+    newAudio.pause();
     newAudio.src = `../assets/sounds/${answer}`;
-    audio.play();
+    newAudio.play();
   }
 
-  async countAnswer() {
+  async countAnswer(): Promise<void> {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>; let count = getRandomNumber(1, 0);
     this.getAnswer(count);
     const audio = new Audio();
     buttonWrongRight[0].addEventListener('click', () => {
-      if (this.items[this.countProgressAnswer].wordTranslate
+      if (itemsSprintGameData[this.countProgressAnswer].wordTranslate
           !== this.arrayRussianWords[this.countProgressAnswer][count]) {
-        this.resultAnswer.push(1);
+        resultAnswer.push(1);
         this.score += 10;
         this.continuousSeries += 1;
         this.playSounds(audio, 'RightAnswer.mp3');
       } else {
-        this.resultAnswer.push(0);
+        resultAnswer.push(0);
         this.continuousSeries = 0;
         this.playSounds(audio, 'WrongAnswer.mp3');
       }
@@ -106,14 +107,14 @@ export class LogicSprintGame {
     });
 
     buttonWrongRight[1].addEventListener('click', async () => {
-      if (this.items[this.countProgressAnswer].wordTranslate
+      if (itemsSprintGameData[this.countProgressAnswer].wordTranslate
           === this.arrayRussianWords[this.countProgressAnswer][count]) {
-        this.resultAnswer.push(1);
+        resultAnswer.push(1);
         this.score += 10;
         this.continuousSeries += 1;
         this.playSounds(audio, 'RightAnswer.mp3');
       } else {
-        this.resultAnswer.push(0);
+        resultAnswer.push(0);
         this.continuousSeries = 0;
         this.playSounds(audio, 'WrongAnswer.mp3');
       }
@@ -123,7 +124,7 @@ export class LogicSprintGame {
     });
   }
 
-  async drawSprintGame() {
+  async drawSprintGame(): Promise<void> {
     const main = document.querySelector('.main') as HTMLDivElement;
     main.innerHTML = '';
     const templateSprintGame = new TemplateHtml();
@@ -142,6 +143,17 @@ export class LogicSprintGame {
         timer.timer();
         timer.addTimer();
         logic.countAnswer();
+      });
+    });
+  }
+
+  runVoice() {
+    const voice = document.querySelectorAll('.column-voice') as NodeListOf<HTMLDivElement>;
+    voice.forEach((e, i) => {
+      e.addEventListener('click', () => {
+        const audio = new Audio();
+        audio.src = `https://rs-lang-2022.herokuapp.com/${itemsSprintGameData[i].audio}`;
+        audio.play();
       });
     });
   }

@@ -1,8 +1,10 @@
 @import "reset";
 @import "variables";
 @import "general";
+
 @import "../ui/sprintGame/style/cardSprintGame.scss";
 @import "../ui/sprintGame/style/levelSprintGame.scss";
+@import "../ui/sprintGame/style/resultList.scss";
 
 @import "../ui/common/header/styles/header";
 @import "../ui/common/footer/styles/footer";
