@@ -1,7 +1,7 @@
 import { HeaderView } from '../header/components/header';
 import { Footer } from '../footer/components/footer';
 import { MenuAside } from '../header/components/menuAside';
-import { AuthorizationView } from '../authorization/components/authorizationView';
+import { AuthorizationView } from '../../authorization/components/authorizationView';
 
 export class PageTemplate {
   private header: HeaderView = new HeaderView();
