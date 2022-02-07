@@ -7,7 +7,7 @@ export class AuthHelper {
   }
 
   public drawGreeting(name: UserDto['name']): void {
-    const container = document.querySelector('.header__side-container') as HTMLElement;
+    const container = document.querySelector('.header-side-container') as HTMLElement;
     const userName = document.createElement('div') as HTMLElement;
     userName.innerHTML = `Привет, ${name}`;
     userName.classList.add('user-greeting');

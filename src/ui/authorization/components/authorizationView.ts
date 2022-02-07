@@ -13,6 +13,25 @@ export class AuthorizationView {
   private authorization: Authorization = new Authorization();
 
   public drawAuthorization(): void {
+    this.createAuthorizationBtn();
+    this.createAuthorizationForm();
+    this.toggleAuthorizationMode();
+    this.validation.validateForm();
+    this.registration.register();
+    this.authorization.logIn();
+    this.authorization.checkIfAuthorized();
+  }
+
+  public createAuthorizationBtn(): void {
+    const headerSideCont = document.querySelector('.header-side-container') as HTMLDivElement;
+    const authorizationBtn = document.createElement('button');
+    authorizationBtn.classList.add('btn', 'authorization-btn');
+    authorizationBtn.innerHTML = 'Войти';
+    headerSideCont.prepend(authorizationBtn);
+    this.toggleAuthorizationForm();
+  }
+
+  private createAuthorizationForm(): void {
     const main = document.querySelector('.wrapper') as HTMLDivElement;
     const formWrap = document.createElement('div') as HTMLElement;
     formWrap.classList.add('form-wrap');
@@ -45,13 +64,6 @@ export class AuthorizationView {
     </div>
     </div> `;
     main.append(formWrap);
-
-    this.toggleAuthorizationMode();
-    this.toggleAuthorizationForm();
-    this.validation.validateForm();
-    this.registration.register();
-    this.authorization.logIn();
-    this.authorization.checkIfAuthorized();
   }
 
   private toggleAuthorizationMode(): void {

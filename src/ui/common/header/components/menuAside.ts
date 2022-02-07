@@ -5,6 +5,15 @@ interface MenuSection {
 }
 
 export class MenuAside {
+  private readonly menuButtons: MenuSection[] = [
+    { className: 'book', iconClass: 'book', text: 'учебник' },
+    { className: 'vocabulary', iconClass: 'book-reader', text: 'словарь' },
+    { className: 'games', iconClass: 'gamepad', text: 'игры' },
+    { className: 'stats', iconClass: 'signal', text: 'статистика' },
+    { className: 'team', iconClass: 'user-friends', text: 'о команде' },
+    { className: 'overview', iconClass: 'film', text: 'обзор' },
+  ];
+
   public drawMenuAside(): void {
     const wrapper = document.querySelector('.wrapper') as HTMLBodyElement;
     const menuAside = this.createMenuAsise();
@@ -14,7 +23,7 @@ export class MenuAside {
     this.createGamesDropdown();
   }
 
-  private closeMenuAside(): void {
+  public closeMenuAside(): void {
     const menu = document.querySelector('.menu-aside') as HTMLElement;
     const menuGames = document.querySelector('.menu-games') as HTMLElement;
 
@@ -31,7 +40,6 @@ export class MenuAside {
     const menu = document.querySelector('.menu-aside') as HTMLElement;
     const overlay = this.createOverlay();
     const menuBtns = document.getElementsByClassName('menu-item') as HTMLCollectionOf<HTMLButtonElement>;
-    // const dropdown = document.querySelector('.dropdown') as HTMLElement;
 
     menuBtn.addEventListener('click', () => {
       menu.classList.add('open');
@@ -56,17 +64,8 @@ export class MenuAside {
     const menu = document.createElement('aside') as HTMLElement;
     menu.classList.add('menu-aside');
 
-    const sections: MenuSection[] = [
-      { className: 'book', iconClass: 'book', text: 'учебник' },
-      { className: 'vocabulary', iconClass: 'book-reader', text: 'словарь' },
-      { className: 'games', iconClass: 'gamepad', text: 'игры' },
-      { className: 'stats', iconClass: 'signal', text: 'статистика' },
-      { className: 'team', iconClass: 'user-friends', text: 'о команде' },
-      { className: 'overview', iconClass: 'film', text: 'обзор' },
-    ];
-
     let content = '';
-    sections.forEach((item) => {
+    this.menuButtons.forEach((item) => {
       content += `<button class="menu-${item.className} menu-item" data-route="${item.className}">
                     <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
                     <div class="menu-text" data-route="${item.className}">${item.text}</div>
