@@ -1,4 +1,17 @@
+import { Validation } from '../validation';
+import { Registration } from '../registration';
+import { AuthHelper } from '../authHelper';
+import { Authorization } from '../authorization';
+
 export class AuthorizationView {
+  private validation: Validation = new Validation();
+
+  private registration: Registration = new Registration();
+
+  private helper: AuthHelper = new AuthHelper();
+
+  private authorization: Authorization = new Authorization();
+
   public drawAuthorization(): void {
     const main = document.querySelector('.wrapper') as HTMLDivElement;
     const formWrap = document.createElement('div') as HTMLElement;
@@ -6,37 +19,39 @@ export class AuthorizationView {
     formWrap.innerHTML = `
     <div class="tabs">
         <h3 class="signup-tab">
-            <a class="active" href="#">Sign Up</a>
+            <a class="active" href="#">Регистрация</a>
         </h3>
         <h3 class="login-tab">
-            <a href="#">Login</a>
+            <a href="#">Вход</a>
         </h3>
     </div>
     <div class="tabs-content">
          <div id="signup-tab-content" class="active">
          <form class="signup-form" action="" method="">
              <input type="email" class="input input-email" id="user_email" autocomplete="off" placeholder="Email">
-             <input type="text" class="input" id="user_name" autocomplete="off" placeholder="Username">
-             <input type="password" class="input" id="user_pass-sign" autocomplete="off" placeholder="Password">
-             <input type="submit" class="button sign-up-btn" value="Sign Up">
+             <input type="text" class="input input-user-name" id="user_name" autocomplete="off" placeholder="Имя">
+             <input type="password" class="input input-password" id="user_pass-sign" autocomplete="off" placeholder="Пароль">
+             <input type="submit" class="button sign-up-btn" value="Регистрация">
          </form>
          <div class="help-text"></div>
     </div>
     <div id="login-tab-content">
          <form class="login-form" action="" method="">
-             <input type="text" class="input" id="user_login" autocomplete="off" placeholder="Email or Username">
-             <input type="password" class="input" id="user_pass-login" autocomplete="off" placeholder="Password">
-             <input type="checkbox" class="checkbox" id="remember_me">
-             <label for="remember_me">Remember me</label>
-             <input type="submit" class="button" value="Login">
+             <input type="text" class="input input-login-email" id="user_login" autocomplete="off" placeholder="Email">
+             <input type="password" class="input input-login-password" id="user_pass-login" autocomplete="off" placeholder="Пароль">
+             <input type="submit" class="button login-btn" value="Вход">
          </form>
     </div>
     </div>
     </div> `;
     main.append(formWrap);
+
     this.toggleAuthorizationMode();
     this.toggleAuthorizationForm();
-    this.validateForm();
+    this.validation.validateForm();
+    this.registration.register();
+    this.authorization.logIn();
+    this.authorization.checkIfAuthorized();
   }
 
   private toggleAuthorizationMode(): void {
@@ -64,30 +79,13 @@ export class AuthorizationView {
     const overlay = document.createElement('a') as HTMLElement;
     overlay.classList.add('overlay');
 
-    const modal = document.querySelector('.form-wrap') as HTMLElement;
-
     authorizationBtn.addEventListener('click', () => {
-      modal.style.top = '50%';
+      this.helper.openAuthorizationForm();
       body.append(overlay);
     });
 
     overlay.addEventListener('click', () => {
-      modal.style.top = '-50%';
-      overlay.remove();
-    });
-  }
-
-  private validateForm(): void {
-    const email = document.querySelector('#user_email') as HTMLInputElement;
-    const signUpBtn = document.querySelector('.sign-up-btn') as HTMLElement;
-    const signPassword = document.querySelector('#user_pass-sign') as HTMLInputElement;
-
-    signUpBtn.addEventListener('click', () => {
-      email.value
-        .match(
-          /^(([^<>()[\]\\.,;:\s@]+(\.[^<>()[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        );
-      signPassword.value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
+      this.helper.closeAuthorizationForm();
     });
   }
 }
