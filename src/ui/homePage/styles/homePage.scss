@@ -79,13 +79,6 @@ body {
   justify-content: center;
   gap: 30px;
   z-index: 10;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 950px) {
-  .opportunity-container {
-
-  }
 }
 
 .opportunity-card {
@@ -124,4 +117,17 @@ body {
 .opportunity-progress {
   background-image: url("../assets/images/progress.png");
 }
+
+@media (max-width: 950px) {
+  .opportunity-container {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .rs-lang{
+    font-size: 60px;
+  }
+}
+
 
