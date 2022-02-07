@@ -4,7 +4,7 @@ import { IWordsData } from '../../sprintGame/components/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
-// type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
+type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
 
 export class AudioGamePage {
   private pageContainer;
@@ -13,9 +13,15 @@ export class AudioGamePage {
 
   private totalPage = 30;
 
-  private totalWord = 20;
+  private totalWord = 5;
 
   private activeGroup = 0;
+
+  public url = 'https://rs-lang-2022.herokuapp.com/';
+
+  public correctAnswer: ResultType[] = [];
+
+  public incorrectAnswer: ResultType[] = [];
 
   private words: IWordsData[] = [];
 
@@ -25,9 +31,10 @@ export class AudioGamePage {
 
   private helpers = new HelpersAudioGame();
 
-  private resultCard = new AudioGameResultCard();
+  private resultCard: AudioGameResultCard;
 
   constructor() {
+    this.resultCard = new AudioGameResultCard(() => this.startGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
   }
 
@@ -71,18 +78,18 @@ export class AudioGamePage {
 
         if (isCorrect) {
           target.classList.add('correct');
-          this.resultCard.correctAnswer.push(this.words[this.activeWordIndex]);
+          this.correctAnswer.push(this.words[this.activeWordIndex]);
         } else {
           target.classList.add('incorrect');
-          this.resultCard.incorrectAnswer.push(this.words[this.activeWordIndex]);
+          this.incorrectAnswer.push(this.words[this.activeWordIndex]);
           const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
           correctButton.classList.add('correct');
         }
         this.createAnswer();
       }
-      if (this.resultCard.correctAnswer.length
-         + this.resultCard.incorrectAnswer.length === this.totalWord) {
-        this.resultCard.createResultGameCard();
+      if (this.correctAnswer.length
+         + this.incorrectAnswer.length === this.totalWord) {
+        this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
       }
     });
   }
@@ -98,7 +105,7 @@ export class AudioGamePage {
     const img = document.createElement('img') as HTMLImageElement;
     const p = document.createElement('p') as HTMLSpanElement;
     img.classList.add('img-answer');
-    img.src = this.resultCard.url + this.words[this.activeWordIndex].image as string;
+    img.src = this.url + this.words[this.activeWordIndex].image as string;
     p.classList.add('answer-text');
     p.innerText = this.words[this.activeWordIndex].word as string;
     container.appendChild(img);
@@ -115,7 +122,7 @@ export class AudioGamePage {
     buttonAnswer?.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isSelectedButtonAnswer = target.classList.contains('button-answer-audio-game');
-
+      this.incorrectAnswer.push(this.words[this.activeWordIndex]);
       if (isSelectedButtonAnswer) {
         buttonAnswer.style.display = 'none';
         buttonNext.style.display = 'inline-block';
@@ -136,7 +143,7 @@ export class AudioGamePage {
   }
 
   private startAudio(word: IWordsData): void {
-    const audio = new Audio(this.resultCard.url + word.audio);
+    const audio = new Audio(this.url + word.audio);
     audio.play();
   }
 
