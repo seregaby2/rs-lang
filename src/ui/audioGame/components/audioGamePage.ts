@@ -5,7 +5,6 @@ import { HelpersAudioGame } from './helpersAudioGame';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
-
 export class AudioGamePage {
   private pageContainer;
 
@@ -17,7 +16,7 @@ export class AudioGamePage {
 
   private activeGroup = 0;
 
-  public url = 'https://rs-lang-2022.herokuapp.com/';
+  private url = 'https://rs-lang-2022.herokuapp.com/';
 
   public correctAnswer: ResultType[] = [];
 

@@ -11,18 +11,18 @@
   text-align: left;
 }
 
-.correct-answer-title-result-info-audio-game {
+.correct-answer-title {
   color: #33FF33;
   text-transform: uppercase;
 }
 
-.incorrect-answer-title-result-info-audio-game {
+.incorrect-answer-title {
   color: #FF0000;
   text-transform: uppercase;
 }
 
-.incorrect-answer-audio-result-info-audio-game,
-.correct-answer-audio-result-info-audio-game {
+.volume-incorrect-answer,
+.volume-incorrect-answer {
   background-image: url("../assets/images/volume.png");
   width: 20px;
   height: 20px;
@@ -31,10 +31,11 @@
   padding: 0;
   margin: 0 0 5px 0;
   align-self: center;
+  margin-right: 10px;
 }
 
-.incorrect-answer-container-result-info-audio-game,
-.correct-answer-container-result-info-audio-game {
+.incorrect-answer,
+.correct-answer {
   display: flex;
   flex-direction: row;
 }

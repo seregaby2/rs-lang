@@ -3,7 +3,11 @@ import { IWordsData } from '../../sprintGame/components';
 export class AudioGameResultCard {
   private pageContainer;
 
+  private url = 'https://rs-lang-2022.herokuapp.com/';
+
   private audioGameCallback;
+
+  private maxResult = 20;
 
   constructor(callback: () => void) {
     this.pageContainer = document.querySelector('body') as HTMLElement;
@@ -22,15 +26,15 @@ export class AudioGameResultCard {
     const countCorrectAnswer = document.createElement('span') as HTMLSpanElement;
     const countIncorrectAnswer = document.createElement('span') as HTMLSpanElement;
 
-    mainTitle.classList.add('main-title-result-info-audio-game');
+    mainTitle.classList.add('main-title-result-card');
     container.classList.add('container-result-info-audio-game');
-    containerCorrectAnswer.classList.add('container-correct-answer-result-info-audio-game');
-    containerInCorrectAnswer.classList.add('container-incorrect-answer-result-info-audio-game');
+    containerCorrectAnswer.classList.add('correct-answer-list');
+    containerInCorrectAnswer.classList.add('incorrect-answer-list');
 
-    titleCorrectAnswer.classList.add('correct-answer-title-result-info-audio-game');
-    titleIncorrectAnswer.classList.add('incorrect-answer-title-result-info-audio-game');
-    countCorrectAnswer.classList.add('correct-answer-count-result-info-audio-game');
-    countIncorrectAnswer.classList.add('incorrect-answer-count-result-info-audio-game');
+    titleCorrectAnswer.classList.add('correct-answer-title');
+    titleIncorrectAnswer.classList.add('incorrect-answer-title');
+    countCorrectAnswer.classList.add('count-correct-answer');
+    countIncorrectAnswer.classList.add('count-incorrect-answer');
 
     if (correctWords.length < incorrectWords.length) {
       mainTitle.innerHTML = 'В этот раз не получилось, продолжай тренироваться!';
@@ -38,7 +42,7 @@ export class AudioGameResultCard {
     if (correctWords.length > incorrectWords.length) {
       mainTitle.innerHTML = 'Поздравляем, отличный результат, но ты можешь лучше!';
     }
-    if (correctWords.length === 20) {
+    if (correctWords.length === this.maxResult) {
       mainTitle.innerHTML = 'Превосходно!!! Вы все знаете!!!';
     }
     this.createCorrectAnswer(containerCorrectAnswer, correctWords);
@@ -59,6 +63,7 @@ export class AudioGameResultCard {
     mainContainer.appendChild(container);
     this.createButtonsResultGame();
     this.setListenerButtonPlayAgain();
+    this.setListenerVolumeWord();
   }
 
   private createCorrectAnswer(parent: HTMLElement, words: IWordsData[]): void {
@@ -71,8 +76,9 @@ export class AudioGameResultCard {
       const correctAnswerDash = document.createElement('span') as HTMLSpanElement;
 
       mainContainer.classList.add('correct-answer-main-container-result-info-audio-game');
-      container.classList.add('correct-answer-container-result-info-audio-game');
-      audioImg.classList.add('correct-answer-audio-result-info-audio-game');
+      container.classList.add('correct-answer');
+      audioImg.classList.add('volume-incorrect-answer');
+      audioImg.dataset.src = item.audio;
 
       correctAnswerWord.innerHTML = item.word as string;
       correctAnswerTranslate.innerHTML = item.wordTranslate as string;
@@ -96,9 +102,11 @@ export class AudioGameResultCard {
       const incorrectAnswerTranslate = document.createElement('span') as HTMLSpanElement;
       const incorrectAnswerDash = document.createElement('span') as HTMLSpanElement;
 
-      mainContainer.classList.add('incorrect-answer-main-container-result-info-audio-game');
-      container.classList.add('incorrect-answer-container-result-info-audio-game');
-      audioImg.classList.add('incorrect-answer-audio-result-info-audio-game');
+      mainContainer.classList.add('incorrect-answer-container');
+      container.classList.add('incorrect-answer');
+      audioImg.classList.add('volume-incorrect-answer');
+      audioImg.dataset.src = item.audio;
+
       incorrectAnswerWord.innerHTML = item.word as string;
       incorrectAnswerTranslate.innerHTML = item.wordTranslate as string;
       incorrectAnswerDash.innerText = ' - ';
@@ -125,7 +133,7 @@ export class AudioGameResultCard {
     ];
     const mainContainer = this.pageContainer.querySelector('.main-wrapper-audio-game') as HTMLElement;
     const containerButton = document.createElement('div') as HTMLDivElement;
-    containerButton.classList.add('button-container-result-info-audio-game');
+    containerButton.classList.add('button-container-result-card');
     buttonResultGame.forEach((item) => {
       const button = document.createElement('button') as HTMLButtonElement;
       button.classList.add('button-audio-game', item.class);
@@ -136,9 +144,32 @@ export class AudioGameResultCard {
   }
 
   private setListenerButtonPlayAgain(): void {
-    const button = this.pageContainer.querySelector('.button-play-again-audio-game');
+    const button = this.pageContainer.querySelector('.button-audio-game button-play-again');
     button?.addEventListener('click', () => {
       this.audioGameCallback();
+    });
+  }
+
+  private setListenerVolumeWord(): void {
+    const container = this.pageContainer.querySelector('.container-result-info-audio-game') as HTMLDivElement;
+    container.addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isSelectedIncorrect = target.classList.contains('volume-incorrect-answer');
+      const isSelectedCorrect = target.classList.contains('volume-correct-answer');
+
+      if (isSelectedIncorrect) {
+        const path = target.dataset.src;
+        const audio = new Audio();
+        audio.src = this.url + path;
+        audio.play();
+      }
+
+      if (isSelectedCorrect) {
+        const path = target.dataset.src;
+        const audio = new Audio();
+        audio.src = this.url + path;
+        audio.play();
+      }
     });
   }
 }
