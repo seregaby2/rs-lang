@@ -1,0 +1,22 @@
+.container-result-info-audio-game {
+  border: 1px solid #B3B3B3;
+  margin: 0 auto 1rem;
+  padding: 30px 50px;
+  overflow: auto;
+  max-width: 600px;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.correct-answer-title-result-info-audio-game {
+  color: #33FF33;
+  text-transform: uppercase;
+}
+
+.incorrect-answer-title-result-info-audio-game {
+  color: #FF0000;
+  text-transform: uppercase;
+}
+

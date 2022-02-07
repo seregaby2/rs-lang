@@ -1,17 +1,19 @@
+import { AudioGameResultCard } from './audioGameResultCard';
 import { SprintController } from '../../sprintGame/components/controller';
 import { IWordsData } from '../../sprintGame/components/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
+// type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
 
 export class AudioGamePage {
   private pageContainer;
 
   private activeWordIndex = 0;
 
-  private helpers;
-
   private totalPage = 30;
+
+  private totalWord = 20;
 
   private activeGroup = 0;
 
@@ -23,9 +25,12 @@ export class AudioGamePage {
 
   private controller = new SprintController();
 
+  private helpers = new HelpersAudioGame();
+
+  private resultCard = new AudioGameResultCard();
+
   constructor() {
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
-    this.helpers = new HelpersAudioGame();
   }
 
   public draw(): void {
@@ -68,13 +73,18 @@ export class AudioGamePage {
 
         if (isCorrect) {
           target.classList.add('correct');
+          this.resultCard.correctAnswer.push(this.words[this.activeWordIndex]);
         } else {
           target.classList.add('incorrect');
+          this.resultCard.incorrectAnswer.push(this.words[this.activeWordIndex]);
           const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
           correctButton.classList.add('correct');
         }
-
         this.createAnswer();
+      }
+      // eslint-disable-next-line max-len
+      if (this.resultCard.correctAnswer.length + this.resultCard.incorrectAnswer.length === this.totalWord) {
+        this.resultCard.createResultGameCard();
       }
     });
   }
@@ -237,7 +247,7 @@ export class AudioGamePage {
   }
 
   private setListenerLevelButtons(): void {
-    const container = document.querySelector('.container-buttons-level-audio-game') as HTMLElement;
+    const container = this.pageContainer.querySelector('.container-buttons-level-audio-game') as HTMLElement;
     container.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isClickedButton = target.classList.contains('button-level-audio-game');
