@@ -14,7 +14,3 @@ export interface IWordsData {
   readonly textMeaningTranslate?:string,
   readonly textExampleTranslate?:string
 }
-
-// export interface CollectionRussianWords {
-//   readonly arrayRussianWordsRandomAnswer: string[]
-// }
