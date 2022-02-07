@@ -21,8 +21,6 @@ export class AudioGamePage {
 
   private requestWords = 'words';
 
-  private url = 'https://rs-lang-2022.herokuapp.com/';
-
   private controller = new SprintController();
 
   private helpers = new HelpersAudioGame();
@@ -82,8 +80,8 @@ export class AudioGamePage {
         }
         this.createAnswer();
       }
-      // eslint-disable-next-line max-len
-      if (this.resultCard.correctAnswer.length + this.resultCard.incorrectAnswer.length === this.totalWord) {
+      if (this.resultCard.correctAnswer.length
+         + this.resultCard.incorrectAnswer.length === this.totalWord) {
         this.resultCard.createResultGameCard();
       }
     });
@@ -100,7 +98,7 @@ export class AudioGamePage {
     const img = document.createElement('img') as HTMLImageElement;
     const p = document.createElement('p') as HTMLSpanElement;
     img.classList.add('img-answer');
-    img.src = this.url + this.words[this.activeWordIndex].image as string;
+    img.src = this.resultCard.url + this.words[this.activeWordIndex].image as string;
     p.classList.add('answer-text');
     p.innerText = this.words[this.activeWordIndex].word as string;
     container.appendChild(img);
@@ -138,7 +136,7 @@ export class AudioGamePage {
   }
 
   private startAudio(word: IWordsData): void {
-    const audio = new Audio(this.url + word.audio);
+    const audio = new Audio(this.resultCard.url + word.audio);
     audio.play();
   }
 

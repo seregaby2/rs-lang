@@ -5,6 +5,8 @@ export class AudioGameResultCard {
 
   public incorrectAnswer: IWordsData[] = [];
 
+  public url = 'https://rs-lang-2022.herokuapp.com/';
+
   private pageContainer;
 
   constructor() {
@@ -64,39 +66,52 @@ export class AudioGameResultCard {
 
   private createCorrectAnswer(parent: HTMLElement): void {
     this.correctAnswer.forEach((item) => {
-      const container = document.createElement('div');
+      const mainContainer = document.createElement('div') as HTMLDivElement;
+      const container = document.createElement('div') as HTMLDivElement;
+      const audioImg = document.createElement('div') as HTMLDivElement;
       const correctAnswerWord = document.createElement('span') as HTMLSpanElement;
       const correctAnswerTranslate = document.createElement('span') as HTMLSpanElement;
       const correctAnswerDash = document.createElement('span') as HTMLSpanElement;
 
-      container.classList.add('correct-answer-list-result-info-audio-game');
+      mainContainer.classList.add('correct-answer-main-container-result-info-audio-game');
+      container.classList.add('correct-answer-container-result-info-audio-game');
+      audioImg.classList.add('correct-answer-audio-result-info-audio-game');
+
       correctAnswerWord.innerHTML = item.word as string;
       correctAnswerTranslate.innerHTML = item.wordTranslate as string;
-      correctAnswerDash.innerText = '-';
+      correctAnswerDash.innerText = ' - ';
 
+      container.appendChild(audioImg);
       container.appendChild(correctAnswerWord);
       container.appendChild(correctAnswerDash);
       container.appendChild(correctAnswerTranslate);
+      mainContainer.appendChild(container);
       parent.appendChild(container);
     });
   }
 
   private createIncorrectAnswer(parent: HTMLElement): void {
     this.incorrectAnswer.forEach((item) => {
-      const container = document.createElement('div');
+      const mainContainer = document.createElement('div') as HTMLDivElement;
+      const container = document.createElement('div') as HTMLDivElement;
+      const audioImg = document.createElement('div') as HTMLDivElement;
       const incorrectAnswerWord = document.createElement('span') as HTMLSpanElement;
       const incorrectAnswerTranslate = document.createElement('span') as HTMLSpanElement;
       const incorrectAnswerDash = document.createElement('span') as HTMLSpanElement;
 
-      container.classList.add('incorrect-answer-list-result-info-audio-game');
+      mainContainer.classList.add('incorrect-answer-main-container-result-info-audio-game');
+      container.classList.add('incorrect-answer-container-result-info-audio-game');
+      audioImg.classList.add('incorrect-answer-audio-result-info-audio-game');
       incorrectAnswerWord.innerHTML = item.word as string;
       incorrectAnswerTranslate.innerHTML = item.wordTranslate as string;
-      incorrectAnswerDash.innerText = '-';
+      incorrectAnswerDash.innerText = ' - ';
 
+      container.appendChild(audioImg);
       container.appendChild(incorrectAnswerWord);
       container.appendChild(incorrectAnswerDash);
       container.appendChild(incorrectAnswerTranslate);
-      parent.appendChild(container);
+      mainContainer.appendChild(container);
+      parent.appendChild(mainContainer);
     });
   }
 
