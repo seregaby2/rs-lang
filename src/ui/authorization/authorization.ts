@@ -3,9 +3,12 @@ import {
 } from './models';
 import { AuthHelper } from './authHelper';
 import { Controller } from './controller';
+import { LogOut } from './logOut';
 
 export class Authorization extends Controller {
   private helper: AuthHelper = new AuthHelper();
+
+  private logOut: LogOut = new LogOut();
 
   constructor() {
     super('users');
@@ -32,6 +35,7 @@ export class Authorization extends Controller {
       this.getUser(token, id)
         .then((user) => {
           this.helper.drawGreeting(user.name);
+          this.logOut.drawLogOutBtn();
         });
     }
   }
@@ -54,8 +58,14 @@ export class Authorization extends Controller {
           if (tokenInfo) {
             this.helper.saveUserInfoInLocalStorage(tokenInfo);
             this.helper.drawGreeting(tokenInfo.name);
+            this.logOut.drawLogOutBtn();
             this.helper.removeLogInBtn();
             this.helper.closeAuthorizationForm();
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            this.helper.showAuthHint('#login-tab-content .error');
           }
         });
     });

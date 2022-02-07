@@ -2,11 +2,14 @@ import { Controller } from './controller';
 import { UserDto } from './models';
 import { Authorization } from './authorization';
 import { AuthHelper } from './authHelper';
+import { LogOut } from './logOut';
 
 export class Registration extends Controller {
   private signIn: Authorization = new Authorization();
 
   private helper: AuthHelper = new AuthHelper();
+
+  private logOut: LogOut = new LogOut();
 
   constructor() {
     super('users');
@@ -43,7 +46,13 @@ export class Registration extends Controller {
               this.helper.drawGreeting(user.name);
               this.helper.removeLogInBtn();
               this.helper.closeAuthorizationForm();
+              this.logOut.drawLogOutBtn();
             });
+        })
+        .catch((error) => {
+          if (error) {
+            this.helper.showAuthHint('.user-exists-hint');
+          }
         });
     });
   }

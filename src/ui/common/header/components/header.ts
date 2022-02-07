@@ -3,12 +3,10 @@ export class HeaderView {
     const wrapper = document.querySelector('.wrapper') as HTMLBodyElement;
     const header = this.createHeaderContainer();
     const headerSideCont = document.createElement('div') as HTMLElement;
-    headerSideCont.classList.add('header__side-container');
+    headerSideCont.classList.add('header-side-container');
     const headerMenu = this.createBurgerMenu();
-    const authorizationBtn = this.createAuthorizationBtn();
     const logo = this.createLogo();
 
-    headerSideCont.append(authorizationBtn);
     headerSideCont.append(headerMenu);
 
     header.append(logo);
@@ -21,13 +19,6 @@ export class HeaderView {
     const header = document.createElement('header') as HTMLElement;
     header.classList.add('header');
     return header;
-  }
-
-  private createAuthorizationBtn(): HTMLElement {
-    const authorizationBtn = document.createElement('button');
-    authorizationBtn.classList.add('btn', 'authorization-btn');
-    authorizationBtn.innerHTML = 'Войти';
-    return authorizationBtn;
   }
 
   private createBurgerMenu(): HTMLElement {
