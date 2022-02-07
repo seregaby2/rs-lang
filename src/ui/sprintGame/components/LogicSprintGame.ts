@@ -4,11 +4,17 @@ import { SprintController } from './controller';
 import { getRandomNumber, shuffle } from './HelpFunction';
 import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
-import { TimerSprintGame } from './timer';
+// import { TimerSprintGame } from './timer';
 
 export let itemsSprintGameData: IWordsData[] = [];
 export let resultAnswer: number[] = [];
 export class LogicSprintGame {
+  myInterval: NodeJS.Timer | null;
+
+  time: number;
+
+  private template = new TemplateHtml();
+
   arrayEnglishWord: string[] = [];
 
   arrayRussianWords: string[][] = [];
@@ -18,6 +24,11 @@ export class LogicSprintGame {
   score: number = 0;
 
   continuousSeries: number = 0;
+
+  constructor() {
+    this.myInterval = null;
+    this.time = 60;
+  }
 
   private async getWords(group:number): Promise<IWordsData[]> {
     const minCountPage = 0;
@@ -86,7 +97,8 @@ export class LogicSprintGame {
   }
 
   async countAnswer(): Promise<void> {
-    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>; let count = getRandomNumber(1, 0);
+    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
+    let count = getRandomNumber(1, 0);
     this.getAnswer(count);
     const audio = new Audio();
     buttonWrongRight[0].addEventListener('click', () => {
@@ -128,21 +140,18 @@ export class LogicSprintGame {
     const main = document.querySelector('.main') as HTMLDivElement;
     main.innerHTML = '';
     const templateSprintGame = new TemplateHtml();
-
     templateSprintGame.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
     squareChooseLevel.forEach((e, i) => {
       e.addEventListener('click', async () => {
-        const logic = new LogicSprintGame();
-        await logic.createArrayEnglishAndRussianWords(i);
+        await this.createArrayEnglishAndRussianWords(i);
         main.innerHTML = '';
         templateSprintGame.createTemplateCardGame(main);
         const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
         wrapperCardGame.style.display = 'flex';
-        const timer = new TimerSprintGame();
-        timer.timer();
-        timer.addTimer();
-        logic.countAnswer();
+        this.timer();
+        this.addTimer();
+        this.countAnswer();
       });
     });
   }
@@ -155,6 +164,57 @@ export class LogicSprintGame {
         audio.src = `https://rs-lang-2022.herokuapp.com/${itemsSprintGameData[i].audio}`;
         audio.play();
       });
+    });
+  }
+
+  resetTimer() {
+    const main = document.querySelector('.main') as HTMLElement;
+    if (this.myInterval) {
+      clearInterval(this.myInterval);
+      main.innerHTML = '';
+      this.template.createTableWithResults(main);
+      resultAnswer = [];
+      this.time = 60;
+    }
+  }
+
+  timer(): void {
+    const timer = document.querySelector('.item-header-card-sprint-game') as HTMLDivElement;
+    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
+    const main = document.querySelector('.main') as HTMLElement;
+    if (this.time < 10) {
+      timer.textContent = `Timer: 0${this.time.toString()}`;
+    } else {
+      timer.textContent = `Timer: ${this.time.toString()}`;
+    }
+    this.time -= 1;
+
+    if (this.myInterval && this.time < 0) {
+      clearInterval(this.myInterval);
+      main.innerHTML = '';
+      this.template.createTableWithResults(main);
+    }
+    buttonWrongRight[0].addEventListener('click', () => {
+      console.log(resultAnswer.length, 'wrong', this.myInterval);
+      if (resultAnswer.length === 59 && this.myInterval) {
+        this.resetTimer();
+      }
+    });
+    buttonWrongRight[1].addEventListener('click', () => {
+      console.log(resultAnswer.length, 'right');
+      if (resultAnswer.length === 59 && this.myInterval) {
+        this.resetTimer();
+      }
+    });
+  }
+
+  addTimer(): void {
+    this.myInterval = setInterval(() => this.timer(), 1000);
+    window.addEventListener('click', () => {
+      const wrapperCardSprintGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
+      if (!wrapperCardSprintGame && this.myInterval) {
+        clearInterval(this.myInterval);
+      }
     });
   }
 }
