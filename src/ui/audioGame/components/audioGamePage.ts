@@ -13,7 +13,7 @@ export class AudioGamePage {
 
   private totalPage = 30;
 
-  private totalWord = 5;
+  private totalWord = 20;
 
   private activeGroup = 0;
 
