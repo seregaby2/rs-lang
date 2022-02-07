@@ -3,7 +3,7 @@ import { Registration } from '../registration';
 import { AuthHelper } from '../authHelper';
 import { Authorization } from '../authorization';
 
-export class AuthorizationView {
+export class AuthorizationForm {
   private validation: Validation = new Validation();
 
   private registration: Registration = new Registration();
@@ -13,22 +13,15 @@ export class AuthorizationView {
   private authorization: Authorization = new Authorization();
 
   public drawAuthorization(): void {
-    this.createAuthorizationBtn();
+    this.helper.createAuthorizationBtn();
     this.createAuthorizationForm();
     this.toggleAuthorizationMode();
     this.validation.validateForm();
     this.registration.register();
     this.authorization.logIn();
     this.authorization.checkIfAuthorized();
-  }
-
-  public createAuthorizationBtn(): void {
-    const headerSideCont = document.querySelector('.header-side-container') as HTMLDivElement;
-    const authorizationBtn = document.createElement('button');
-    authorizationBtn.classList.add('btn', 'authorization-btn');
-    authorizationBtn.innerHTML = 'Войти';
-    headerSideCont.prepend(authorizationBtn);
-    this.toggleAuthorizationForm();
+    this.helper.hideAuthHint('#login-tab-content .error');
+    this.helper.hideAuthHint('.user-exists-hint');
   }
 
   private createAuthorizationForm(): void {
@@ -47,18 +40,28 @@ export class AuthorizationView {
     <div class="tabs-content">
          <div id="signup-tab-content" class="active">
          <form class="signup-form" action="" method="">
-             <input type="email" class="input input-email" id="user_email" autocomplete="off" placeholder="Email">
-             <input type="text" class="input input-user-name" id="user_name" autocomplete="off" placeholder="Имя">
-             <input type="password" class="input input-password" id="user_pass-sign" autocomplete="off" placeholder="Пароль">
-             <input type="submit" class="button sign-up-btn" value="Регистрация">
+            <div class="sign-up-email">
+                <div class="sign-up-hint sign-up-email-hint">Email должен быть вида rslang@gmail.com</div>
+                <input type="email" class="input input-email" id="user_email" autocomplete="off" placeholder="Email">
+            </div>
+            <div class="sign-up-username">
+                <div class="sign-up-hint sign-up-username-hint">Имя может содержать только цифры и буквы</div>
+                <input type="text" class="input input-user-name" id="user_name" autocomplete="off" placeholder="Имя">
+            </div>
+            <div class="sign-up-password">
+                <div class="sign-up-hint sign-up-password-hint">Пароль должен состоять минимум из 8 символов и содержать цифры и буквы</div>
+                <input type="password" class="input input-password" id="user_pass-sign" autocomplete="off" placeholder="Пароль">
+            </div>
+            <input type="submit" class="button sign-up-btn" value="Регистрация">
+            <div class="user-exists-hint">Пользователь с таким email уже существует</div>
          </form>
-         <div class="help-text"></div>
     </div>
     <div id="login-tab-content">
          <form class="login-form" action="" method="">
              <input type="text" class="input input-login-email" id="user_login" autocomplete="off" placeholder="Email">
              <input type="password" class="input input-login-password" id="user_pass-login" autocomplete="off" placeholder="Пароль">
              <input type="submit" class="button login-btn" value="Вход">
+             <div class="error">Неправильный email или пароль</div>
          </form>
     </div>
     </div>
@@ -82,22 +85,6 @@ export class AuthorizationView {
           signUP.classList.add('active');
         }
       });
-    });
-  }
-
-  private toggleAuthorizationForm(): void {
-    const body = document.querySelector('body') as HTMLBodyElement;
-    const authorizationBtn = document.querySelector('.authorization-btn') as HTMLElement;
-    const overlay = document.createElement('a') as HTMLElement;
-    overlay.classList.add('overlay');
-
-    authorizationBtn.addEventListener('click', () => {
-      this.helper.openAuthorizationForm();
-      body.append(overlay);
-    });
-
-    overlay.addEventListener('click', () => {
-      this.helper.closeAuthorizationForm();
     });
   }
 }

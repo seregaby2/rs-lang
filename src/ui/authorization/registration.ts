@@ -48,6 +48,11 @@ export class Registration extends Controller {
               this.helper.closeAuthorizationForm();
               this.logOut.drawLogOutBtn();
             });
+        })
+        .catch((error) => {
+          if (error) {
+            this.helper.showAuthHint('.user-exists-hint');
+          }
         });
     });
   }

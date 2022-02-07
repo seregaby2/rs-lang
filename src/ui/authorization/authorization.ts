@@ -62,6 +62,11 @@ export class Authorization extends Controller {
             this.helper.removeLogInBtn();
             this.helper.closeAuthorizationForm();
           }
+        })
+        .catch((error) => {
+          if (error) {
+            this.helper.showAuthHint('#login-tab-content .error');
+          }
         });
     });
   }
