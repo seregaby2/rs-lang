@@ -48,8 +48,8 @@ export class AudioGameResultCard {
     this.createCorrectAnswer(containerCorrectAnswer, correctWords);
     this.createIncorrectAnswer(containerInCorrectAnswer, incorrectWords);
 
-    titleCorrectAnswer.innerHTML = `ЗНАЮ: ${correctWords.length}`;
-    titleIncorrectAnswer.innerHTML = `ОШИБОК: ${incorrectWords.length}`;
+    titleCorrectAnswer.innerHTML = `Знаю: ${correctWords.length}`;
+    titleIncorrectAnswer.innerHTML = `Ошибок: ${incorrectWords.length}`;
     titleCorrectAnswer.appendChild(countCorrectAnswer);
 
     titleIncorrectAnswer.appendChild(countIncorrectAnswer);
@@ -77,7 +77,9 @@ export class AudioGameResultCard {
 
       mainContainer.classList.add('correct-answer-main-container-result-info-audio-game');
       container.classList.add('correct-answer');
-      audioImg.classList.add('volume-incorrect-answer');
+      audioImg.classList.add('volume-correct-answer');
+      correctAnswerWord.classList.add('correct-answer-word');
+      correctAnswerTranslate.classList.add('correct-answer-translate');
       audioImg.dataset.src = item.audio;
 
       correctAnswerWord.innerHTML = item.word as string;
@@ -104,7 +106,10 @@ export class AudioGameResultCard {
 
       mainContainer.classList.add('incorrect-answer-container');
       container.classList.add('incorrect-answer');
-      audioImg.classList.add('volume-incorrect-answer');
+      audioImg.classList.add('volume-correct-answer');
+      incorrectAnswerWord.classList.add('incorrect-answer-word');
+      incorrectAnswerTranslate.classList.add('incorrect-answer-translate');
+
       audioImg.dataset.src = item.audio;
 
       incorrectAnswerWord.innerHTML = item.word as string;

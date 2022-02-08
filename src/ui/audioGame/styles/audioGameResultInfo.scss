@@ -14,14 +14,18 @@
 .correct-answer-title {
   color: #33FF33;
   text-transform: uppercase;
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .incorrect-answer-title {
   color: #FF0000;
   text-transform: uppercase;
+  font-size: 20px;
+  margin: 10px 0;
 }
 
-.volume-incorrect-answer,
+.volume-correct-answer,
 .volume-incorrect-answer {
   background-image: url("../assets/images/volume.png");
   width: 20px;
@@ -38,4 +42,25 @@
 .correct-answer {
   display: flex;
   flex-direction: row;
+}
+
+.main-title-result-card {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.incorrect-answer-word,
+.correct-answer-word {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.incorrect-answer-translate,
+.correct-answer-translate {
+  font-size: 18px;
+}
+
+.correct-answer-list {
+  border-bottom: solid 1px #B3B3B3;
 }
