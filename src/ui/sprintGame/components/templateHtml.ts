@@ -61,14 +61,17 @@ export class TemplateHtml {
       const square = this.createElement('square-choose-level-sprint-game', wrapperSquareChooseLevelSprintGame, 'div');
       square.textContent = i.toString();
     }
+    this.loader(wrapperSprintGame);
   }
 
   createTableWithResults(wrapperSprintGame:HTMLElement): void {
     const wrapperResultListSprintGame = this.createElement('wrapper-result-sprint-game', wrapperSprintGame, 'div');
     const wrapperTable = this.createElement('wrapper-table', wrapperResultListSprintGame, 'div');
+    const wrapperHeaderResultTable = this.createElement('wrapper-header-table', wrapperTable, 'div');
+    this.createElement('best-continuous-series', wrapperHeaderResultTable, 'div');
+    this.createElement('score-for-result', wrapperHeaderResultTable, 'div');
     const result = this.createElement('text-result', wrapperTable, 'div');
     result.textContent = 'Результаты';
-    console.log(itemsSprintGameData);
     if (!resultAnswer.length) {
       resultAnswer.push(0);
     }
@@ -95,5 +98,9 @@ export class TemplateHtml {
     } else {
       answer.style.backgroundImage = 'url(../assets/svg/rightAnswer.svg)';
     }
+  }
+
+  loader(wrapperTable: HTMLElement) {
+    this.createElement('loader', wrapperTable, 'div');
   }
 }

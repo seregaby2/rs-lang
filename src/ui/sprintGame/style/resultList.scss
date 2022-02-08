@@ -30,24 +30,21 @@
 
 .text-result {
   font-size: 36px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .wrapper-row:nth-child(2n) {
   background-color: aqua;
   border-right: 3px solid white;
   border-left: 3px solid white;
+  border-top: 3px solid white;
 }
 
 .wrapper-row:nth-child(2n+1) {
   background-color: #51cbcb;
   border-right: 3px solid white;
   border-left: 3px solid white;
-}
-
-.wrapper-row:nth-child(2) {
   border-top: 3px solid white;
-  margin-top: 10px;
 }
 
 .wrapper-row:last-child {
@@ -96,4 +93,14 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #a8bbbf;
+}
+
+.wrapper-header-table {
+  display: flex;
+  justify-content: space-between;
+}
+
+.score-for-result,
+.best-continuous-series {
+  font-size: 24px;
 }

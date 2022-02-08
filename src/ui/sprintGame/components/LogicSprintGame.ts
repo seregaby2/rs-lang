@@ -25,6 +25,12 @@ export class LogicSprintGame {
 
   continuousSeries: number = 0;
 
+  private maxResultAnswerArray: number = 59;
+
+  private maxCountProgressAnswer: number = 60;
+
+  private bestContinuousSeries: number = 0;
+
   constructor() {
     this.myInterval = null;
     this.time = 60;
@@ -55,6 +61,10 @@ export class LogicSprintGame {
   }
 
   async createArrayEnglishAndRussianWords(group:number): Promise<void> {
+    const loader = document.querySelector('.loader') as HTMLDListElement;
+    const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
+    loader.classList.add('show-loader');
+    wrapperChooseLevelPage.classList.add('disabled-wrapper');
     const promiseArray = [];
     promiseArray.push(this.getWords(group));
     promiseArray.push(this.getWords(group));
@@ -65,6 +75,8 @@ export class LogicSprintGame {
     for (let j = 0; j < itemsSprintGameData.length; j += 1) {
       this.arrayEnglishWord.push(itemsSprintGameData[j].word || '');
     }
+    loader.classList.remove('show-loader');
+    wrapperChooseLevelPage.classList.remove('disabled-wrapper');
   }
 
   private writeEnglishAndRussianWord(RussianWord:string, EnglishWord:string): void {
@@ -75,7 +87,7 @@ export class LogicSprintGame {
 
   getAnswer(count:number): void {
     const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
-    if (this.countProgressAnswer >= 60) {
+    if (this.countProgressAnswer >= this.maxCountProgressAnswer) {
       this.countProgressAnswer = 0;
       resultAnswer = [];
       this.score = 0;
@@ -116,6 +128,10 @@ export class LogicSprintGame {
       this.countProgressAnswer += 1;
       count = getRandomNumber(1, 0);
       this.getAnswer(count);
+      console.log(this.bestContinuousSeries, 'wrong', this.continuousSeries);
+      if (this.bestContinuousSeries < this.continuousSeries) {
+        this.bestContinuousSeries = this.continuousSeries;
+      }
     });
 
     buttonWrongRight[1].addEventListener('click', async () => {
@@ -133,17 +149,23 @@ export class LogicSprintGame {
       this.countProgressAnswer += 1;
       count = getRandomNumber(1, 0);
       this.getAnswer(count);
+      console.log(this.bestContinuousSeries, 'rigth', this.continuousSeries);
+      if (this.bestContinuousSeries <= this.continuousSeries) {
+        this.bestContinuousSeries = this.continuousSeries;
+      }
     });
   }
 
   async drawSprintGame(): Promise<void> {
     const main = document.querySelector('.main') as HTMLDivElement;
+    this.resetTimer();
     main.innerHTML = '';
     const templateSprintGame = new TemplateHtml();
     templateSprintGame.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
     squareChooseLevel.forEach((e, i) => {
       e.addEventListener('click', async () => {
+        this.bestContinuousSeries = 0;
         await this.createArrayEnglishAndRussianWords(i);
         main.innerHTML = '';
         templateSprintGame.createTemplateCardGame(main);
@@ -173,10 +195,20 @@ export class LogicSprintGame {
       clearInterval(this.myInterval);
       main.innerHTML = '';
       this.template.createTableWithResults(main);
+      const score = document.querySelector('.score-for-result') as HTMLDListElement;
+      const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
+      score.textContent = `Счет: ${this.score}/600`;
+      continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
       resultAnswer = [];
       this.time = 60;
     }
   }
+
+  resetAtClick = () => {
+    if (resultAnswer.length === this.maxResultAnswerArray && this.myInterval) {
+      this.resetTimer();
+    }
+  };
 
   timer(): void {
     const timer = document.querySelector('.item-header-card-sprint-game') as HTMLDivElement;
@@ -193,19 +225,12 @@ export class LogicSprintGame {
       clearInterval(this.myInterval);
       main.innerHTML = '';
       this.template.createTableWithResults(main);
+      this.resetTimer();
     }
-    buttonWrongRight[0].addEventListener('click', () => {
-      console.log(resultAnswer.length, 'wrong', this.myInterval);
-      if (resultAnswer.length === 59 && this.myInterval) {
-        this.resetTimer();
-      }
-    });
-    buttonWrongRight[1].addEventListener('click', () => {
-      console.log(resultAnswer.length, 'right');
-      if (resultAnswer.length === 59 && this.myInterval) {
-        this.resetTimer();
-      }
-    });
+    buttonWrongRight[0].removeEventListener('click', this.resetAtClick);
+    buttonWrongRight[1].removeEventListener('click', this.resetAtClick);
+    buttonWrongRight[0].addEventListener('click', this.resetAtClick);
+    buttonWrongRight[1].addEventListener('click', this.resetAtClick);
   }
 
   addTimer(): void {
