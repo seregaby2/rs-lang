@@ -1,31 +1,40 @@
+import { AudioGameResultCard } from './audioGameResultCard';
 import { SprintController } from '../../sprintGame/components/controller';
 import { IWordsData } from '../../sprintGame/components/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
-
+type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
 export class AudioGamePage {
   private pageContainer;
 
   private activeWordIndex = 0;
 
-  private helpers;
-
   private totalPage = 30;
 
+  private totalWord = 20;
+
   private activeGroup = 0;
+
+  private url = 'https://rs-lang-2022.herokuapp.com/';
+
+  public correctAnswer: ResultType[] = [];
+
+  public incorrectAnswer: ResultType[] = [];
 
   private words: IWordsData[] = [];
 
   private requestWords = 'words';
 
-  private url = 'https://rs-lang-2022.herokuapp.com/';
-
   private controller = new SprintController();
 
+  private helpers = new HelpersAudioGame();
+
+  private resultCard: AudioGameResultCard;
+
   constructor() {
+    this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
-    this.helpers = new HelpersAudioGame();
   }
 
   public draw(): void {
@@ -41,18 +50,30 @@ export class AudioGamePage {
     this.startGame();
   }
 
+  private startNewGame(): void {
+    this.resetGame();
+    const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
+    this.controller
+      .getWords(this.requestWords, this.activeGroup, pageNumber)
+      .then((data) => {
+        this.words = this.helpers.shuffleArray(data);
+        this.activeWordIndex = 0;
+        this.drawGameCard();
+      });
+  }
+
   private startGame(): void {
     const buttonStart = this.pageContainer.querySelector('.button-start-audio-game') as HTMLButtonElement;
     buttonStart.addEventListener('click', () => {
-      const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
-      this.controller
-        .getWords(this.requestWords, this.activeGroup, pageNumber)
-        .then((data) => {
-          this.words = this.helpers.shuffleArray(data);
-          this.activeWordIndex = 0;
-          this.drawGameCard();
-        });
+      this.startNewGame();
     });
+  }
+
+  private resetGame(): void {
+    this.correctAnswer = [];
+    this.incorrectAnswer = [];
+    this.words = [];
+    this.activeWordIndex = 0;
   }
 
   private setGameCardListener(): void {
@@ -68,13 +89,18 @@ export class AudioGamePage {
 
         if (isCorrect) {
           target.classList.add('correct');
+          this.correctAnswer.push(this.words[this.activeWordIndex]);
         } else {
           target.classList.add('incorrect');
+          this.incorrectAnswer.push(this.words[this.activeWordIndex]);
           const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
           correctButton.classList.add('correct');
         }
-
         this.createAnswer();
+      }
+      if (this.correctAnswer.length
+         + this.incorrectAnswer.length === this.totalWord) {
+        this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
       }
     });
   }
@@ -107,7 +133,7 @@ export class AudioGamePage {
     buttonAnswer?.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isSelectedButtonAnswer = target.classList.contains('button-answer-audio-game');
-
+      this.incorrectAnswer.push(this.words[this.activeWordIndex]);
       if (isSelectedButtonAnswer) {
         buttonAnswer.style.display = 'none';
         buttonNext.style.display = 'inline-block';
@@ -237,7 +263,7 @@ export class AudioGamePage {
   }
 
   private setListenerLevelButtons(): void {
-    const container = document.querySelector('.container-buttons-level-audio-game') as HTMLElement;
+    const container = this.pageContainer.querySelector('.container-buttons-level-audio-game') as HTMLElement;
     container.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isClickedButton = target.classList.contains('button-level-audio-game');

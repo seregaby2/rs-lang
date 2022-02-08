@@ -1,0 +1,66 @@
+.container-result-info-audio-game {
+  border: 1px solid #B3B3B3;
+  margin: 0 auto 1rem;
+  padding: 30px 50px;
+  overflow: auto;
+  max-width: 600px;
+  max-height: 400px;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.correct-answer-title {
+  color: #33FF33;
+  text-transform: uppercase;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.incorrect-answer-title {
+  color: #FF0000;
+  text-transform: uppercase;
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.volume-correct-answer,
+.volume-incorrect-answer {
+  background-image: url("../assets/images/volume.png");
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-size: cover;
+  padding: 0;
+  margin: 0 0 5px 0;
+  align-self: center;
+  margin-right: 10px;
+}
+
+.incorrect-answer,
+.correct-answer {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-title-result-card {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.incorrect-answer-word,
+.correct-answer-word {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.incorrect-answer-translate,
+.correct-answer-translate {
+  font-size: 18px;
+}
+
+.correct-answer-list {
+  border-bottom: solid 1px #B3B3B3;
+}
