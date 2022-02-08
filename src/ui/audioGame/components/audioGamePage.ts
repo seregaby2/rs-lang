@@ -33,7 +33,7 @@ export class AudioGamePage {
   private resultCard: AudioGameResultCard;
 
   constructor() {
-    this.resultCard = new AudioGameResultCard(() => this.startGame());
+    this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
   }
 
@@ -50,18 +50,30 @@ export class AudioGamePage {
     this.startGame();
   }
 
+  private startNewGame(): void {
+    this.resetGame();
+    const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
+    this.controller
+      .getWords(this.requestWords, this.activeGroup, pageNumber)
+      .then((data) => {
+        this.words = this.helpers.shuffleArray(data);
+        this.activeWordIndex = 0;
+        this.drawGameCard();
+      });
+  }
+
   private startGame(): void {
     const buttonStart = this.pageContainer.querySelector('.button-start-audio-game') as HTMLButtonElement;
     buttonStart.addEventListener('click', () => {
-      const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
-      this.controller
-        .getWords(this.requestWords, this.activeGroup, pageNumber)
-        .then((data) => {
-          this.words = this.helpers.shuffleArray(data);
-          this.activeWordIndex = 0;
-          this.drawGameCard();
-        });
+      this.startNewGame();
     });
+  }
+
+  private resetGame(): void {
+    this.correctAnswer = [];
+    this.incorrectAnswer = [];
+    this.words = [];
+    this.activeWordIndex = 0;
   }
 
   private setGameCardListener(): void {

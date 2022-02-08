@@ -144,7 +144,7 @@ export class AudioGameResultCard {
   }
 
   private setListenerButtonPlayAgain(): void {
-    const button = this.pageContainer.querySelector('.button-audio-game button-play-again');
+    const button = this.pageContainer.querySelector('.button-play-again-audio-game');
     button?.addEventListener('click', () => {
       this.audioGameCallback();
     });
@@ -157,14 +157,7 @@ export class AudioGameResultCard {
       const isSelectedIncorrect = target.classList.contains('volume-incorrect-answer');
       const isSelectedCorrect = target.classList.contains('volume-correct-answer');
 
-      if (isSelectedIncorrect) {
-        const path = target.dataset.src;
-        const audio = new Audio();
-        audio.src = this.url + path;
-        audio.play();
-      }
-
-      if (isSelectedCorrect) {
+      if (isSelectedIncorrect || isSelectedCorrect) {
         const path = target.dataset.src;
         const audio = new Audio();
         audio.src = this.url + path;
