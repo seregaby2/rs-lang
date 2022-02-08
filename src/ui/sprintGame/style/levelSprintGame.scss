@@ -88,3 +88,8 @@
   text-align: center;
   margin-bottom: 20px;
 }
+
+.disabled-wrapper {
+  pointer-events: none;
+  opacity: 0.4;
+}
