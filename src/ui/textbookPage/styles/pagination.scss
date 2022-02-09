@@ -1,0 +1,14 @@
+.textbook-pagination {
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .btn {
+    width: 40px;
+  }
+}
+
+.btn.active {
+  background: #E9692C;
+}

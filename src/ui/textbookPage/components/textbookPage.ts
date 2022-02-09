@@ -1,10 +1,15 @@
 import { SprintController } from '../../sprintGame/components';
 import { TextBookCard } from './textBookCard';
+import { Pagination } from '../pagination';
 
 export class TextbookPage {
   private controller: SprintController = new SprintController();
 
   private textbookCard: TextBookCard = new TextBookCard();
+
+  private pagination: Pagination = new Pagination(30);
+
+  private currentGroup: number = 0;
 
   public drawTextbookPage() {
     const main = document.querySelector('.main') as HTMLElement;
@@ -16,10 +21,23 @@ export class TextbookPage {
     const textbookCardsContainer = document.createElement('div') as HTMLDivElement;
     textbookCardsContainer.classList.add('textbook-cards-container');
 
+    const pagination = document.createElement('div') as HTMLElement;
+    pagination.classList.add('pagination');
+
+    const paginationTextbook = document.createElement('div') as HTMLElement;
+    paginationTextbook.classList.add('textbook-pagination');
+
+    paginationTextbook.append(pagination);
+
     textbookContainer.append(this.createTextbookHeader());
+    textbookContainer.append(paginationTextbook);
     textbookContainer.append(textbookCardsContainer);
+
     main.append(textbookContainer);
-    this.loadPagesInfo();
+    this.loadInfo(1);
+    this.pagination.createPaginationButtons(30);
+    this.changeGroups();
+    this.changePages();
   }
 
   private createTextbookHeader(): HTMLElement {
@@ -57,35 +75,49 @@ export class TextbookPage {
     return gamesContainer;
   }
 
-  private loadPagesInfo(): void {
-    const pagesBtns = document.querySelectorAll('.textbook-page-btn') as NodeListOf<HTMLButtonElement>;
-    pagesBtns.forEach((btn) => btn.addEventListener('click', () => {
-      let group;
+  private loadInfo(page: number): void {
+    this.clearCardsContainer();
+    this.controller.getWords('words', this.currentGroup, page)
+      .then((words) => {
+        words.forEach((word) => {
+          if (word) {
+            const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
+            cardsContainer.append(this.textbookCard.createWordCard(
+              word.image,
+              word.word,
+              word.transcription,
+              word.wordTranslate,
+              word.textMeaning,
+              word.textMeaningTranslate,
+              word.textExample,
+              word.textExampleTranslate,
+            ));
+          }
+        });
+      });
+  }
 
-      if (btn.dataset.textbook) {
-        group = parseInt(btn.dataset.textbook, 10) - 1;
+  private changeGroups(): void {
+    const groupsBtns = document.querySelectorAll('.textbook-page-btn') as NodeListOf<HTMLButtonElement>;
+    groupsBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.textbook) {
+          this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
+          this.loadInfo(1);
+        }
+      });
+    });
+  }
 
-        this.clearCardsContainer();
-        this.controller.getWords('words', group, 1)
-          .then((words) => {
-            words.forEach((word) => {
-              if (word) {
-                const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
-                cardsContainer.append(this.textbookCard.createWordCard(
-                  word.image,
-                  word.word,
-                  word.transcription,
-                  word.wordTranslate,
-                  word.textMeaning,
-                  word.textMeaningTranslate,
-                  word.textExample,
-                  word.textExampleTranslate,
-                ));
-              }
-            });
-          });
-      }
-    }));
+  private changePages(): void {
+    const paginationBtns = document.querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
+    paginationBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const page = parseInt(btn.innerHTML, 10) - 1;
+        this.loadInfo(page);
+        this.changePages();
+      });
+    });
   }
 
   private clearCardsContainer(): void {
