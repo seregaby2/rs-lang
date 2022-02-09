@@ -2,6 +2,7 @@ import { AudioGamePage } from '../../audioGame/components/audioGamePage';
 import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
 import { LogicSprintGame } from '../../sprintGame/components';
+import { TextbookPage } from '../../textbookPage/components/textbookPage';
 
 enum CurrentPage {
   Team = 'team',
@@ -13,6 +14,7 @@ enum CurrentPage {
   Book = 'book',
   Overview = 'overview',
 }
+
 export class Router {
   private homePage: HomePage = new HomePage();
 
@@ -22,11 +24,14 @@ export class Router {
 
   private audioGame: AudioGamePage = new AudioGamePage();
 
+  private textbookPage: TextbookPage = new TextbookPage();
+
   public drawCurrentPage(): void {
     const currentHash = window.location.hash;
 
     switch (currentHash) {
       case `#/${CurrentPage.Book}`:
+        this.textbookPage.drawTextbookPage();
         break;
       case `#/${CurrentPage.Vocabulary}`:
         break;
@@ -50,7 +55,7 @@ export class Router {
   }
 
   public changePages(): void {
-    const menuAside = document.querySelector('.menu-aside') as HTMLElement;
+    const menuAside = document.querySelector('.wrapper') as HTMLElement;
     const headerLogo = document.querySelector('.header-logo') as HTMLElement;
 
     headerLogo.addEventListener('click', () => {
@@ -70,6 +75,8 @@ export class Router {
 
       switch (pageBtn.dataset.route) {
         case CurrentPage.Book:
+          this.textbookPage.drawTextbookPage();
+          this.changeTextbookGroups();
           break;
         case CurrentPage.Vocabulary:
           break;
@@ -93,11 +100,22 @@ export class Router {
     });
   }
 
-  private changeRoutes(pathname: string): void {
+  public changeRoutes(pathname: string): void {
     window.history.pushState(
       {},
       pathname,
       window.location.origin + pathname,
     );
+  }
+
+  public changeTextbookGroups(): void {
+    const pagesBtns = document.querySelectorAll('.textbook-page-btn') as NodeListOf<HTMLButtonElement>;
+    pagesBtns.forEach((btn) => btn.addEventListener('click', () => {
+      if (btn.dataset.textbook) {
+        const group = btn.dataset.textbook;
+        const path = `/#/book/group${group}`;
+        this.changeRoutes(path);
+      }
+    }));
   }
 }
