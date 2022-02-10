@@ -15,8 +15,11 @@ export class AudioGameResultCard {
   }
 
   public createResultGameCard(correctWords: IWordsData[], incorrectWords: IWordsData[]): void {
+    const bg = this.pageContainer.querySelector('.main-wrapper-audio-game-page') as HTMLDivElement;
+    bg.style.boxShadow = 'inset 0 0 0 2000px rgb(41 45 52 / 80%)';
     const mainContainer = this.pageContainer.querySelector('.main-wrapper-audio-game') as HTMLElement;
     mainContainer.innerHTML = '';
+
     const mainTitle = document.createElement('h2') as HTMLElement;
     const container = document.createElement('div') as HTMLDivElement;
     const containerCorrectAnswer = document.createElement('div') as HTMLDivElement;

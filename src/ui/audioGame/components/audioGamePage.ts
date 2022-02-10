@@ -1,3 +1,4 @@
+import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
 import { SprintController } from '../../sprintGame/components/controller';
 import { IWordsData } from '../../sprintGame/components/model';
@@ -32,6 +33,8 @@ export class AudioGamePage {
 
   private resultCard: AudioGameResultCard;
 
+  private soundGame = new AudioGameSound();
+
   constructor() {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
@@ -59,6 +62,7 @@ export class AudioGamePage {
         this.words = this.helpers.shuffleArray(data);
         this.activeWordIndex = 0;
         this.drawGameCard();
+        this.soundGame.createSoundButton();
       });
   }
 
@@ -90,11 +94,13 @@ export class AudioGamePage {
         if (isCorrect) {
           target.classList.add('correct');
           this.correctAnswer.push(this.words[this.activeWordIndex]);
+          this.soundGame.playSoundCorrectAnswer();
         } else {
           target.classList.add('incorrect');
           this.incorrectAnswer.push(this.words[this.activeWordIndex]);
           const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
           correctButton.classList.add('correct');
+          this.soundGame.playSoundIncorrectAnswer();
         }
         this.createAnswer();
       }
@@ -137,6 +143,7 @@ export class AudioGamePage {
       if (isSelectedButtonAnswer) {
         buttonAnswer.style.display = 'none';
         buttonNext.style.display = 'inline-block';
+        this.soundGame.playSoundIncorrectAnswer();
         this.createAnswer();
       }
     });
