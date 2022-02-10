@@ -1,5 +1,5 @@
 export class Pagination {
-  private totalPages: number;
+  private readonly totalPages: number;
 
   constructor(totalPages: number) {
     this.totalPages = totalPages;

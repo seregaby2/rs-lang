@@ -160,6 +160,22 @@ export class TextbookPage {
 
     const prevBtn = document.querySelector('.prev') as HTMLElement;
     prevBtn.addEventListener('click', () => {
+      if (localStorage.getItem('currPage')) {
+        const currPage = parseInt(localStorage.getItem('currPage')!, 10) - 1;
+        this.currentPage = currPage;
+        this.pagination.setToLocalStorage('currPage', currPage);
+      }
+      this.loadInfo();
+      this.changePages();
+    });
+
+    const nextBtn = document.querySelector('.next') as HTMLElement;
+    nextBtn.addEventListener('click', () => {
+      if (localStorage.getItem('currPage')) {
+        const currPage = parseInt(localStorage.getItem('currPage')!, 10) + 1;
+        this.currentPage = currPage;
+        this.pagination.setToLocalStorage('currPage', currPage);
+      }
       this.loadInfo();
       this.changePages();
     });
