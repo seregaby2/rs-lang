@@ -23,7 +23,7 @@ export class Pagination {
       pagBtn += '<button class="btn prev textbook-pag-btn"> 1 </button>';
 
       if (currentPageBtn > 3) {
-        pagBtn += '<button class="btn prev"> ... </button>';
+        pagBtn += '<button class="btn dots"> ... </button>';
       }
     }
 
@@ -56,7 +56,7 @@ export class Pagination {
 
     if (currentPageBtn < this.totalPages - 1) {
       if (currentPageBtn < this.totalPages - 2) {
-        pagBtn += '<button class="btn prev"> ... </button>';
+        pagBtn += '<button class="btn dots"> ... </button>';
       }
       pagBtn += `<button class="btn prev textbook-pag-btn"> ${this.totalPages} </button>`;
     }
@@ -78,9 +78,9 @@ export class Pagination {
 
     pagContainer.querySelectorAll('.textbook-pag-btn')?.forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const em = e.target as HTMLElement;
-        this.createPaginationButtons(parseInt(em.innerHTML, 10));
-        this.setToLocalStorage('currPage', parseInt(em.innerHTML, 10));
+        const page = e.target as HTMLElement;
+        this.createPaginationButtons(parseInt(page.innerHTML, 10));
+        this.setToLocalStorage('currPage', parseInt(page.innerHTML, 10));
       });
     });
     return pagContainer;

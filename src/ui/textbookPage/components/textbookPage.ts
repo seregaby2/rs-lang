@@ -100,10 +100,9 @@ export class TextbookPage {
   }
 
   private loadInfo(): void {
-    this.clearCardsContainer();
-
     this.controller.getWords('words', this.currentGroup, this.currentPage)
       .then((words) => {
+        this.clearCardsContainer();
         words.forEach((word) => {
           if (word) {
             const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
