@@ -49,6 +49,10 @@
   gap: 10px;
 }
 
+.textbook-page-btn.active {
+  color: #33FF33;
+}
+
 [data-textbook="1"] {
   color: $accent-color;
 }

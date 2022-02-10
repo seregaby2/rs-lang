@@ -40,6 +40,9 @@ export class Pagination {
     }
 
     for (let pageLength = beforePages; pageLength <= afterPages; pageLength += 1) {
+      if (pageLength > this.totalPages) {
+        continue;
+      }
       if (pageLength === 0) {
         pageLength += 1;
       }

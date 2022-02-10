@@ -80,7 +80,7 @@ export class TextbookPage {
     let pages = '';
     for (let i = 1; i <= numberOfPages; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
-                  <i class="far fa-bookmark"></i>
+                  <i class="fas fa-bookmark"></i>
                   <div class="textbook-page-num">${i}</div>
                 </div>`;
     }
@@ -127,9 +127,14 @@ export class TextbookPage {
 
     groupsBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
+        groupsBtns.forEach((item) => {
+          item.classList.remove('active');
+        });
+
         if (btn.dataset.textbook) {
           this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
           this.currentPage = 0;
+          btn.classList.add('active');
 
           this.pagination.createPaginationButtons(1);
           this.pagination.setToLocalStorage('currPage', 0);
@@ -149,7 +154,6 @@ export class TextbookPage {
     paginationBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         page = parseInt(btn.innerHTML, 10) - 1;
-
         this.currentPage = page;
         this.pagination.setToLocalStorage('currPage', page);
 
@@ -161,24 +165,34 @@ export class TextbookPage {
     const prevBtn = document.querySelector('.prev') as HTMLElement;
     prevBtn.addEventListener('click', () => {
       if (localStorage.getItem('currPage')) {
-        const currPage = parseInt(localStorage.getItem('currPage')!, 10) - 1;
-        this.currentPage = currPage;
-        this.pagination.setToLocalStorage('currPage', currPage);
+        const pageLocalS = localStorage.getItem('currPage');
+        if (pageLocalS) {
+          const currPage = parseInt(pageLocalS, 10) - 1;
+          this.currentPage = currPage;
+          this.pagination.setToLocalStorage('currPage', currPage);
+        }
       }
       this.loadInfo();
       this.changePages();
     });
 
     const nextBtn = document.querySelector('.next') as HTMLElement;
-    nextBtn.addEventListener('click', () => {
-      if (localStorage.getItem('currPage')) {
-        const currPage = parseInt(localStorage.getItem('currPage')!, 10) + 1;
-        this.currentPage = currPage;
-        this.pagination.setToLocalStorage('currPage', currPage);
-      }
-      this.loadInfo();
-      this.changePages();
-    });
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (localStorage.getItem('currPage')) {
+          if (localStorage.getItem('currPage')) {
+            const pageLocalS = localStorage.getItem('currPage');
+            if (pageLocalS) {
+              const currPage = parseInt(pageLocalS, 10) - 1;
+              this.currentPage = currPage;
+              this.pagination.setToLocalStorage('currPage', currPage);
+            }
+          }
+        }
+        this.loadInfo();
+        this.changePages();
+      });
+    }
   }
 
   private clearCardsContainer(): void {
