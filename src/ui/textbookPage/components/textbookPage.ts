@@ -51,10 +51,16 @@ export class TextbookPage {
 
   private checkCurrGroupAndPage(): void {
     if (localStorage.getItem('currGroup')) {
-      this.currentGroup = parseInt(localStorage.getItem('currGroup')!, 10);
+      const group = localStorage.getItem('currGroup');
+      if (group) {
+        this.currentGroup = parseInt(group, 10);
+      }
     }
     if (localStorage.getItem('currPage')) {
-      this.currentPage = parseInt(localStorage.getItem('currPage')!, 10);
+      const page = localStorage.getItem('currPage');
+      if (page) {
+        this.currentPage = parseInt(page, 10);
+      }
     }
   }
 
@@ -94,8 +100,8 @@ export class TextbookPage {
   }
 
   private loadInfo(): void {
-    console.log(this.currentPage);
     this.clearCardsContainer();
+
     this.controller.getWords('words', this.currentGroup, this.currentPage)
       .then((words) => {
         words.forEach((word) => {
