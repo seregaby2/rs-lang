@@ -3,7 +3,7 @@ import { IWordsData } from './model';
 export class SprintController {
   url = 'https://rs-lang-2022.herokuapp.com';
 
-  async getWords(item:string, group:number, page:number): Promise<IWordsData[]> {
+  async getWords(item:string, group:number, page:number = 1): Promise<IWordsData[]> {
     const urlWords = `${this.url}/${item}?group=${group}&page=${page}`;
     const res = await fetch(urlWords);
     const words:IWordsData[] = await res.json();
