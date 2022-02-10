@@ -1,4 +1,4 @@
-import { AudioGamePlaySound } from './audioGamePlaySound';
+import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
 import { SprintController } from '../../sprintGame/components/controller';
 import { IWordsData } from '../../sprintGame/components/model';
@@ -33,7 +33,7 @@ export class AudioGamePage {
 
   private resultCard: AudioGameResultCard;
 
-  private soundGame = new AudioGamePlaySound();
+  private soundGame = new AudioGameSound();
 
   constructor() {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
@@ -62,6 +62,7 @@ export class AudioGamePage {
         this.words = this.helpers.shuffleArray(data);
         this.activeWordIndex = 0;
         this.drawGameCard();
+        this.soundGame.createSoundButton();
       });
   }
 
