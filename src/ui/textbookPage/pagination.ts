@@ -6,36 +6,36 @@ export class Pagination {
   }
 
   public createPaginationButtons(
-    currentPage: number,
+    currentPageBtn: number,
   ): HTMLElement {
     const pagContainer = document.querySelector('.pagination') as HTMLElement;
 
     let pagBtn = '';
     let activeBtn;
-    let beforePages = currentPage - 1;
-    let afterPages = currentPage + 1;
+    let beforePages = currentPageBtn - 1;
+    let afterPages = currentPageBtn + 1;
 
-    if (currentPage > 1) {
+    if (currentPageBtn > 1) {
       pagBtn += '<button class="btn prev"> < </button>';
     }
 
-    if (currentPage > 2) {
+    if (currentPageBtn > 2) {
       pagBtn += '<button class="btn prev textbook-pag-btn"> 1 </button>';
 
-      if (currentPage > 3) {
+      if (currentPageBtn > 3) {
         pagBtn += '<button class="btn prev"> ... </button>';
       }
     }
 
-    if (currentPage === this.totalPages) {
+    if (currentPageBtn === this.totalPages) {
       beforePages -= 2;
-    } else if (currentPage === this.totalPages - 1) {
+    } else if (currentPageBtn === this.totalPages - 1) {
       beforePages -= 1;
     }
 
-    if (currentPage === 1) {
+    if (currentPageBtn === 1) {
       afterPages += 2;
-    } else if (currentPage === 2) {
+    } else if (currentPageBtn === 2) {
       afterPages += 1;
     }
 
@@ -43,7 +43,7 @@ export class Pagination {
       if (pageLength === 0) {
         pageLength += 1;
       }
-      if (currentPage === pageLength) {
+      if (currentPageBtn === pageLength) {
         activeBtn = 'active';
       } else {
         activeBtn = '';
@@ -51,32 +51,39 @@ export class Pagination {
       pagBtn += `<button class="btn textbook-pag-btn ${activeBtn}">${pageLength}</button>`;
     }
 
-    if (currentPage < this.totalPages - 1) {
-      if (currentPage < this.totalPages - 2) {
+    if (currentPageBtn < this.totalPages - 1) {
+      if (currentPageBtn < this.totalPages - 2) {
         pagBtn += '<button class="btn prev"> ... </button>';
       }
       pagBtn += `<button class="btn prev textbook-pag-btn"> ${this.totalPages} </button>`;
     }
 
-    if (currentPage < this.totalPages) {
+    if (currentPageBtn < this.totalPages) {
       pagBtn += '<button class="btn next"> > </button>';
     }
 
     pagContainer.innerHTML = pagBtn;
     pagContainer.querySelector('.prev')?.addEventListener('click', () => {
-      this.createPaginationButtons(currentPage - 1);
+      this.createPaginationButtons(currentPageBtn - 1);
+      this.setToLocalStorage('currPage', currentPageBtn - 1);
     });
 
     pagContainer.querySelector('.next')?.addEventListener('click', () => {
-      this.createPaginationButtons(currentPage + 1);
+      this.createPaginationButtons(currentPageBtn + 1);
+      this.setToLocalStorage('currPage', currentPageBtn + 1);
     });
 
     pagContainer.querySelectorAll('.textbook-pag-btn')?.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const em = e.target as HTMLElement;
         this.createPaginationButtons(parseInt(em.innerHTML, 10));
+        this.setToLocalStorage('currPage', parseInt(em.innerHTML, 10));
       });
     });
     return pagContainer;
+  }
+
+  public setToLocalStorage(itemName: string, itemValue: number): void {
+    localStorage.setItem(itemName, `${itemValue}`);
   }
 }

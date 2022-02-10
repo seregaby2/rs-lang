@@ -76,7 +76,6 @@ export class Router {
       switch (pageBtn.dataset.route) {
         case CurrentPage.Book:
           this.textbookPage.drawTextbookPage();
-          this.changeTextbookGroups();
           break;
         case CurrentPage.Vocabulary:
           break;
@@ -106,16 +105,5 @@ export class Router {
       pathname,
       window.location.origin + pathname,
     );
-  }
-
-  public changeTextbookGroups(): void {
-    const pagesBtns = document.querySelectorAll('.textbook-page-btn') as NodeListOf<HTMLButtonElement>;
-    pagesBtns.forEach((btn) => btn.addEventListener('click', () => {
-      if (btn.dataset.textbook) {
-        const group = btn.dataset.textbook;
-        const path = `/#/book/group${group}`;
-        this.changeRoutes(path);
-      }
-    }));
   }
 }

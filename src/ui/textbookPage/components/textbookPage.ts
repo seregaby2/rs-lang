@@ -11,9 +11,14 @@ export class TextbookPage {
 
   private currentGroup: number = 0;
 
+  private currentPage: number = 0;
+
   public drawTextbookPage() {
     const main = document.querySelector('.main') as HTMLElement;
     main.innerHTML = '';
+
+    const textbook = document.createElement('div') as HTMLElement;
+    textbook.classList.add('textbook');
 
     const textbookContainer = document.createElement('div') as HTMLDivElement;
     textbookContainer.classList.add('textbook-container');
@@ -33,11 +38,24 @@ export class TextbookPage {
     textbookContainer.append(paginationTextbook);
     textbookContainer.append(textbookCardsContainer);
 
-    main.append(textbookContainer);
-    this.loadInfo(1);
-    this.pagination.createPaginationButtons(30);
+    textbook.append(textbookContainer);
+    main.append(textbook);
+
+    this.checkCurrGroupAndPage();
+    this.pagination.createPaginationButtons(this.currentPage + 1);
+    this.loadInfo();
+
     this.changeGroups();
     this.changePages();
+  }
+
+  private checkCurrGroupAndPage(): void {
+    if (localStorage.getItem('currGroup')) {
+      this.currentGroup = parseInt(localStorage.getItem('currGroup')!, 10);
+    }
+    if (localStorage.getItem('currPage')) {
+      this.currentPage = parseInt(localStorage.getItem('currPage')!, 10);
+    }
   }
 
   private createTextbookHeader(): HTMLElement {
@@ -56,8 +74,8 @@ export class TextbookPage {
     let pages = '';
     for (let i = 1; i <= numberOfPages; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
-        <i class="far fa-bookmark"></i>
-        <div class="textbook-page-num">${i}</div>
+                  <i class="far fa-bookmark"></i>
+                  <div class="textbook-page-num">${i}</div>
                 </div>`;
     }
 
@@ -75,9 +93,10 @@ export class TextbookPage {
     return gamesContainer;
   }
 
-  private loadInfo(page: number): void {
+  private loadInfo(): void {
+    console.log(this.currentPage);
     this.clearCardsContainer();
-    this.controller.getWords('words', this.currentGroup, page)
+    this.controller.getWords('words', this.currentGroup, this.currentPage)
       .then((words) => {
         words.forEach((word) => {
           if (word) {
@@ -99,11 +118,19 @@ export class TextbookPage {
 
   private changeGroups(): void {
     const groupsBtns = document.querySelectorAll('.textbook-page-btn') as NodeListOf<HTMLButtonElement>;
+
     groupsBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         if (btn.dataset.textbook) {
           this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
-          this.loadInfo(1);
+          this.currentPage = 0;
+
+          this.pagination.createPaginationButtons(1);
+          this.pagination.setToLocalStorage('currPage', 0);
+          this.pagination.setToLocalStorage('currGroup', this.currentGroup);
+
+          this.loadInfo();
+          this.changePages();
         }
       });
     });
@@ -111,12 +138,24 @@ export class TextbookPage {
 
   private changePages(): void {
     const paginationBtns = document.querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
+    let page: number;
+
     paginationBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const page = parseInt(btn.innerHTML, 10) - 1;
-        this.loadInfo(page);
+        page = parseInt(btn.innerHTML, 10) - 1;
+
+        this.currentPage = page;
+        this.pagination.setToLocalStorage('currPage', page);
+
+        this.loadInfo();
         this.changePages();
       });
+    });
+
+    const prevBtn = document.querySelector('.prev') as HTMLElement;
+    prevBtn.addEventListener('click', () => {
+      this.loadInfo();
+      this.changePages();
     });
   }
 
