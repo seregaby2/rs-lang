@@ -4,7 +4,6 @@ import { SprintController } from './controller';
 import { getRandomNumber, shuffle } from './HelpFunction';
 import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
-// import { TimerSprintGame } from './timer';
 
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
@@ -27,11 +26,13 @@ export class LogicSprintGame {
 
   private resultAnswer: number[] = [];
 
-  private maxResultAnswerArray: number = 59;
+  private isKeyboardRepeat: boolean = true;
 
   private maxCountProgressAnswer: number = 60;
 
   private bestContinuousSeries: number = 0;
+
+  private count: number = 0;
 
   constructor() {
     this.myInterval = null;
@@ -90,24 +91,28 @@ export class LogicSprintGame {
   getAnswer(count:number): void {
     const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (this.countProgressAnswer >= this.maxCountProgressAnswer) {
-      this.countProgressAnswer = 0;
-      this.resultAnswer = [];
-      this.score = 0;
-      this.continuousSeries = 0;
+      this.resetTimer();
+    } else {
+      itemHeader[2].textContent = `Счет: ${(this.score).toString()}`;
+      itemHeader[1].textContent = `Непрерывная серия: ${this.continuousSeries}`;
+      this.writeEnglishAndRussianWord(
+        this.arrayRussianWords[this.countProgressAnswer][count],
+        this.arrayEnglishWord[this.countProgressAnswer],
+      );
     }
-    itemHeader[2].textContent = `Score: ${(this.score).toString()}`;
-    itemHeader[1].textContent = `Continuous series: ${this.continuousSeries}`;
-    this.writeEnglishAndRussianWord(
-      this.arrayRussianWords[this.countProgressAnswer][count],
-      this.arrayEnglishWord[this.countProgressAnswer],
-    );
   }
 
   playSounds(audio:HTMLAudioElement, answer:string): void {
     const newAudio = audio;
+    const volume = document.querySelector('.volume') as HTMLDivElement;
     newAudio.pause();
     newAudio.src = `../assets/sounds/${answer}`;
     newAudio.play();
+    if (volume.classList.contains('mute')) {
+      newAudio.muted = true;
+    } else {
+      newAudio.muted = false;
+    }
   }
 
   writeDataForClickAnswer(condition: boolean) {
@@ -131,20 +136,52 @@ export class LogicSprintGame {
     return count;
   }
 
+  private addControlKeyboard = (e:KeyboardEvent) => {
+    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
+    if (e.key === 'ArrowLeft' && buttonWrongRight[0] && this.isKeyboardRepeat) {
+      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      buttonWrongRight[0].classList.add('key-down-wrong');
+      this.isKeyboardRepeat = false;
+    }
+    if (e.key === 'ArrowRight' && buttonWrongRight[0] && this.isKeyboardRepeat) {
+      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      buttonWrongRight[1].classList.add('key-down-right');
+      this.isKeyboardRepeat = false;
+    }
+  };
+
+  private removeClassFromButton() {
+    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
+    if (buttonWrongRight[0]) {
+      buttonWrongRight[0].classList.remove('key-down-wrong');
+      buttonWrongRight[1].classList.remove('key-down-right');
+      this.isKeyboardRepeat = true;
+    }
+  }
+
   async countAnswer(): Promise<void> {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
-    let count = getRandomNumber(1, 0);
-    this.getAnswer(count);
-
+    this.count = getRandomNumber(1, 0);
+    this.getAnswer(this.count);
+    const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
+    const volume = document.querySelector('.volume') as HTMLDivElement;
+    volume.addEventListener('click', () => {
+      volume.classList.toggle('mute');
+    });
+    fullScreen.addEventListener('click', this.toggleFullscreen);
     buttonWrongRight[0].addEventListener('click', () => {
-      count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][count]);
+      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count]);
     });
 
     buttonWrongRight[1].addEventListener('click', () => {
-      count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][count]);
+      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count]);
     });
+    document.addEventListener('keydown', this.addControlKeyboard);
+    document.addEventListener('keyup', () => this.removeClassFromButton());
   }
 
   async drawSprintGame(): Promise<void> {
@@ -193,23 +230,20 @@ export class LogicSprintGame {
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
       this.resultAnswer = [];
       this.time = 60;
+      this.arrayEnglishWord = [];
+      this.countProgressAnswer = 0;
+      this.score = 0;
+      this.continuousSeries = 0;
     }
   }
 
-  resetAtClick = () => {
-    if (this.resultAnswer.length === this.maxResultAnswerArray && this.myInterval) {
-      this.resetTimer();
-    }
-  };
-
   timer(): void {
     const timer = document.querySelector('.item-header-card-sprint-game') as HTMLDivElement;
-    const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     const main = document.querySelector('.main') as HTMLElement;
     if (this.time < 10) {
-      timer.textContent = `Timer: 0${this.time.toString()}`;
+      timer.textContent = `Таймер: 0${this.time.toString()}`;
     } else {
-      timer.textContent = `Timer: ${this.time.toString()}`;
+      timer.textContent = `Таймер: ${this.time.toString()}`;
     }
     this.time -= 1;
 
@@ -220,10 +254,6 @@ export class LogicSprintGame {
       this.runVoice();
       this.resetTimer();
     }
-    buttonWrongRight[0].removeEventListener('click', this.resetAtClick);
-    buttonWrongRight[1].removeEventListener('click', this.resetAtClick);
-    buttonWrongRight[0].addEventListener('click', this.resetAtClick);
-    buttonWrongRight[1].addEventListener('click', this.resetAtClick);
   }
 
   addTimer(): void {
@@ -234,5 +264,16 @@ export class LogicSprintGame {
         clearInterval(this.myInterval);
       }
     });
+  }
+
+  toggleFullscreen() {
+    const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
+    if (!document.fullscreenElement) {
+      fullScreen.classList.add('full');
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+      fullScreen.classList.remove('full');
+    }
   }
 }

@@ -4,6 +4,7 @@
   align-items: center;
   height: calc(100vh - 56px - 68px);
   width: 100%;
+  flex-direction: column;
   background-color: $light-gray-color;
 }
 
@@ -102,5 +103,46 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.control-panel {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 470px;
+  margin-bottom: 10px;
+}
+
+.volume {
+  background-image: url("../assets/svg/voice.svg");
+  width: 36px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.mute {
+  background-image: url("../assets/svg/mute.svg");
+}
+
+.fullscreen {
+  background-image: url("../assets/svg/fullscreen.svg");
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.full {
+  background-image: url("../assets/svg/fullscreen_exit.svg");
+}
+
+.key-down-wrong {
+  background-color: $wrong-color;
+  color: $white-color;
+}
+
+.key-down-right {
+  background-color: $right-color;
+  color: $white-color;
+}
+
 
 
