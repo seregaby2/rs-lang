@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { LogicSprintGame } from '.';
-import { itemsSprintGameData, resultAnswer } from './LogicSprintGame';
+import { IWordsData } from '.';
 
 export class TemplateHtml {
   private createElement = (className:string, container:HTMLElement, tag:string): HTMLElement => {
@@ -64,7 +63,11 @@ export class TemplateHtml {
     this.loader(wrapperSprintGame);
   }
 
-  createTableWithResults(wrapperSprintGame:HTMLElement): void {
+  createTableWithResults(
+    wrapperSprintGame:HTMLElement,
+    arrayWordsForSprintGame:IWordsData[],
+    arrayResultAnswer: number[],
+  ): void {
     const wrapperResultListSprintGame = this.createElement('wrapper-result-sprint-game', wrapperSprintGame, 'div');
     const wrapperTable = this.createElement('wrapper-table', wrapperResultListSprintGame, 'div');
     const wrapperHeaderResultTable = this.createElement('wrapper-header-table', wrapperTable, 'div');
@@ -72,28 +75,33 @@ export class TemplateHtml {
     this.createElement('score-for-result', wrapperHeaderResultTable, 'div');
     const result = this.createElement('text-result', wrapperTable, 'div');
     result.textContent = 'Результаты';
-    if (!resultAnswer.length) {
-      resultAnswer.push(0);
+    if (!arrayResultAnswer.length) {
+      arrayResultAnswer.push(0);
     }
-    for (let i = 0; i < resultAnswer.length; i += 1) {
-      this.createRowTableWithResult(wrapperTable, i);
+    for (let i = 0; i < arrayResultAnswer.length; i += 1) {
+      this.createRowTableWithResult(wrapperTable, i, arrayWordsForSprintGame, arrayResultAnswer);
     }
-    const logic = new LogicSprintGame();
-    logic.runVoice();
+    // const logic = new LogicSprintGame();
+    // logic.runVoice();
   }
 
-  createRowTableWithResult(wrapperTable: HTMLElement, index:number) {
+  createRowTableWithResult(
+    wrapperTable: HTMLElement,
+    index:number,
+    arrayWordsForSprintGame:IWordsData[],
+    arrayResultAnswer: number[],
+  ) {
     const wrapperRowTableWithResult = this.createElement('wrapper-row', wrapperTable, 'div');
     const voice = this.createElement('column-voice', wrapperRowTableWithResult, 'div');
     voice.style.backgroundImage = 'url(../assets/svg/voice.svg)';
     const englishWord = this.createElement('column-english', wrapperRowTableWithResult, 'div');
-    englishWord.textContent = itemsSprintGameData[index].word?.toString() || '';
+    englishWord.textContent = arrayWordsForSprintGame[index].word?.toString() || '';
     const transcription = this.createElement('column-transcription', wrapperRowTableWithResult, 'div');
-    transcription.textContent = itemsSprintGameData[index].transcription?.toString() || '';
+    transcription.textContent = arrayWordsForSprintGame[index].transcription?.toString() || '';
     const russianWord = this.createElement('column-russian', wrapperRowTableWithResult, 'div');
-    russianWord.textContent = itemsSprintGameData[index].wordTranslate?.toString() || '';
+    russianWord.textContent = arrayWordsForSprintGame[index].wordTranslate?.toString() || '';
     const answer = this.createElement('column-answer', wrapperRowTableWithResult, 'div');
-    if (resultAnswer[index] === 0) {
+    if (arrayResultAnswer[index] === 0) {
       answer.style.backgroundImage = 'url(/../assets/svg/wrongAnswer.svg)';
     } else {
       answer.style.backgroundImage = 'url(../assets/svg/rightAnswer.svg)';

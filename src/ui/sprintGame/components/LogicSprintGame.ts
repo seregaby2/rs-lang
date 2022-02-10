@@ -6,8 +6,6 @@ import { IWordsData } from './model';
 import { TemplateHtml } from './templateHtml';
 // import { TimerSprintGame } from './timer';
 
-export let itemsSprintGameData: IWordsData[] = [];
-export let resultAnswer: number[] = [];
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
 
@@ -24,6 +22,10 @@ export class LogicSprintGame {
   score: number = 0;
 
   continuousSeries: number = 0;
+
+  private itemsSprintGameData: IWordsData[] = [];
+
+  private resultAnswer: number[] = [];
 
   private maxResultAnswerArray: number = 59;
 
@@ -70,10 +72,10 @@ export class LogicSprintGame {
     promiseArray.push(this.getWords(group));
     promiseArray.push(this.getWords(group));
     const result = await Promise.all(promiseArray);
-    itemsSprintGameData = result.flat(1);
-    this.arrayRussianWords = this.createArrayRussianWord(itemsSprintGameData);
-    for (let j = 0; j < itemsSprintGameData.length; j += 1) {
-      this.arrayEnglishWord.push(itemsSprintGameData[j].word || '');
+    this.itemsSprintGameData = result.flat(1);
+    this.arrayRussianWords = this.createArrayRussianWord(this.itemsSprintGameData);
+    for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
+      this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
     }
     loader.classList.remove('show-loader');
     wrapperChooseLevelPage.classList.remove('disabled-wrapper');
@@ -89,7 +91,7 @@ export class LogicSprintGame {
     const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (this.countProgressAnswer >= this.maxCountProgressAnswer) {
       this.countProgressAnswer = 0;
-      resultAnswer = [];
+      this.resultAnswer = [];
       this.score = 0;
       this.continuousSeries = 0;
     }
@@ -108,51 +110,40 @@ export class LogicSprintGame {
     newAudio.play();
   }
 
+  writeDataForClickAnswer(condition: boolean) {
+    const audio = new Audio();
+    if (condition) {
+      this.resultAnswer.push(1);
+      this.score += 10;
+      this.continuousSeries += 1;
+      this.playSounds(audio, 'RightAnswer.mp3');
+    } else {
+      this.resultAnswer.push(0);
+      this.continuousSeries = 0;
+      this.playSounds(audio, 'WrongAnswer.mp3');
+    }
+    this.countProgressAnswer += 1;
+    const count = getRandomNumber(1, 0);
+    this.getAnswer(count);
+    if (this.bestContinuousSeries < this.continuousSeries) {
+      this.bestContinuousSeries = this.continuousSeries;
+    }
+    return count;
+  }
+
   async countAnswer(): Promise<void> {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     let count = getRandomNumber(1, 0);
     this.getAnswer(count);
-    const audio = new Audio();
+
     buttonWrongRight[0].addEventListener('click', () => {
-      if (itemsSprintGameData[this.countProgressAnswer].wordTranslate
-          !== this.arrayRussianWords[this.countProgressAnswer][count]) {
-        resultAnswer.push(1);
-        this.score += 10;
-        this.continuousSeries += 1;
-        this.playSounds(audio, 'RightAnswer.mp3');
-      } else {
-        resultAnswer.push(0);
-        this.continuousSeries = 0;
-        this.playSounds(audio, 'WrongAnswer.mp3');
-      }
-      this.countProgressAnswer += 1;
-      count = getRandomNumber(1, 0);
-      this.getAnswer(count);
-      console.log(this.bestContinuousSeries, 'wrong', this.continuousSeries);
-      if (this.bestContinuousSeries < this.continuousSeries) {
-        this.bestContinuousSeries = this.continuousSeries;
-      }
+      count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][count]);
     });
 
-    buttonWrongRight[1].addEventListener('click', async () => {
-      if (itemsSprintGameData[this.countProgressAnswer].wordTranslate
-          === this.arrayRussianWords[this.countProgressAnswer][count]) {
-        resultAnswer.push(1);
-        this.score += 10;
-        this.continuousSeries += 1;
-        this.playSounds(audio, 'RightAnswer.mp3');
-      } else {
-        resultAnswer.push(0);
-        this.continuousSeries = 0;
-        this.playSounds(audio, 'WrongAnswer.mp3');
-      }
-      this.countProgressAnswer += 1;
-      count = getRandomNumber(1, 0);
-      this.getAnswer(count);
-      console.log(this.bestContinuousSeries, 'rigth', this.continuousSeries);
-      if (this.bestContinuousSeries <= this.continuousSeries) {
-        this.bestContinuousSeries = this.continuousSeries;
-      }
+    buttonWrongRight[1].addEventListener('click', () => {
+      count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
+        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][count]);
     });
   }
 
@@ -183,7 +174,7 @@ export class LogicSprintGame {
     voice.forEach((e, i) => {
       e.addEventListener('click', () => {
         const audio = new Audio();
-        audio.src = `https://rs-lang-2022.herokuapp.com/${itemsSprintGameData[i].audio}`;
+        audio.src = `https://rs-lang-2022.herokuapp.com/${this.itemsSprintGameData[i].audio}`;
         audio.play();
       });
     });
@@ -194,18 +185,19 @@ export class LogicSprintGame {
     if (this.myInterval) {
       clearInterval(this.myInterval);
       main.innerHTML = '';
-      this.template.createTableWithResults(main);
+      this.template.createTableWithResults(main, this.itemsSprintGameData, this.resultAnswer);
+      this.runVoice();
       const score = document.querySelector('.score-for-result') as HTMLDListElement;
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
-      score.textContent = `Счет: ${this.score}/600`;
+      score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
-      resultAnswer = [];
+      this.resultAnswer = [];
       this.time = 60;
     }
   }
 
   resetAtClick = () => {
-    if (resultAnswer.length === this.maxResultAnswerArray && this.myInterval) {
+    if (this.resultAnswer.length === this.maxResultAnswerArray && this.myInterval) {
       this.resetTimer();
     }
   };
@@ -224,7 +216,8 @@ export class LogicSprintGame {
     if (this.myInterval && this.time < 0) {
       clearInterval(this.myInterval);
       main.innerHTML = '';
-      this.template.createTableWithResults(main);
+      this.template.createTableWithResults(main, this.itemsSprintGameData, this.resultAnswer);
+      this.runVoice();
       this.resetTimer();
     }
     buttonWrongRight[0].removeEventListener('click', this.resetAtClick);
