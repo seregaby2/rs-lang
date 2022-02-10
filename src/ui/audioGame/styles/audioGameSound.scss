@@ -1,16 +1,21 @@
-
 .button-audio-game.button-sound {
-  background-image: url("../assets/svg/volume.svg");
+  background-image: url("../assets/images/composer.png");
   position: absolute;
-  margin: 20px;
-  width: 42px;
-  height: 42px;
+  margin: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-size: cover;
   border: none;
 }
 
-.button-sound.mute {
-  background-image: url("../assets/svg/volumeOf.svg");
+.button-sound.mute:before {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 50%;
+  right: 0;
+  border-top: 2px solid;
+  color: #000000;
+  transform:rotate(-30deg);
 }
-
