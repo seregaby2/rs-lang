@@ -26,8 +26,6 @@ export class LogicSprintGame {
 
   private resultAnswer: number[] = [];
 
-  private isKeyboardRepeat: boolean = true;
-
   private maxCountProgressAnswer: number = 60;
 
   private bestContinuousSeries: number = 0;
@@ -63,7 +61,7 @@ export class LogicSprintGame {
     return arrayRussianWordsTotal;
   }
 
-  async createArrayEnglishAndRussianWords(group:number): Promise<void> {
+  private async createArrayEnglishAndRussianWords(group:number): Promise<void> {
     const loader = document.querySelector('.loader') as HTMLDListElement;
     const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
     loader.classList.add('show-loader');
@@ -115,7 +113,7 @@ export class LogicSprintGame {
     }
   }
 
-  writeDataForClickAnswer(condition: boolean) {
+  private writeDataForClickAnswer(condition: boolean):number {
     const audio = new Audio();
     if (condition) {
       this.resultAnswer.push(1);
@@ -136,28 +134,25 @@ export class LogicSprintGame {
     return count;
   }
 
-  private addControlKeyboard = (e:KeyboardEvent) => {
+  private addControlKeyboard = (e:KeyboardEvent): void => {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
-    if (e.key === 'ArrowLeft' && buttonWrongRight[0] && this.isKeyboardRepeat) {
+    if (e.key === 'ArrowLeft' && buttonWrongRight[0]) {
       this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
         .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count]);
       buttonWrongRight[0].classList.add('key-down-wrong');
-      this.isKeyboardRepeat = false;
     }
-    if (e.key === 'ArrowRight' && buttonWrongRight[0] && this.isKeyboardRepeat) {
+    if (e.key === 'ArrowRight' && buttonWrongRight[0]) {
       this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
         .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count]);
       buttonWrongRight[1].classList.add('key-down-right');
-      this.isKeyboardRepeat = false;
     }
   };
 
-  private removeClassFromButton() {
+  private removeClassFromButton(): void {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (buttonWrongRight[0]) {
       buttonWrongRight[0].classList.remove('key-down-wrong');
       buttonWrongRight[1].classList.remove('key-down-right');
-      this.isKeyboardRepeat = true;
     }
   }
 
@@ -206,7 +201,7 @@ export class LogicSprintGame {
     });
   }
 
-  runVoice() {
+  private runVoice(): void {
     const voice = document.querySelectorAll('.column-voice') as NodeListOf<HTMLDivElement>;
     voice.forEach((e, i) => {
       e.addEventListener('click', () => {
@@ -217,7 +212,7 @@ export class LogicSprintGame {
     });
   }
 
-  resetTimer() {
+  private resetTimer(): void {
     const main = document.querySelector('.main') as HTMLElement;
     if (this.myInterval) {
       clearInterval(this.myInterval);
@@ -237,7 +232,7 @@ export class LogicSprintGame {
     }
   }
 
-  timer(): void {
+  private timer(): void {
     const timer = document.querySelector('.item-header-card-sprint-game') as HTMLDivElement;
     const main = document.querySelector('.main') as HTMLElement;
     if (this.time < 10) {
@@ -256,7 +251,7 @@ export class LogicSprintGame {
     }
   }
 
-  addTimer(): void {
+  private addTimer(): void {
     this.myInterval = setInterval(() => this.timer(), 1000);
     window.addEventListener('click', () => {
       const wrapperCardSprintGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
@@ -266,7 +261,7 @@ export class LogicSprintGame {
     });
   }
 
-  toggleFullscreen() {
+  private toggleFullscreen(): void {
     const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
     if (!document.fullscreenElement) {
       fullScreen.classList.add('full');
