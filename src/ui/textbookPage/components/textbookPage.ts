@@ -65,6 +65,8 @@ export class TextbookPage {
         this.currentPage = parseInt(page, 10);
       }
     }
+    this.pagination.setToLocalStorage('currGroup', 0);
+    this.pagination.setToLocalStorage('currPage', 0);
   }
 
   private createTextbookHeader(): HTMLElement {

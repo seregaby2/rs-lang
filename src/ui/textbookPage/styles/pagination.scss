@@ -9,11 +9,14 @@
     width: 25px;
     height: 25px;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 .btn.active {
-  background: #E9692C;
+  background: rgba(41, 45, 52, 0.3);;
   border-radius: 50%;
 }
 
