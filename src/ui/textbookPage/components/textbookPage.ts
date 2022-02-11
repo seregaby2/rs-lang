@@ -1,6 +1,7 @@
 import { SprintController } from '../../sprintGame/components';
-import { TextBookCard } from './textBookCard';
+import { TextBookCard } from './card/textBookCard';
 import { Pagination } from '../pagination';
+import { CardAudio } from './card/cardAudio';
 
 export class TextbookPage {
   private controller: SprintController = new SprintController();
@@ -8,6 +9,8 @@ export class TextbookPage {
   private textbookCard: TextBookCard = new TextBookCard();
 
   private pagination: Pagination = new Pagination(30);
+
+  private audio: CardAudio = new CardAudio();
 
   private currentGroup: number = 0;
 
@@ -76,7 +79,7 @@ export class TextbookPage {
     const navigationContainer = document.createElement('div') as HTMLDivElement;
     navigationContainer.classList.add('textbook-pages');
 
-    const numberOfPages = 7;
+    const numberOfPages = 6;
     let pages = '';
     for (let i = 1; i <= numberOfPages; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
@@ -118,6 +121,7 @@ export class TextbookPage {
             ));
           }
         });
+        this.audio.playCardAudio(this.currentGroup, this.currentPage);
       });
   }
 
