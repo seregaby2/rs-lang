@@ -48,10 +48,9 @@ export class LogicSprintGame {
     return items;
   }
 
-  private getWordsAtTransitionFromBookPage = async (group: number) => {
-    const pageStorage = Number(localStorage.getItem('currPage'));
-    console.log(pageStorage, 'page');
-    const items = await this.controller.getWords(group, pageStorage);
+  private getWordsAtTransitionFromBookPage = async (group: number, page: number)
+  : Promise<IWordsData[]> => {
+    const items = await this.controller.getWords(group, page);
     return items;
   };
 
@@ -70,17 +69,22 @@ export class LogicSprintGame {
     return arrayRussianWordsTotal;
   }
 
-  private async createArrayEnglishAndRussianWords(group: number): Promise<void> {
-    const loader = document.querySelector('.loader') as HTMLDListElement;
-    const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
-    loader.classList.add('show-loader');
-    wrapperChooseLevelPage.classList.add('disabled-wrapper');
+  private createArrayEnglishAndRussianWordsHelper = async (group: number) => {
     const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
-
+    const pageStorage = Number(localStorage.getItem('currPage'));
     if (header.classList.contains('sprint-game')) {
-      console.log(this.getWordsAtTransitionFromBookPage(group));
-      promiseArray.push(this.getWordsAtTransitionFromBookPage(group));
+      promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage));
+      if (pageStorage === 0) {
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 2));
+      } else if (pageStorage === 29) {
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 2));
+      } else {
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
+        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
+      }
     } else {
       promiseArray.push(this.getWords(group));
       promiseArray.push(this.getWords(group));
@@ -92,10 +96,17 @@ export class LogicSprintGame {
     for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
       this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
     }
+  };
+
+  private createArrayEnglishAndRussianWords = async (group: number): Promise<void> => {
+    const loader = document.querySelector('.loader') as HTMLDListElement;
+    const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
+    loader.classList.add('show-loader');
+    wrapperChooseLevelPage.classList.add('disabled-wrapper');
+    await this.createArrayEnglishAndRussianWordsHelper(group);
     loader.classList.remove('show-loader');
     wrapperChooseLevelPage.classList.remove('disabled-wrapper');
-    console.log(this.arrayRussianWords, this.arrayEnglishWord);
-  }
+  };
 
   private writeEnglishAndRussianWord(RussianWord: string, EnglishWord: string): void {
     const inputViewWord = document.querySelectorAll('.item-content-card-sprint-game') as NodeListOf<HTMLDivElement>;
@@ -199,9 +210,9 @@ export class LogicSprintGame {
   private async drawSprintGameFromBookPageHelper(group: number) {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.bestContinuousSeries = 0;
-    await this.createArrayEnglishAndRussianWords(group);
     main.innerHTML = '';
     this.template.createTemplateCardGame(main);
+    await this.createArrayEnglishAndRussianWordsHelper(group);
     const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
     wrapperCardGame.style.display = 'flex';
     this.timer();
@@ -209,11 +220,10 @@ export class LogicSprintGame {
     this.countAnswer();
   }
 
-  drawSprintGameFromBookPage() {
+  drawSprintGameFromBookPage(): void {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.resetTimer();
     main.innerHTML = '';
-    // const iconSprintGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
     const header = document.querySelector('.header') as HTMLElement;
     if (header.classList.contains('sprint-game')) {
       const groupStorage = Number(localStorage.getItem('currGroup'));
@@ -228,11 +238,9 @@ export class LogicSprintGame {
     const header = document.querySelector('.header') as HTMLElement;
     this.template.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
-
     squareChooseLevel.forEach((e, i) => {
       e.addEventListener('click', async () => {
         if (!header.classList.contains('sprint-game')) {
-          console.log('create');
           this.bestContinuousSeries = 0;
           await this.createArrayEnglishAndRussianWords(i);
           main.innerHTML = '';
