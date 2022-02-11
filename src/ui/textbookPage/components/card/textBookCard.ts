@@ -1,4 +1,4 @@
-import { IWordsData } from '../../../sprintGame/components';
+import { IWordsData } from '../../../common/controller/model';
 
 export class TextBookCard {
   public createWordCard(

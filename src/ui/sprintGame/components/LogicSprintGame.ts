@@ -1,9 +1,9 @@
 /* eslint-disable import/no-mutable-exports */
 /* eslint-disable import/no-cycle */
-import { SprintController } from './controller';
 import { getRandomNumber, shuffle } from './HelpFunction';
-import { IWordsData } from './model';
+import { IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
+import { ControllerWords } from '../../common/controller/controllerWords';
 
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
@@ -32,34 +32,34 @@ export class LogicSprintGame {
 
   private count: number = 0;
 
-  private controller: SprintController = new SprintController();
+  private controller: ControllerWords = new ControllerWords();
 
   constructor() {
     this.myInterval = null;
     this.time = 60;
   }
 
-  private async getWords(group:number): Promise<IWordsData[]> {
+  private async getWords(group: number): Promise<IWordsData[]> {
     const minCountPage = 0;
     const maxCountPage = 29;
-    // const controller = new SprintController();
+
     const numberPage = getRandomNumber(maxCountPage, minCountPage);
-    const items = await this.controller.getWords('words', group, numberPage);
+    const items = await this.controller.getWords(group, numberPage);
     return items;
   }
 
-  private getWordsAtTransitionFromBookPage = async (group:number) => {
+  private getWordsAtTransitionFromBookPage = async (group: number) => {
     const pageStorage = Number(localStorage.getItem('currPage'));
     console.log(pageStorage, 'page');
-    const items = await this.controller.getWords('words', group, pageStorage);
+    const items = await this.controller.getWords(group, pageStorage);
     return items;
   };
 
-  private createArrayRussianWord(items:IWordsData[]):string[][] {
+  private createArrayRussianWord(items: IWordsData[]): string[][] {
     const arrayRussianWordsTotal = [];
-    const shuffleWordsData:IWordsData[] = shuffle(items);
+    const shuffleWordsData: IWordsData[] = shuffle(items);
     for (let j = 0; j < items.length; j += 1) {
-      const arrayRussianWordsRandomAnswer:string[] = [];
+      const arrayRussianWordsRandomAnswer: string[] = [];
       arrayRussianWordsRandomAnswer.push(items[j].wordTranslate || '');
       for (let i = 0; i < 1; i += 1) {
         const index = getRandomNumber(shuffleWordsData.length - 1, 0);
@@ -70,7 +70,7 @@ export class LogicSprintGame {
     return arrayRussianWordsTotal;
   }
 
-  private async createArrayEnglishAndRussianWords(group:number): Promise<void> {
+  private async createArrayEnglishAndRussianWords(group: number): Promise<void> {
     const loader = document.querySelector('.loader') as HTMLDListElement;
     const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
     loader.classList.add('show-loader');
@@ -97,13 +97,13 @@ export class LogicSprintGame {
     console.log(this.arrayRussianWords, this.arrayEnglishWord);
   }
 
-  private writeEnglishAndRussianWord(RussianWord:string, EnglishWord:string): void {
+  private writeEnglishAndRussianWord(RussianWord: string, EnglishWord: string): void {
     const inputViewWord = document.querySelectorAll('.item-content-card-sprint-game') as NodeListOf<HTMLDivElement>;
     inputViewWord[0].textContent = EnglishWord;
     inputViewWord[1].textContent = RussianWord;
   }
 
-  getAnswer(count:number): void {
+  getAnswer(count: number): void {
     const itemHeader = document.querySelectorAll('.item-header-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (this.countProgressAnswer >= this.maxCountProgressAnswer) {
       this.resetTimer();
@@ -117,7 +117,7 @@ export class LogicSprintGame {
     }
   }
 
-  playSounds(audio:HTMLAudioElement, answer:string): void {
+  playSounds(audio: HTMLAudioElement, answer: string): void {
     const newAudio = audio;
     const volume = document.querySelector('.volume') as HTMLDivElement;
     newAudio.pause();
@@ -130,7 +130,7 @@ export class LogicSprintGame {
     }
   }
 
-  private writeDataForClickAnswer(condition: boolean):number {
+  private writeDataForClickAnswer(condition: boolean): number {
     const audio = new Audio();
     if (condition) {
       this.resultAnswer.push(1);
@@ -151,7 +151,7 @@ export class LogicSprintGame {
     return count;
   }
 
-  private addControlKeyboard = (e:KeyboardEvent): void => {
+  private addControlKeyboard = (e: KeyboardEvent): void => {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (e.key === 'ArrowLeft' && buttonWrongRight[0]) {
       this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
@@ -196,7 +196,7 @@ export class LogicSprintGame {
     document.addEventListener('keyup', () => this.removeClassFromButton());
   }
 
-  private async drawSprintGameFromBookPageHelper(group:number) {
+  private async drawSprintGameFromBookPageHelper(group: number) {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.bestContinuousSeries = 0;
     await this.createArrayEnglishAndRussianWords(group);

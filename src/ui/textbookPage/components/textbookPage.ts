@@ -1,11 +1,11 @@
-import { SprintController } from '../../sprintGame/components';
 import { TextBookCard } from './card/textBookCard';
 import { Pagination } from '../pagination';
 import { CardAudio } from './card/cardAudio';
 import { CardStyles } from './card/cardStyles';
+import { ControllerWords } from '../../common/controller/controllerWords';
 
 export class TextbookPage {
-  private controller: SprintController = new SprintController();
+  private controller: ControllerWords = new ControllerWords();
 
   private textbookCard: TextBookCard = new TextBookCard();
 
@@ -113,7 +113,7 @@ export class TextbookPage {
   }
 
   private loadInfo(): void {
-    this.controller.getWords('words', this.currentGroup, this.currentPage)
+    this.controller.getWords(this.currentGroup, this.currentPage)
       .then((words) => {
         this.clearCardsContainer();
         words.forEach((word) => {
