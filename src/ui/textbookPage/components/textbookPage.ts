@@ -1,6 +1,8 @@
 import { SprintController } from '../../sprintGame/components';
-import { TextBookCard } from './textBookCard';
+import { TextBookCard } from './card/textBookCard';
 import { Pagination } from '../pagination';
+import { CardAudio } from './card/cardAudio';
+import { CardStyles } from './card/cardStyles';
 
 export class TextbookPage {
   private controller: SprintController = new SprintController();
@@ -8,6 +10,10 @@ export class TextbookPage {
   private textbookCard: TextBookCard = new TextBookCard();
 
   private pagination: Pagination = new Pagination(30);
+
+  private audio: CardAudio = new CardAudio();
+
+  private style: CardStyles = new CardStyles();
 
   private currentGroup: number = 0;
 
@@ -56,13 +62,18 @@ export class TextbookPage {
       const group = localStorage.getItem('currGroup');
       if (group) {
         this.currentGroup = parseInt(group, 10);
+        this.style.makeBookmarkActive(this.currentGroup);
       }
+    } else {
+      this.pagination.setToLocalStorage('currGroup', 0);
     }
     if (localStorage.getItem('currPage')) {
       const page = localStorage.getItem('currPage');
       if (page) {
         this.currentPage = parseInt(page, 10);
       }
+    } else {
+      this.pagination.setToLocalStorage('currPage', 0);
     }
   }
 
@@ -78,7 +89,7 @@ export class TextbookPage {
     const navigationContainer = document.createElement('div') as HTMLDivElement;
     navigationContainer.classList.add('textbook-pages');
 
-    const numberOfPages = 7;
+    const numberOfPages = 6;
     let pages = '';
     for (let i = 1; i <= numberOfPages; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
@@ -95,8 +106,8 @@ export class TextbookPage {
     const gamesContainer = document.createElement('div') as HTMLDivElement;
     gamesContainer.classList.add('games-links-container', 'textbook-games-container');
 
-    gamesContainer.innerHTML = `<i class="fas fa-running" data-route="sprint"></i>
-                                <i class="fas fa-microphone" data-route="audiocall"></i>`;
+    gamesContainer.innerHTML = `<i class="fas fa-running" data-route="sprint-textbook"></i>
+                                <i class="fas fa-microphone" data-route="audiocall-textbook"></i>`;
 
     return gamesContainer;
   }
@@ -120,6 +131,8 @@ export class TextbookPage {
             ));
           }
         });
+        this.audio.playCardAudio(this.currentGroup, this.currentPage);
+        this.style.changeStyles(this.currentGroup);
       });
   }
 
@@ -135,7 +148,8 @@ export class TextbookPage {
         if (btn.dataset.textbook) {
           this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
           this.currentPage = 0;
-          btn.classList.add('active');
+
+          this.style.makeBookmarkActive(this.currentGroup);
 
           this.pagination.createPaginationButtons(1);
           this.pagination.setToLocalStorage('currPage', 0);
