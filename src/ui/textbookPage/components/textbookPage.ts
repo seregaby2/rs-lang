@@ -53,6 +53,8 @@ export class TextbookPage {
 
     this.changeGroups();
     this.changePages();
+
+    this.addClassForSprint();
   }
 
   private checkCurrGroupAndPage(): void {
@@ -211,5 +213,19 @@ export class TextbookPage {
   private clearCardsContainer(): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
     cardsContainer.innerHTML = '';
+  }
+
+  private addClassForSprint() {
+    const iconStartGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
+    const iconStartGameFromMainPage = document.querySelector('.sprint') as HTMLElement;
+    const header = document.querySelector('.header');
+    if (header) {
+      iconStartGameFromBookPage.addEventListener('click', () => {
+        header.classList.add('sprint-game');
+      });
+      iconStartGameFromMainPage.addEventListener('click', () => {
+        header.classList.remove('sprint-game');
+      });
+    }
   }
 }

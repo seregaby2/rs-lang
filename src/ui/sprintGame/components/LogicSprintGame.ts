@@ -32,6 +32,8 @@ export class LogicSprintGame {
 
   private count: number = 0;
 
+  private controller: SprintController = new SprintController();
+
   constructor() {
     this.myInterval = null;
     this.time = 60;
@@ -40,11 +42,18 @@ export class LogicSprintGame {
   private async getWords(group:number): Promise<IWordsData[]> {
     const minCountPage = 0;
     const maxCountPage = 29;
-    const controller = new SprintController();
+    // const controller = new SprintController();
     const numberPage = getRandomNumber(maxCountPage, minCountPage);
-    const items = await controller.getWords('words', group, numberPage);
+    const items = await this.controller.getWords('words', group, numberPage);
     return items;
   }
+
+  private getWordsAtTransitionFromBookPage = async (group:number) => {
+    const pageStorage = Number(localStorage.getItem('currPage'));
+    console.log(pageStorage, 'page');
+    const items = await this.controller.getWords('words', group, pageStorage);
+    return items;
+  };
 
   private createArrayRussianWord(items:IWordsData[]):string[][] {
     const arrayRussianWordsTotal = [];
@@ -66,10 +75,17 @@ export class LogicSprintGame {
     const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
     loader.classList.add('show-loader');
     wrapperChooseLevelPage.classList.add('disabled-wrapper');
+    const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
-    promiseArray.push(this.getWords(group));
-    promiseArray.push(this.getWords(group));
-    promiseArray.push(this.getWords(group));
+
+    if (header.classList.contains('sprint-game')) {
+      console.log(this.getWordsAtTransitionFromBookPage(group));
+      promiseArray.push(this.getWordsAtTransitionFromBookPage(group));
+    } else {
+      promiseArray.push(this.getWords(group));
+      promiseArray.push(this.getWords(group));
+      promiseArray.push(this.getWords(group));
+    }
     const result = await Promise.all(promiseArray);
     this.itemsSprintGameData = result.flat(1);
     this.arrayRussianWords = this.createArrayRussianWord(this.itemsSprintGameData);
@@ -78,6 +94,7 @@ export class LogicSprintGame {
     }
     loader.classList.remove('show-loader');
     wrapperChooseLevelPage.classList.remove('disabled-wrapper');
+    console.log(this.arrayRussianWords, this.arrayEnglishWord);
   }
 
   private writeEnglishAndRussianWord(RussianWord:string, EnglishWord:string): void {
@@ -179,24 +196,53 @@ export class LogicSprintGame {
     document.addEventListener('keyup', () => this.removeClassFromButton());
   }
 
-  async drawSprintGame(): Promise<void> {
+  private async drawSprintGameFromBookPageHelper(group:number) {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    this.bestContinuousSeries = 0;
+    await this.createArrayEnglishAndRussianWords(group);
+    main.innerHTML = '';
+    this.template.createTemplateCardGame(main);
+    const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
+    wrapperCardGame.style.display = 'flex';
+    this.timer();
+    this.addTimer();
+    this.countAnswer();
+  }
+
+  drawSprintGameFromBookPage() {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.resetTimer();
     main.innerHTML = '';
-    const templateSprintGame = new TemplateHtml();
-    templateSprintGame.createChooseLevelSprintGame(main);
+    // const iconSprintGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
+    const header = document.querySelector('.header') as HTMLElement;
+    if (header.classList.contains('sprint-game')) {
+      const groupStorage = Number(localStorage.getItem('currGroup'));
+      this.drawSprintGameFromBookPageHelper(groupStorage);
+    }
+  }
+
+  drawSprintGame(): void {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    this.resetTimer();
+    main.innerHTML = '';
+    const header = document.querySelector('.header') as HTMLElement;
+    this.template.createChooseLevelSprintGame(main);
     const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
+
     squareChooseLevel.forEach((e, i) => {
       e.addEventListener('click', async () => {
-        this.bestContinuousSeries = 0;
-        await this.createArrayEnglishAndRussianWords(i);
-        main.innerHTML = '';
-        templateSprintGame.createTemplateCardGame(main);
-        const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
-        wrapperCardGame.style.display = 'flex';
-        this.timer();
-        this.addTimer();
-        this.countAnswer();
+        if (!header.classList.contains('sprint-game')) {
+          console.log('create');
+          this.bestContinuousSeries = 0;
+          await this.createArrayEnglishAndRussianWords(i);
+          main.innerHTML = '';
+          this.template.createTemplateCardGame(main);
+          const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
+          wrapperCardGame.style.display = 'flex';
+          this.timer();
+          this.addTimer();
+          this.countAnswer();
+        }
       });
     });
   }

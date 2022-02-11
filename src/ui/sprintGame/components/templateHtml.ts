@@ -61,7 +61,7 @@ export class TemplateHtml {
     const countDifficultyLevel = 6;
     for (let i = 0; i < countDifficultyLevel; i += 1) {
       const square = this.createElement('square-choose-level-sprint-game', wrapperSquareChooseLevelSprintGame, 'div');
-      square.textContent = i.toString();
+      square.textContent = (i + 1).toString();
     }
     this.loader(wrapperSprintGame);
   }

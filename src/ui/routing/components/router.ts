@@ -13,6 +13,7 @@ enum CurrentPage {
   Stats = 'stats',
   Book = 'book',
   Overview = 'overview',
+  TextBookSprintGame = 'sprint-textbook',
 }
 
 export class Router {
@@ -44,6 +45,9 @@ export class Router {
         break;
       case `#/${CurrentPage.SprintGame}`:
         this.sprintGame.drawSprintGame();
+        break;
+      case `#/${CurrentPage.TextBookSprintGame}`:
+        this.sprintGame.drawSprintGameFromBookPage();
         break;
       case `#/${CurrentPage.AudioGame}`:
         this.audioGame.draw();
