@@ -1,4 +1,4 @@
-import { IWordsData } from './model';
+import { IWordsData } from '../../common/controller/model';
 
 export function getRandomNumber(maxCount:number, minCount:number): number {
   return Math.round(Math.random() * (maxCount - minCount) + minCount);

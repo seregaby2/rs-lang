@@ -1,11 +1,12 @@
 import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
-import { SprintController } from '../../sprintGame/components/controller';
-import { IWordsData } from '../../sprintGame/components/model';
+import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
+import { ControllerWords } from '../../common/controller/controllerWords';
+import { ResultType } from '../model';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
-type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
+
 export class AudioGamePage {
   private pageContainer;
 
@@ -25,9 +26,7 @@ export class AudioGamePage {
 
   private words: IWordsData[] = [];
 
-  private requestWords = 'words';
-
-  private controller = new SprintController();
+  private controller = new ControllerWords();
 
   private helpers = new HelpersAudioGame();
 
@@ -57,7 +56,7 @@ export class AudioGamePage {
     this.resetGame();
     const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
     this.controller
-      .getWords(this.requestWords, this.activeGroup, pageNumber)
+      .getWords(this.activeGroup, pageNumber)
       .then((data) => {
         this.words = this.helpers.shuffleArray(data);
         this.activeWordIndex = 0;

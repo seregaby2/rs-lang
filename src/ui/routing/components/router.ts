@@ -1,8 +1,8 @@
 import { AudioGamePage } from '../../audioGame/components/audioGamePage';
 import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
-import { LogicSprintGame } from '../../sprintGame/components';
 import { TextbookPage } from '../../textbookPage/components/textbookPage';
+import { LogicSprintGame } from '../../sprintGame/components/LogicSprintGame';
 
 enum CurrentPage {
   Team = 'team',
@@ -92,6 +92,9 @@ export class Router {
           break;
         case CurrentPage.SprintGame:
           this.sprintGame.drawSprintGame();
+          break;
+        case CurrentPage.TextBookSprintGame:
+          this.sprintGame.drawSprintGameFromBookPage();
           break;
         case CurrentPage.AudioGame:
           this.audioGame.draw();

@@ -1,14 +1,15 @@
-import { IWordsData, SprintController } from '../../../sprintGame/components';
+import { ControllerWords } from '../../../common/controller/controllerWords';
+import { IWordsData } from '../../../common/controller/model';
 
 export class CardAudio {
-  private controller: SprintController = new SprintController();
+  private controller: ControllerWords = new ControllerWords();
 
   public playCardAudio(group: number, page: number): void {
     const audioBtns = document.querySelectorAll('.textbook-card-sound') as NodeListOf<HTMLDivElement>;
     audioBtns.forEach((btn, btnNumber) => {
       btn.addEventListener('click', () => {
         this.makeAudioBtnActive(btn);
-        this.controller.getWords('words', group, page)
+        this.controller.getWords(group, page)
           .then((words) => {
             this.playAudioSet(
               words[btnNumber].audio,
