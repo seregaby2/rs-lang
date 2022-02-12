@@ -42,7 +42,7 @@ export class Authorization extends Controller {
 
   public logIn(): void {
     const logInBtn = document.querySelector('.login-btn') as HTMLElement;
-    const inputRassword = document.querySelector('.input-login-password') as HTMLInputElement;
+    const inputPassword = document.querySelector('.input-login-password') as HTMLInputElement;
     const inputEmail = document.querySelector('.input-login-email') as HTMLInputElement;
 
     logInBtn.addEventListener('click', (event) => {
@@ -50,7 +50,7 @@ export class Authorization extends Controller {
 
       const userInfo: User = {
         email: inputEmail.value,
-        password: inputRassword.value,
+        password: inputPassword.value,
       };
 
       this.signIn({ email: userInfo.email, password: userInfo.password })

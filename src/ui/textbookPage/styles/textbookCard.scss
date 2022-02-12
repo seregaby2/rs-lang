@@ -1,0 +1,142 @@
+.textbook-card-container {
+  display: flex;
+  position: relative;
+  background: $white-color;
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  gap: 20px;
+}
+
+.textbook-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding-right: 20px;
+}
+
+.textbook-card-decoration {
+  position: absolute;
+  height: 100%;
+  width: 20px;
+  top: 0;
+  left: 0;
+  background: $accent-color;
+}
+
+.textbook-word-img {
+  background-size: cover;
+  background-position: center;
+  min-width: 350px;
+  width: 350px;
+  min-height: 100%;
+}
+
+.textbook-word-meaning,
+.textbook-word-example {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.textbook-word {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.textbook-card-word {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: $accent-color;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.textbook-card-translation {
+  color: $accent-color;
+  font-weight: bold;
+}
+
+.textbook-card-transcription {
+  color: $dark-gray-color;
+}
+
+.textbook-card-example,
+.textbook-card-meaning {
+  text-decoration: underline;
+}
+
+.textbook-card-sound svg {
+  fill: $accent-color;
+  height: 20px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.textbook-card-sound.active svg {
+  fill: $dark-gray-color;
+}
+
+.textbook-card-sound.disable svg {
+  pointer-events: none;
+}
+
+.textbook-authorized-buttons {
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+
+  button {
+    background: $accent-color;
+    max-width: 100px;
+    height: 24px;
+    color: $white-color;
+    border: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .textbook-card-container {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+  }
+
+  .textbook-card-text {
+    display: flex;
+    min-width: 200px;
+    align-items: center;
+    padding-left: 30px;
+
+    .textbook-word,
+    .textbook-card-transcription,
+    .textbook-card-translation,
+    .textbook-word-meaning,
+    .textbook-word-example {
+      max-width: 500px;
+    }
+  }
+
+  .textbook-word-img {
+    height: 200px;
+    min-width: 200px;
+    width: 100%;
+  }
+
+  .textbook-word {
+    flex-direction: column;
+  }
+
+  .textbook-word-meaning,
+  .textbook-word-example {
+    align-self: flex-start;
+  }
+}
+
