@@ -12,7 +12,12 @@ export class ControllerUserWords {
       .then((response) => response.json());
   }
 
-  public createUserWord<T>(userId: string, token: string, wordId: string, body: object): Promise<T> {
+  public createUserWord<T>(
+    userId: string,
+    token: string,
+    wordId: string,
+    body: object,
+  ): Promise<T> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
     return fetch(url, {
       method: 'POST',
@@ -20,13 +25,18 @@ export class ControllerUserWords {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        body: JSON.stringify(body),
       },
+      body: JSON.stringify(body),
     })
       .then((response) => response.json());
   }
 
-  public updateUserWord<T>(userId: string, token: string, wordId: string, body: object): Promise<T> {
+  public updateUserWord<T>(
+    userId: string,
+    token: string,
+    wordId: string,
+    body: object,
+  ): Promise<T> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
     return fetch(url, {
       method: 'PUT',
@@ -34,8 +44,8 @@ export class ControllerUserWords {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        body: JSON.stringify(body),
       },
+      body: JSON.stringify(body),
     })
       .then((response) => response.json());
   }
