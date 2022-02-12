@@ -1,11 +1,11 @@
 import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
-import { SprintController } from '../../sprintGame/components/controller';
-import { IWordsData } from '../../sprintGame/components/model';
+import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
+import { ControllerWords } from '../../common/controller/controllerWords';
+import { ResultType } from '../model';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
-type ResultType = Pick<IWordsData, 'audio' | 'word' | 'wordTranslate'>;
 enum KeyCode {
   BUTTON_ONE = 'Digit1',
   BUTTON_TWO = 'Digit2',
@@ -23,13 +23,11 @@ export class AudioGamePage {
 
   private totalPage = 30;
 
-  private totalWord = 5;
+  private totalWord = 20;
 
   private activeGroup = 0;
 
   private url = 'https://rs-lang-2022.herokuapp.com/';
-
-  private requestWords = 'words';
 
   private isAnswer = false;
 
@@ -39,7 +37,7 @@ export class AudioGamePage {
 
   private words: IWordsData[] = [];
 
-  private controller = new SprintController();
+  private controller = new ControllerWords();
 
   private helpers = new HelpersAudioGame();
 
@@ -70,7 +68,7 @@ export class AudioGamePage {
     this.resetGame();
     const pageNumber = this.helpers.getRandomInt(0, this.totalPage);
     this.controller
-      .getWords(this.requestWords, this.activeGroup, pageNumber)
+      .getWords(this.activeGroup, pageNumber)
       .then((data) => {
         this.words = this.helpers.shuffleArray(data);
         this.activeWordIndex = 0;

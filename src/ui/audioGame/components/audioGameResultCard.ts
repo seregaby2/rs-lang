@@ -1,4 +1,4 @@
-import { IWordsData } from '../../sprintGame/components';
+import { ResultType } from '../model';
 
 export class AudioGameResultCard {
   private pageContainer;
@@ -14,7 +14,7 @@ export class AudioGameResultCard {
     this.audioGameCallback = callback;
   }
 
-  public createResultGameCard(correctWords: IWordsData[], incorrectWords: IWordsData[]): void {
+  public createResultGameCard(correctWords: ResultType[], incorrectWords: ResultType[]): void {
     const bg = this.pageContainer.querySelector('.main-wrapper-audio-game-page') as HTMLDivElement;
     bg.style.boxShadow = 'inset 0 0 0 2000px rgb(41 45 52 / 80%)';
     const mainContainer = this.pageContainer.querySelector('.main-wrapper-audio-game') as HTMLElement;
@@ -69,7 +69,7 @@ export class AudioGameResultCard {
     this.setListenerVolumeWord();
   }
 
-  private createCorrectAnswer(parent: HTMLElement, words: IWordsData[]): void {
+  private createCorrectAnswer(parent: HTMLElement, words: ResultType[]): void {
     words.forEach((item) => {
       const mainContainer = document.createElement('div') as HTMLDivElement;
       const container = document.createElement('div') as HTMLDivElement;
@@ -98,7 +98,7 @@ export class AudioGameResultCard {
     });
   }
 
-  private createIncorrectAnswer(parent: HTMLElement, words: IWordsData[]): void {
+  private createIncorrectAnswer(parent: HTMLElement, words: ResultType[]): void {
     words.forEach((item) => {
       const mainContainer = document.createElement('div') as HTMLDivElement;
       const container = document.createElement('div') as HTMLDivElement;

@@ -1,14 +1,14 @@
 /* eslint-disable import/no-cycle */
-import { IWordsData } from '.';
+import { IWordsData } from '../../common/controller/model';
 
 export class TemplateHtml {
-  private createElement = (className:string, container:HTMLElement, tag:string): HTMLElement => {
+  private createElement = (className: string, container: HTMLElement, tag: string): HTMLElement => {
     const Element = document.createElement(tag);
     Element.classList.add(className);
     return container.appendChild(Element);
   };
 
-  createTemplateCardGame(wrapperSprintGame:HTMLDivElement): void {
+  createTemplateCardGame(wrapperSprintGame: HTMLDivElement): void {
     const wrapperCardSprintGame = this.createElement('wrapper-card-sprint-game', wrapperSprintGame, 'div');
     const controlPanel = this.createElement('control-panel', wrapperCardSprintGame, 'div');
     this.createElement('volume', controlPanel, 'div');
@@ -41,7 +41,7 @@ export class TemplateHtml {
     wrapperCardSprintGame.style.display = 'none';
   }
 
-  createChooseLevelSprintGame(wrapperSprintGame:HTMLDivElement): void {
+  createChooseLevelSprintGame(wrapperSprintGame: HTMLDivElement): void {
     const wrapperChooseLevelSprintGame = this.createElement('wrapper-choose-level-sprint-game', wrapperSprintGame, 'div');
 
     const containerCardChooseLevel = this.createElement('container-choose-level-sprint-game', wrapperChooseLevelSprintGame, 'div');
@@ -61,14 +61,14 @@ export class TemplateHtml {
     const countDifficultyLevel = 6;
     for (let i = 0; i < countDifficultyLevel; i += 1) {
       const square = this.createElement('square-choose-level-sprint-game', wrapperSquareChooseLevelSprintGame, 'div');
-      square.textContent = i.toString();
+      square.textContent = (i + 1).toString();
     }
     this.loader(wrapperSprintGame);
   }
 
   createTableWithResults(
-    wrapperSprintGame:HTMLElement,
-    arrayWordsForSprintGame:IWordsData[],
+    wrapperSprintGame: HTMLElement,
+    arrayWordsForSprintGame: IWordsData[],
     arrayResultAnswer: number[],
   ): void {
     const wrapperResultListSprintGame = this.createElement('wrapper-result-sprint-game', wrapperSprintGame, 'div');
@@ -90,8 +90,8 @@ export class TemplateHtml {
 
   createRowTableWithResult(
     wrapperTable: HTMLElement,
-    index:number,
-    arrayWordsForSprintGame:IWordsData[],
+    index: number,
+    arrayWordsForSprintGame: IWordsData[],
     arrayResultAnswer: number[],
   ) {
     const wrapperRowTableWithResult = this.createElement('wrapper-row', wrapperTable, 'div');

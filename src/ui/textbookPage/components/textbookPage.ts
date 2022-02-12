@@ -1,17 +1,28 @@
-import { SprintController } from '../../sprintGame/components';
-import { TextBookCard } from './textBookCard';
+import { TextBookCard } from './card/textBookCard';
 import { Pagination } from '../pagination';
+import { CardAudio } from './card/cardAudio';
+import { CardStyles } from './card/cardStyles';
+import { ControllerWords } from '../../common/controller/controllerWords';
+import { AuthorizedCard } from './card/authorizedCard';
 
 export class TextbookPage {
-  private controller: SprintController = new SprintController();
+  private controller: ControllerWords = new ControllerWords();
 
   private textbookCard: TextBookCard = new TextBookCard();
 
+  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
+
   private pagination: Pagination = new Pagination(30);
+
+  private audio: CardAudio = new CardAudio();
+
+  private style: CardStyles = new CardStyles();
 
   private currentGroup: number = 0;
 
   private currentPage: number = 0;
+
+  private numberOfGroups: number = 6;
 
   public drawTextbookPage() {
     const main = document.querySelector('.main') as HTMLElement;
@@ -47,6 +58,8 @@ export class TextbookPage {
 
     this.changeGroups();
     this.changePages();
+
+    this.addClassForSprint();
   }
 
   private checkCurrGroupAndPage(): void {
@@ -54,13 +67,18 @@ export class TextbookPage {
       const group = localStorage.getItem('currGroup');
       if (group) {
         this.currentGroup = parseInt(group, 10);
+        this.style.makeBookmarkActive(this.currentGroup);
       }
+    } else {
+      this.pagination.setToLocalStorage('currGroup', 0);
     }
     if (localStorage.getItem('currPage')) {
       const page = localStorage.getItem('currPage');
       if (page) {
         this.currentPage = parseInt(page, 10);
       }
+    } else {
+      this.pagination.setToLocalStorage('currPage', 0);
     }
   }
 
@@ -76,9 +94,12 @@ export class TextbookPage {
     const navigationContainer = document.createElement('div') as HTMLDivElement;
     navigationContainer.classList.add('textbook-pages');
 
-    const numberOfPages = 7;
+    if (localStorage.getItem('user_id')) {
+      this.numberOfGroups = 7;
+    }
+
     let pages = '';
-    for (let i = 1; i <= numberOfPages; i += 1) {
+    for (let i = 1; i <= this.numberOfGroups; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
                   <i class="fas fa-bookmark"></i>
                   <div class="textbook-page-num">${i}</div>
@@ -93,17 +114,17 @@ export class TextbookPage {
     const gamesContainer = document.createElement('div') as HTMLDivElement;
     gamesContainer.classList.add('games-links-container', 'textbook-games-container');
 
-    gamesContainer.innerHTML = `<i class="fas fa-running" data-route="sprint"></i>
-                                <i class="fas fa-microphone" data-route="audiocall"></i>`;
+    gamesContainer.innerHTML = `<i class="fas fa-running" data-route="sprint-textbook"></i>
+                                <i class="fas fa-microphone" data-route="audiocall-textbook"></i>`;
 
     return gamesContainer;
   }
 
   private loadInfo(): void {
-    this.controller.getWords('words', this.currentGroup, this.currentPage)
+    this.controller.getWords(this.currentGroup, this.currentPage)
       .then((words) => {
         this.clearCardsContainer();
-        words.forEach((word) => {
+        words.forEach((word, index) => {
           if (word) {
             const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
             cardsContainer.append(this.textbookCard.createWordCard(
@@ -116,8 +137,14 @@ export class TextbookPage {
               word.textExample,
               word.textExampleTranslate,
             ));
+            if (localStorage.getItem('user_id')) {
+              const cardContainer = document.querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
+              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard(word.id));
+            }
           }
         });
+        this.audio.playCardAudio(this.currentGroup, this.currentPage);
+        this.style.changeStyles(this.currentGroup);
       });
   }
 
@@ -133,7 +160,8 @@ export class TextbookPage {
         if (btn.dataset.textbook) {
           this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
           this.currentPage = 0;
-          btn.classList.add('active');
+
+          this.style.makeBookmarkActive(this.currentGroup);
 
           this.pagination.createPaginationButtons(1);
           this.pagination.setToLocalStorage('currPage', 0);
@@ -197,5 +225,19 @@ export class TextbookPage {
   private clearCardsContainer(): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
     cardsContainer.innerHTML = '';
+  }
+
+  private addClassForSprint() {
+    const iconStartGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
+    const iconStartGameFromMainPage = document.querySelector('.sprint') as HTMLElement;
+    const header = document.querySelector('.header');
+    if (header) {
+      iconStartGameFromBookPage.addEventListener('click', () => {
+        header.classList.add('sprint-game');
+      });
+      iconStartGameFromMainPage.addEventListener('click', () => {
+        header.classList.remove('sprint-game');
+      });
+    }
   }
 }
