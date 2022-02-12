@@ -3,11 +3,14 @@ import { Pagination } from '../pagination';
 import { CardAudio } from './card/cardAudio';
 import { CardStyles } from './card/cardStyles';
 import { ControllerWords } from '../../common/controller/controllerWords';
+import { AuthorizedCard } from './card/authorizedCard';
 
 export class TextbookPage {
   private controller: ControllerWords = new ControllerWords();
 
   private textbookCard: TextBookCard = new TextBookCard();
+
+  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
 
   private pagination: Pagination = new Pagination(30);
 
@@ -18,6 +21,8 @@ export class TextbookPage {
   private currentGroup: number = 0;
 
   private currentPage: number = 0;
+
+  private numberOfGroups: number = 6;
 
   public drawTextbookPage() {
     const main = document.querySelector('.main') as HTMLElement;
@@ -89,9 +94,12 @@ export class TextbookPage {
     const navigationContainer = document.createElement('div') as HTMLDivElement;
     navigationContainer.classList.add('textbook-pages');
 
-    const numberOfPages = 6;
+    if (localStorage.getItem('user_id')) {
+      this.numberOfGroups = 7;
+    }
+
     let pages = '';
-    for (let i = 1; i <= numberOfPages; i += 1) {
+    for (let i = 1; i <= this.numberOfGroups; i += 1) {
       pages += `<div class="textbook-page-btn" data-textbook="${i}">
                   <i class="fas fa-bookmark"></i>
                   <div class="textbook-page-num">${i}</div>
@@ -116,7 +124,7 @@ export class TextbookPage {
     this.controller.getWords(this.currentGroup, this.currentPage)
       .then((words) => {
         this.clearCardsContainer();
-        words.forEach((word) => {
+        words.forEach((word, index) => {
           if (word) {
             const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
             cardsContainer.append(this.textbookCard.createWordCard(
@@ -129,6 +137,10 @@ export class TextbookPage {
               word.textExample,
               word.textExampleTranslate,
             ));
+            if (localStorage.getItem('user_id')) {
+              const cardContainer = document.querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
+              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard());
+            }
           }
         });
         this.audio.playCardAudio(this.currentGroup, this.currentPage);

@@ -24,11 +24,17 @@ export class CardStyles {
         color = '';
         break;
     }
-    const decoration = document.querySelectorAll('.textbook-card-decoration') as NodeListOf<HTMLElement>;
-    const word = document.querySelectorAll('.textbook-card-word') as NodeListOf<HTMLElement>;
-    const translation = document.querySelectorAll('.textbook-card-translation') as NodeListOf<HTMLElement>;
-    const audio = document.querySelectorAll('.textbook-card-sound svg') as NodeListOf<HTMLElement>;
-    decoration.forEach((item) => {
+    const decoration = document
+      .querySelectorAll('.textbook-card-decoration') as NodeListOf<HTMLElement>;
+    const word = document
+      .querySelectorAll('.textbook-card-word') as NodeListOf<HTMLElement>;
+    const translation = document
+      .querySelectorAll('.textbook-card-translation') as NodeListOf<HTMLElement>;
+    const audio = document
+      .querySelectorAll('.textbook-card-sound svg') as NodeListOf<HTMLElement>;
+    const authorizedBtns = document
+      .querySelectorAll('.textbook-authorized-buttons button') as NodeListOf<HTMLElement>;
+    [...decoration, ...authorizedBtns].forEach((item) => {
       const decorationEl = item;
       decorationEl.style.background = color;
     });
