@@ -139,7 +139,7 @@ export class TextbookPage {
             ));
             if (localStorage.getItem('user_id')) {
               const cardContainer = document.querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
-              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard());
+              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard(word.id));
             }
           }
         });
