@@ -359,9 +359,9 @@ export class LogicSprintGame {
     });
     if (!repeatWord) {
       const body: IUserWord = {
-        difficulty: 'No',
+        difficulty: 'simple',
         optional: {
-          learnt: 'No',
+          new: false,
           progress: rightWrongAnswer,
         },
 

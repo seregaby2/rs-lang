@@ -5,6 +5,10 @@
   justify-content: center;
   margin: 10px;
 
+  &.visible {
+    visibility: hidden;
+  }
+
   .btn {
     width: 25px;
     height: 25px;

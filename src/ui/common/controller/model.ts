@@ -16,7 +16,7 @@ export interface IWordsData {
 }
 
 interface IOptionalWord {
-  learnt: string,
+  new: boolean,
   progress: number,
 }
 
@@ -24,6 +24,5 @@ export interface IUserWord {
   id?: string,
   difficulty: string,
   optional: IOptionalWord,
-  wordId?: string
-
+  wordId?: string,
 }

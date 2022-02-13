@@ -1,20 +1,14 @@
-import { TextBookCard } from './card/textBookCard';
 import { Pagination } from '../pagination';
-import { CardAudio } from './card/cardAudio';
-import { CardStyles } from './card/cardStyles';
-import { ControllerWords } from '../../common/controller/controllerWords';
-import { AuthorizedCard } from './card/authorizedCard';
+import { CardStyles } from '../card/cardStyles';
+import { TextbookPageController } from '../textbookPageController';
+import { AuthorizedCard } from '../card/authorizedCard';
 
-export class TextbookPage {
-  private controller: ControllerWords = new ControllerWords();
-
-  private textbookCard: TextBookCard = new TextBookCard();
-
-  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
-
+export class TextbookPageView {
   private pagination: Pagination = new Pagination(30);
 
-  private audio: CardAudio = new CardAudio();
+  private textbookPageController = new TextbookPageController();
+
+  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
 
   private style: CardStyles = new CardStyles();
 
@@ -25,6 +19,27 @@ export class TextbookPage {
   private numberOfGroups: number = 6;
 
   public drawTextbookPage() {
+    this.createTextbookPage();
+
+    this.checkCurrGroupAndPage();
+
+    this.pagination
+      .createPaginationButtons(this.currentPage + 1);
+
+    if (localStorage.getItem('currGroup') === '6') {
+      this.textbookAuthCard.drawComplicatedGroup();
+    } else {
+      this.textbookPageController
+        .toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+    }
+
+    this.changeGroups();
+    this.changePages();
+
+    this.addClassForSprint();
+  }
+
+  public createTextbookPage() {
     const main = document.querySelector('.main') as HTMLElement;
     main.innerHTML = '';
 
@@ -51,15 +66,6 @@ export class TextbookPage {
 
     textbook.append(textbookContainer);
     main.append(textbook);
-
-    this.checkCurrGroupAndPage();
-    this.pagination.createPaginationButtons(this.currentPage + 1);
-    this.loadInfo();
-
-    this.changeGroups();
-    this.changePages();
-
-    this.addClassForSprint();
   }
 
   private checkCurrGroupAndPage(): void {
@@ -120,32 +126,18 @@ export class TextbookPage {
     return gamesContainer;
   }
 
-  private loadInfo(): void {
-    this.controller.getWords(this.currentGroup, this.currentPage)
-      .then((words) => {
-        this.clearCardsContainer();
-        words.forEach((word, index) => {
-          if (word) {
-            const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
-            cardsContainer.append(this.textbookCard.createWordCard(
-              word.image,
-              word.word,
-              word.transcription,
-              word.wordTranslate,
-              word.textMeaning,
-              word.textMeaningTranslate,
-              word.textExample,
-              word.textExampleTranslate,
-            ));
-            if (localStorage.getItem('user_id')) {
-              const cardContainer = document.querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
-              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard(word.id));
-            }
-          }
-        });
-        this.audio.playCardAudio(this.currentGroup, this.currentPage);
-        this.style.changeStyles(this.currentGroup);
+  private addClassForSprint() {
+    const iconStartGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
+    const iconStartGameFromMainPage = document.querySelector('.sprint') as HTMLElement;
+    const header = document.querySelector('.header');
+    if (header) {
+      iconStartGameFromBookPage.addEventListener('click', () => {
+        header.classList.add('sprint-game');
       });
+      iconStartGameFromMainPage.addEventListener('click', () => {
+        header.classList.remove('sprint-game');
+      });
+    }
   }
 
   private changeGroups(): void {
@@ -158,17 +150,19 @@ export class TextbookPage {
         });
 
         if (btn.dataset.textbook) {
-          this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
-          this.currentPage = 0;
-
+          if (btn.dataset.textbook === '7') {
+            this.textbookAuthCard.drawComplicatedGroup();
+            this.currentGroup = 6;
+          } else {
+            this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
+            this.currentPage = 0;
+            this.pagination.createPaginationButtons(1);
+            this.pagination.setToLocalStorage('currPage', 0);
+            this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+            this.changePages();
+          }
           this.style.makeBookmarkActive(this.currentGroup);
-
-          this.pagination.createPaginationButtons(1);
-          this.pagination.setToLocalStorage('currPage', 0);
           this.pagination.setToLocalStorage('currGroup', this.currentGroup);
-
-          this.loadInfo();
-          this.changePages();
         }
       });
     });
@@ -184,7 +178,7 @@ export class TextbookPage {
         this.currentPage = page;
         this.pagination.setToLocalStorage('currPage', page);
 
-        this.loadInfo();
+        this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
         this.changePages();
       });
     });
@@ -199,7 +193,8 @@ export class TextbookPage {
           this.pagination.setToLocalStorage('currPage', currPage);
         }
       }
-      this.loadInfo();
+
+      this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
       this.changePages();
     });
 
@@ -216,27 +211,9 @@ export class TextbookPage {
             }
           }
         }
-        this.loadInfo();
+
+        this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
         this.changePages();
-      });
-    }
-  }
-
-  private clearCardsContainer(): void {
-    const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
-    cardsContainer.innerHTML = '';
-  }
-
-  private addClassForSprint() {
-    const iconStartGameFromBookPage = document.querySelector('.fa-running') as HTMLElement;
-    const iconStartGameFromMainPage = document.querySelector('.sprint') as HTMLElement;
-    const header = document.querySelector('.header');
-    if (header) {
-      iconStartGameFromBookPage.addEventListener('click', () => {
-        header.classList.add('sprint-game');
-      });
-      iconStartGameFromMainPage.addEventListener('click', () => {
-        header.classList.remove('sprint-game');
       });
     }
   }

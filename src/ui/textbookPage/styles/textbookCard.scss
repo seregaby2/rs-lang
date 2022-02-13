@@ -24,7 +24,7 @@
   width: 20px;
   top: 0;
   left: 0;
-  background: $accent-color;
+  background: #dc146f;
 }
 
 .textbook-word-img {
@@ -51,14 +51,14 @@
 .textbook-card-word {
   text-transform: uppercase;
   font-weight: bold;
-  color: $accent-color;
+  color: #dc146f;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .textbook-card-translation {
-  color: $accent-color;
+  color: #dc146f;
   font-weight: bold;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .textbook-card-sound svg {
-  fill: $accent-color;
+  fill: #dc146f;
   height: 20px;
 
   &:hover {
@@ -100,6 +100,13 @@
     color: $white-color;
     border: none;
   }
+}
+
+.textbook-star-complicated {
+  color: #dc146f;
+  position: absolute;
+  top: 10px;
+  left: 30px;
 }
 
 @media (max-width: 820px) {

@@ -1,29 +1,15 @@
 export class CardStyles {
+  public levelColor: string[] = [
+    '#f1c50e',
+    '#FFBF00',
+    '#FF9515',
+    '#FF6A2B',
+    '#e21818',
+    '#e21818',
+    '#dc146f'];
+
   public changeStyles(group: number): void {
-    let color: string;
-    switch (group) {
-      case 0:
-        color = '#f1c50e';
-        break;
-      case 1:
-        color = '#FFBF00';
-        break;
-      case 2:
-        color = '#FF9515';
-        break;
-      case 3:
-        color = '#FF6A2B';
-        break;
-      case 4:
-        color = '#db621c';
-        break;
-      case 5:
-        color = '#e21818';
-        break;
-      default:
-        color = '';
-        break;
-    }
+    const color: string = this.levelColor[group];
     const decoration = document
       .querySelectorAll('.textbook-card-decoration') as NodeListOf<HTMLElement>;
     const word = document
@@ -34,11 +20,14 @@ export class CardStyles {
       .querySelectorAll('.textbook-card-sound svg') as NodeListOf<HTMLElement>;
     const authorizedBtns = document
       .querySelectorAll('.textbook-authorized-buttons button') as NodeListOf<HTMLElement>;
+    const complicatedStar = document
+      .querySelectorAll('.textbook-star-complicated') as NodeListOf<HTMLElement>;
+
     [...decoration, ...authorizedBtns].forEach((item) => {
       const decorationEl = item;
       decorationEl.style.background = color;
     });
-    [...word, ...translation].forEach((item) => {
+    [...word, ...translation, ...complicatedStar].forEach((item) => {
       const element = item;
       element.style.color = color;
     });
