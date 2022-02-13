@@ -20,6 +20,9 @@ export class CardStyles {
       case 5:
         color = '#e21818';
         break;
+      case 6:
+        color = '#dc146f';
+        break;
       default:
         color = '';
         break;

@@ -137,9 +137,11 @@ export class TextbookPage {
               word.textExample,
               word.textExampleTranslate,
             ));
-            if (localStorage.getItem('user_id')) {
-              const cardContainer = document.querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
-              cardContainer[index].append(this.textbookAuthCard.createWordAuthorisedCard(word.id));
+            if (localStorage.getItem('user_id') && localStorage.getItem('user_access_token')) {
+              const cardTextContainer = document
+                .querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
+              cardTextContainer[index]
+                .append(this.textbookAuthCard.createWordAuthorisedCard(word.id));
             }
           }
         });
@@ -156,6 +158,10 @@ export class TextbookPage {
         groupsBtns.forEach((item) => {
           item.classList.remove('active');
         });
+
+        if (btn.dataset.textbook === '7') {
+          this.textbookAuthCard.drawComplicatedGroup();
+        }
 
         if (btn.dataset.textbook) {
           this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;

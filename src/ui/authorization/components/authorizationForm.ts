@@ -13,7 +13,6 @@ export class AuthorizationForm {
   private authorization: Authorization = new Authorization();
 
   public drawAuthorization(): void {
-    console.log('gi');
     this.helper.createAuthorizationBtn();
     this.createAuthorizationForm();
     this.toggleAuthorizationMode();

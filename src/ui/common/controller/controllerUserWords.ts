@@ -1,5 +1,7 @@
+import { IUserWord } from './model';
+
 export class ControllerUserWords {
-  public getUserWords<T>(userId: string, token: string): Promise<T> {
+  public getUserWords(userId: string, token: string): Promise<IUserWord[]> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words`;
     return fetch(url, {
       method: 'GET',
@@ -12,7 +14,7 @@ export class ControllerUserWords {
       .then((response) => response.json());
   }
 
-  public getUserWord<T>(userId: string, token: string, wordId: string): Promise<T> {
+  public getUserWord(userId: string, token: string, wordId: string): Promise<IUserWord> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
     return fetch(url, {
       method: 'GET',
@@ -25,12 +27,12 @@ export class ControllerUserWords {
       .then((response) => response.json());
   }
 
-  public createUserWord<T>(
+  public createUserWord(
     userId: string,
     token: string,
     wordId: string,
-    body: object,
-  ): Promise<T> {
+    body: IUserWord,
+  ): Promise<IUserWord> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
     return fetch(url, {
       method: 'POST',
@@ -41,15 +43,20 @@ export class ControllerUserWords {
       },
       body: JSON.stringify(body),
     })
-      .then((response) => response.json());
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      });
   }
 
-  public updateUserWord<T>(
+  public updateUserWord(
     userId: string,
     token: string,
     wordId: string,
-    body: object,
-  ): Promise<T> {
+    body: IUserWord,
+  ): Promise<IUserWord> {
     const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
     return fetch(url, {
       method: 'PUT',
