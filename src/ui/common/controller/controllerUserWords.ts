@@ -12,6 +12,19 @@ export class ControllerUserWords {
       .then((response) => response.json());
   }
 
+  public getUserWord<T>(userId: string, token: string, wordId: string): Promise<T> {
+    const url = `https://rs-lang-2022.herokuapp.com/users/${userId}/words/${wordId}`;
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json());
+  }
+
   public createUserWord<T>(
     userId: string,
     token: string,

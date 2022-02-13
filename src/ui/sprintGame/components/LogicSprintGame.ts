@@ -1,9 +1,10 @@
 /* eslint-disable import/no-mutable-exports */
 /* eslint-disable import/no-cycle */
 import { getRandomNumber, shuffle } from './HelpFunction';
-import { IWordsData } from '../../common/controller/model';
+import { IUserWord, IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
 import { ControllerWords } from '../../common/controller/controllerWords';
+import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
@@ -11,6 +12,8 @@ export class LogicSprintGame {
   time: number;
 
   private template = new TemplateHtml();
+
+  private controllerUserWords = new ControllerUserWords();
 
   arrayEnglishWord: string[] = [];
 
@@ -159,6 +162,12 @@ export class LogicSprintGame {
     if (this.bestContinuousSeries < this.continuousSeries) {
       this.bestContinuousSeries = this.continuousSeries;
     }
+    const WordId = this.itemsSprintGameData[this.resultAnswer.length - 1].id;
+    // const en = this.itemsSprintGameData[this.resultAnswer.length - 1].word;
+    // const ru = this.itemsSprintGameData[this.resultAnswer.length - 1].wordTranslate;
+    const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
+    this.createUserWordsGame(WordId, rightWrongAnswer);
+    // this.getUserWordGame('5e9f5ee35eb9e72bc21af4a0').then((e) => console.log(e));
     return count;
   }
 
@@ -323,6 +332,41 @@ export class LogicSprintGame {
     } else {
       document.exitFullscreen();
       fullScreen.classList.remove('full');
+    }
+  }
+
+  async getUserWordGame(wordId: string) {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const userWord: IUserWord = await this.controllerUserWords.getUserWord(userId, token, wordId);
+    return userWord;
+  }
+
+  async getUserWordsGame() {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const userWords: IUserWord[] = await this.controllerUserWords.getUserWords(userId, token);
+    return userWords;
+  }
+
+  async createUserWordsGame(wordId: string, rightWrongAnswer: number) {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const usersWordsGame = await this.getUserWordsGame();
+    let repeatWord: boolean = false;
+    usersWordsGame.forEach((e) => {
+      if (e.id === wordId) { repeatWord = true; }
+    });
+    if (!repeatWord) {
+      const body: IUserWord = {
+        difficulty: 'No',
+        optional: {
+          learnt: 'No',
+          progress: rightWrongAnswer,
+        },
+
+      };
+      this.controllerUserWords.createUserWord(userId, token, wordId, body);
     }
   }
 }

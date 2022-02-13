@@ -14,3 +14,16 @@ export interface IWordsData {
   readonly textMeaningTranslate: string,
   readonly textExampleTranslate: string
 }
+
+interface IOptionalWord {
+  learnt: string,
+  progress: number,
+}
+
+export interface IUserWord {
+  id?: string,
+  difficulty: string,
+  optional: IOptionalWord,
+  wordId?: string
+
+}
