@@ -1,32 +1,15 @@
 export class CardStyles {
+  public levelColor: string[] = [
+    '#f1c50e',
+    '#FFBF00',
+    '#FF9515',
+    '#FF6A2B',
+    '#e21818',
+    '#e21818',
+    '#dc146f'];
+
   public changeStyles(group: number): void {
-    let color: string;
-    switch (group) {
-      case 0:
-        color = '#f1c50e';
-        break;
-      case 1:
-        color = '#FFBF00';
-        break;
-      case 2:
-        color = '#FF9515';
-        break;
-      case 3:
-        color = '#FF6A2B';
-        break;
-      case 4:
-        color = '#db621c';
-        break;
-      case 5:
-        color = '#e21818';
-        break;
-      case 6:
-        color = '#dc146f';
-        break;
-      default:
-        color = '';
-        break;
-    }
+    const color: string = this.levelColor[group];
     const decoration = document
       .querySelectorAll('.textbook-card-decoration') as NodeListOf<HTMLElement>;
     const word = document

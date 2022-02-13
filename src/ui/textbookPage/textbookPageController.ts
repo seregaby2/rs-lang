@@ -54,47 +54,52 @@ export class TextbookPageController {
 
   private loadUserInfo(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
-    console.log('user-info');
 
-    const array: string[] = [];
+    const promisesArr: string[] = [];
     this.controllerUserWords
       .getUserWords(localStorage.getItem('user_id')!, localStorage.getItem('user_access_token')!)
       .then((data) => {
         data.forEach((i) => {
-          if (i.difficulty != null) {
-            if (i.difficulty === 'difficult') {
-              if (i.id != null) {
-                array.push(i.id);
+          if (i.difficulty != null && i.difficulty === 'difficult' && i.wordId != null) {
+            promisesArr.push(i.wordId);
+          }
+        });
+      })
+      .then(() => {
+        this.controllerWords.getWords(group, page)
+          .then((words) => {
+            clearCardsContainer();
+            words.forEach((word, index) => {
+              if (word) {
+                cardsContainer.append(this.textbookCard.createWordCard(
+                  word.image,
+                  word.id,
+                  word.word,
+                  word.transcription,
+                  word.wordTranslate,
+                  word.textMeaning,
+                  word.textMeaningTranslate,
+                  word.textExample,
+                  word.textExampleTranslate,
+                ));
+                const cardTextContainer = document
+                  .querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
+                cardTextContainer[index]
+                  .append(this.textbookAuthCard.createWordAuthorisedCardBtns(word.id));
+
+                promisesArr.forEach((complicatedWordId) => {
+                  if (complicatedWordId === word.id) {
+                    const z = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
+                    const k = document.createElement('div') as HTMLElement;
+                    k.innerHTML = '<i class="fa fa-solid fa-star textbook-star-complicated"></i>';
+                    z.append(k);
+                  }
+                });
               }
-            }
-          }
-        });
-      });
-    console.log(array);
-    this.controllerWords.getWords(group, page)
-      .then((words) => {
-        clearCardsContainer();
-        words.forEach((word, index) => {
-          if (word) {
-            cardsContainer.append(this.textbookCard.createWordCard(
-              word.image,
-              word.id,
-              word.word,
-              word.transcription,
-              word.wordTranslate,
-              word.textMeaning,
-              word.textMeaningTranslate,
-              word.textExample,
-              word.textExampleTranslate,
-            ));
-            const cardTextContainer = document
-              .querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
-            cardTextContainer[index]
-              .append(this.textbookAuthCard.createWordAuthorisedCardBtns(word.id));
-          }
-        });
-        this.audio.playCardAudio(group, page);
-        this.style.changeStyles(group);
+            });
+            this.audio.playCardAudio(group, page);
+            this.style.changeStyles(group);
+          });
       });
   }
 }

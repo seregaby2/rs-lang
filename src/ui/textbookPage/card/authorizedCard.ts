@@ -2,6 +2,7 @@ import { ControllerUserWords } from '../../common/controller/controllerUserWords
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { TextbookCard } from './textbookCard';
 import { IWordsData } from '../../common/controller/model';
+import { clearCardsContainer } from '../textbookHelper';
 
 export class AuthorizedCard {
   private textbookCard: TextbookCard = new TextbookCard();
@@ -17,30 +18,36 @@ export class AuthorizedCard {
   public drawComplicatedGroup(): void {
     const cardsContainer = document
       .querySelector('.textbook-cards-container') as HTMLDivElement;
-    cardsContainer.innerHTML = '';
+
+    const difficultWordsArray: Promise<IWordsData>[] = [];
+
     this.controllerUserWords.getUserWords(this.userId, this.userToken)
       .then((wordsArr) => {
         wordsArr.forEach((word) => {
           if (word.wordId && word.difficulty === 'difficult') {
-            this.controllerWords.getWord(word.wordId)
-              .then((wordInfo) => {
-                const card = this.textbookCard.createWordCard(
-                  wordInfo.image,
-                  wordInfo.id,
-                  wordInfo.word,
-                  wordInfo.transcription,
-                  wordInfo.wordTranslate,
-                  wordInfo.textMeaning,
-                  wordInfo.textMeaningTranslate,
-                  wordInfo.textExample,
-                  wordInfo.textExampleTranslate,
-                );
-                card.append(this.createBtnRemoveFromComplicated(wordInfo.id));
-                cardsContainer.append(card);
-              });
+            difficultWordsArray.push(this.controllerWords.getWord(word.wordId));
           }
         });
-      });
+      })
+      .then(() => Promise.all(difficultWordsArray)
+        .then((wordsData) => {
+          clearCardsContainer();
+          wordsData.forEach((wordInfo) => {
+            const card = this.textbookCard.createWordCard(
+              wordInfo.image,
+              wordInfo.id,
+              wordInfo.word,
+              wordInfo.transcription,
+              wordInfo.wordTranslate,
+              wordInfo.textMeaning,
+              wordInfo.textMeaningTranslate,
+              wordInfo.textExample,
+              wordInfo.textExampleTranslate,
+            );
+            card.append(this.createBtnRemoveFromDifficult(wordInfo.id));
+            cardsContainer.append(card);
+          });
+        }));
   }
 
   public createWordAuthorisedCardBtns(id: string): HTMLElement {
@@ -55,8 +62,8 @@ export class AuthorizedCard {
     complicatedBtn.addEventListener('click', () => {
       if (complicatedBtn.dataset.wordId) {
         const { wordId } = complicatedBtn.dataset;
-        this.makeWordComplicated(wordId);
-        console.log('hei');
+        this.makeWordDifficult(wordId);
+
         const f = complicatedBtn.closest('.textbook-card-container') as HTMLElement;
         const k = document.createElement('div') as HTMLElement;
         k.innerHTML = '<i class="fa fa-solid fa-star textbook-star-complicated"></i>';
@@ -76,44 +83,43 @@ export class AuthorizedCard {
     return buttonsContainer;
   }
 
-  public createBtnRemoveFromComplicated(wordId: IWordsData['id']): HTMLButtonElement {
+  private createBtnRemoveFromDifficult(wordId: IWordsData['id']): HTMLButtonElement {
     const removeBtn = document.createElement('button') as HTMLButtonElement;
     removeBtn.setAttribute('data-word-id', wordId);
     removeBtn.classList.add('btn');
     removeBtn.innerHTML = 'Удалить';
-
     removeBtn.addEventListener('click', () => {
       if (removeBtn.dataset.wordId) {
         const id = removeBtn.dataset.wordId;
-        this.deleteWordFromComplicated(id);
+        this.deleteWordFromDifficult(id);
       }
     });
     return removeBtn;
   }
 
-  private deleteWordFromComplicated(wordId: IWordsData['id']): void {
+  private deleteWordFromDifficult(wordId: IWordsData['id']): void {
     this.controllerUserWords.getUserWord(
       this.userId,
       this.userToken,
       wordId,
     )
-      .then((i) => {
+      .then((word) => {
         this.controllerUserWords.updateUserWord(
           this.userId,
           this.userToken,
           wordId,
           {
             difficulty: 'simple',
-            optional: i.optional,
+            optional: word.optional,
           },
-        );
-      })
-      .then(() => {
-        this.drawComplicatedGroup();
+        )
+          .then(() => {
+            this.drawComplicatedGroup();
+          });
       });
   }
 
-  private makeWordComplicated(wordId: string): void {
+  private makeWordDifficult(wordId: string): void {
     this.controllerUserWords.createUserWord(
       this.userId,
       this.userToken,

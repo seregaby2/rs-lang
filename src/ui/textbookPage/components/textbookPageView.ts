@@ -23,9 +23,15 @@ export class TextbookPageView {
 
     this.checkCurrGroupAndPage();
 
-    this.pagination.createPaginationButtons(this.currentPage + 1);
+    this.pagination
+      .createPaginationButtons(this.currentPage + 1);
 
-    this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+    if (localStorage.getItem('currGroup') === '6') {
+      this.textbookAuthCard.drawComplicatedGroup();
+    } else {
+      this.textbookPageController
+        .toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+    }
 
     this.changeGroups();
     this.changePages();
@@ -143,22 +149,20 @@ export class TextbookPageView {
           item.classList.remove('active');
         });
 
-        if (btn.dataset.textbook === '7') {
-          this.textbookAuthCard.drawComplicatedGroup();
-        }
-
         if (btn.dataset.textbook) {
-          this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
-          this.currentPage = 0;
-
+          if (btn.dataset.textbook === '7') {
+            this.textbookAuthCard.drawComplicatedGroup();
+            this.currentGroup = 6;
+          } else {
+            this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
+            this.currentPage = 0;
+            this.pagination.createPaginationButtons(1);
+            this.pagination.setToLocalStorage('currPage', 0);
+            this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+            this.changePages();
+          }
           this.style.makeBookmarkActive(this.currentGroup);
-
-          this.pagination.createPaginationButtons(1);
-          this.pagination.setToLocalStorage('currPage', 0);
           this.pagination.setToLocalStorage('currGroup', this.currentGroup);
-
-          this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
-          this.changePages();
         }
       });
     });
