@@ -37,11 +37,14 @@ export class CardStyles {
       .querySelectorAll('.textbook-card-sound svg') as NodeListOf<HTMLElement>;
     const authorizedBtns = document
       .querySelectorAll('.textbook-authorized-buttons button') as NodeListOf<HTMLElement>;
+    const complicatedStar = document
+      .querySelectorAll('.textbook-star-complicated') as NodeListOf<HTMLElement>;
+
     [...decoration, ...authorizedBtns].forEach((item) => {
       const decorationEl = item;
       decorationEl.style.background = color;
     });
-    [...word, ...translation].forEach((item) => {
+    [...word, ...translation, ...complicatedStar].forEach((item) => {
       const element = item;
       element.style.color = color;
     });

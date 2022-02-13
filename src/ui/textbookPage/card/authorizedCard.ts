@@ -1,10 +1,10 @@
-import { ControllerUserWords } from '../../../common/controller/controllerUserWords';
-import { ControllerWords } from '../../../common/controller/controllerWords';
-import { TextBookCard } from './textBookCard';
-import { IWordsData } from '../../../common/controller/model';
+import { ControllerUserWords } from '../../common/controller/controllerUserWords';
+import { ControllerWords } from '../../common/controller/controllerWords';
+import { TextbookCard } from './textbookCard';
+import { IWordsData } from '../../common/controller/model';
 
 export class AuthorizedCard {
-  private textbookCard: TextBookCard = new TextBookCard();
+  private textbookCard: TextbookCard = new TextbookCard();
 
   private controllerUserWords: ControllerUserWords = new ControllerUserWords();
 
@@ -26,6 +26,7 @@ export class AuthorizedCard {
               .then((wordInfo) => {
                 const card = this.textbookCard.createWordCard(
                   wordInfo.image,
+                  wordInfo.id,
                   wordInfo.word,
                   wordInfo.transcription,
                   wordInfo.wordTranslate,
@@ -42,7 +43,7 @@ export class AuthorizedCard {
       });
   }
 
-  public createWordAuthorisedCard(id: string): HTMLElement {
+  public createWordAuthorisedCardBtns(id: string): HTMLElement {
     const buttonsContainer = document.createElement('div') as HTMLElement;
     buttonsContainer.classList.add('textbook-authorized-buttons');
 
@@ -55,6 +56,13 @@ export class AuthorizedCard {
       if (complicatedBtn.dataset.wordId) {
         const { wordId } = complicatedBtn.dataset;
         this.makeWordComplicated(wordId);
+        console.log('hei');
+        const f = complicatedBtn.closest('.textbook-card-container') as HTMLElement;
+        const k = document.createElement('div') as HTMLElement;
+        k.innerHTML = '<i class="fa fa-solid fa-star textbook-star-complicated"></i>';
+        f.append(k);
+        complicatedBtn.style.background = 'gray';
+        complicatedBtn.style.pointerEvents = 'none';
       }
     });
 

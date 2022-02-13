@@ -1,8 +1,9 @@
-import { IWordsData } from '../../../common/controller/model';
+import { IWordsData } from '../../common/controller/model';
 
-export class TextBookCard {
+export class TextbookCard {
   public createWordCard(
     imgPath: IWordsData['image'],
+    id: IWordsData['id'],
     word: IWordsData['word'],
     transcription: IWordsData['transcription'],
     translation: IWordsData['wordTranslate'],
@@ -13,6 +14,7 @@ export class TextBookCard {
   ): HTMLDivElement {
     const cardContainer = document.createElement('div') as HTMLDivElement;
     cardContainer.classList.add('textbook-card-container');
+    cardContainer.setAttribute('data-word-id', id);
 
     cardContainer
       .innerHTML = `<div class="textbook-word-img" style="background-image: url('https://rs-lang-2022.herokuapp.com/${imgPath}')"></div>

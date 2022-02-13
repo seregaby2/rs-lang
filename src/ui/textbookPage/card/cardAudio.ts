@@ -1,5 +1,5 @@
-import { ControllerWords } from '../../../common/controller/controllerWords';
-import { IWordsData } from '../../../common/controller/model';
+import { ControllerWords } from '../../common/controller/controllerWords';
+import { IWordsData } from '../../common/controller/model';
 
 export class CardAudio {
   private controller: ControllerWords = new ControllerWords();

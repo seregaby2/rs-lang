@@ -1,7 +1,7 @@
 import { AudioGamePage } from '../../audioGame/components/audioGamePage';
 import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
-import { TextbookPage } from '../../textbookPage/components/textbookPage';
+import { TextbookPageView } from '../../textbookPage/components/textbookPageView';
 import { LogicSprintGame } from '../../sprintGame/components/LogicSprintGame';
 
 enum CurrentPage {
@@ -25,7 +25,7 @@ export class Router {
 
   private audioGame: AudioGamePage = new AudioGamePage();
 
-  private textbookPage: TextbookPage = new TextbookPage();
+  private textbookPage: TextbookPageView = new TextbookPageView();
 
   public drawCurrentPage(): void {
     const currentHash = window.location.hash;
