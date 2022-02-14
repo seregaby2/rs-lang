@@ -31,7 +31,7 @@
   margin-right: 15px;
 }
 
-.button-level-audio-game:nth:last-child {
+.button-level-audio-game:last-child {
   margin-right: 0;
 }
 
@@ -78,3 +78,44 @@
   width: 100px;
 }
 
+@media (max-width: 500px) {
+  .main-title-setting-audio-game {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .support-title-setting-audio-game {
+    font-size: 20px;
+  }
+  .container-buttons-level-audio-game {
+    // display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    display: flex;
+  }
+
+  .button-audio-game.button-cancel-audio-game {
+    width: 70px;
+    margin: 10px auto;
+    padding: 0;
+    margin-right: 0;
+  }
+
+  .button-audio-game.button-start-audio-game {
+    width: 70px;
+    margin: 10px auto;
+    padding: 0;
+    margin-right: 0;
+  }
+
+  .button-level-audio-game {
+    width: 40px;
+    line-height: 20px;
+    margin-right: 0;
+    margin: 10px auto;
+  }
+
+  // .button-level-audio-game:last-child {
+  //   margin-right: 20px;
+  // }
+
+}

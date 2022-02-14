@@ -191,7 +191,6 @@ export class AudioGamePage {
     const audio = new Audio(this.url + word.audio);
     audio.play();
     const containerResult = document.querySelector('.container-result-info-audio-game');
-
     if (containerResult !== null) {
       audio.pause();
     }

@@ -3,7 +3,7 @@
   margin: 0 auto 1rem;
   padding: 30px 50px;
   overflow: auto;
-  max-width: 600px;
+  max-width: 400px;
   max-height: 400px;
   background-color: $white-color;
   display: flex;
@@ -63,4 +63,58 @@
 
 .correct-answer-list {
   border-bottom: solid 1px $light-gray-color;
+}
+
+@media (max-width: 640px) {
+  .container-result-info-audio-game {
+    max-height: 290px;
+  }
+}
+
+@media (max-width: 540px) {
+
+  .main-wrapper-audio-game {
+    max-width: 320px;
+  }
+
+  .main-title-result-card {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .correct-answer-title,
+  .incorrect-answer-title {
+    font-size: 16px
+  }
+
+  .correct-answer-word,
+  .incorrect-answer-word {
+    font-size: 14px
+  }
+
+  .incorrect-answer-translate,
+  .correct-answer-translate {
+    font-size: 14px
+  }
+
+  .button-audio-game.button-game-list-audio-game,
+  .button-audio-game.button-play-again-audio-game {
+    padding: 2px 4px;
+  }
+
+  .volume-correct-answer,
+  .volume-incorrect-answer {
+    width: 16px;
+    height: 16px;
+  }
+
+  .answer-text {
+    font-size: 30px;
+  }
+
+  @media (max-width: 340px) {
+    .main-wrapper-audio-game {
+      max-width: 300px;
+    }
+  }
 }
