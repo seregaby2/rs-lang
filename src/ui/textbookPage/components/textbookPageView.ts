@@ -2,6 +2,7 @@ import { Pagination } from '../pagination';
 import { CardStyles } from '../card/cardStyles';
 import { TextbookPageController } from '../textbookPageController';
 import { AuthorizedCard } from '../card/authorizedCard';
+import { hidePagination } from '../textbookHelper';
 
 export class TextbookPageView {
   private pagination: Pagination = new Pagination(30);
@@ -160,6 +161,7 @@ export class TextbookPageView {
             this.pagination.setToLocalStorage('currPage', 0);
             this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
             this.changePages();
+            hidePagination(false);
           }
           this.style.makeBookmarkActive(this.currentGroup);
           this.pagination.setToLocalStorage('currGroup', this.currentGroup);

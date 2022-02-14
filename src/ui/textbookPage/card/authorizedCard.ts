@@ -2,7 +2,7 @@ import { ControllerUserWords } from '../../common/controller/controllerUserWords
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { TextbookCard } from './textbookCard';
 import { IWordsData } from '../../common/controller/model';
-import { clearCardsContainer } from '../textbookHelper';
+import { clearCardsContainer, hidePagination } from '../textbookHelper';
 
 export class AuthorizedCard {
   private textbookCard: TextbookCard = new TextbookCard();
@@ -20,6 +20,8 @@ export class AuthorizedCard {
   public drawComplicatedGroup(): void {
     const cardsContainer = document
       .querySelector('.textbook-cards-container') as HTMLDivElement;
+
+    hidePagination(true);
 
     const difficultWordsArray: Promise<IWordsData>[] = [];
 

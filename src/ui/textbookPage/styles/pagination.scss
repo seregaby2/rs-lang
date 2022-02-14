@@ -4,8 +4,9 @@
   align-items: center;
   justify-content: center;
   margin: 10px;
+  transition: visibility 0s;
 
-  &.visible {
+  &.invisible {
     visibility: hidden;
   }
 
