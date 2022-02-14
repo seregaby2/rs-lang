@@ -46,6 +46,7 @@ export class AuthorizedCard {
               wordInfo.textExample,
               wordInfo.textExampleTranslate,
             );
+
             card.append(this.createBtnRemoveFromDifficult(wordInfo.id));
             cardsContainer.append(card);
           });
@@ -101,12 +102,12 @@ export class AuthorizedCard {
 
   private createBtnRemoveFromDifficult(wordId: IWordsData['id']): HTMLButtonElement {
     const removeBtn = document.createElement('button') as HTMLButtonElement;
-    removeBtn.setAttribute('data-word-id', wordId);
-    removeBtn.classList.add('btn');
+    removeBtn.setAttribute('data-delete-btn', wordId);
+    removeBtn.classList.add('btn', 'textbook-delete-btn');
     removeBtn.innerHTML = 'Удалить';
     removeBtn.addEventListener('click', () => {
-      if (removeBtn.dataset.wordId) {
-        const id = removeBtn.dataset.wordId;
+      if (removeBtn.dataset.deleteBtn) {
+        const id = removeBtn.dataset.deleteBtn;
         this.deleteWordFromDifficult(id);
       }
     });
