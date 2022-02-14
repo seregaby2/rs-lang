@@ -24,7 +24,7 @@
   width: 20px;
   top: 0;
   left: 0;
-  background: #dc146f;
+  background: $seventh-level;
 }
 
 .textbook-word-img {
@@ -51,14 +51,14 @@
 .textbook-card-word {
   text-transform: uppercase;
   font-weight: bold;
-  color: #dc146f;
+  color: $seventh-level;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .textbook-card-translation {
-  color: #dc146f;
+  color: $seventh-level;
   font-weight: bold;
 }
 
@@ -72,19 +72,16 @@
 }
 
 .textbook-card-sound svg {
-  fill: #dc146f;
+  fill: $seventh-level;
   height: 20px;
+  cursor: pointer;
 
   &:hover {
     opacity: 0.8;
   }
 }
 
-.textbook-card-sound.active svg {
-  fill: $dark-gray-color;
-}
-
-.textbook-card-sound.disable svg {
+.textbook-card-sound.disable {
   pointer-events: none;
 }
 
@@ -102,8 +99,23 @@
   }
 }
 
-.textbook-star-complicated {
-  color: #dc146f;
+.textbook-authorized-buttons button,
+.textbook-delete-btn {
+  max-width: 100px;
+  height: 24px;
+  color: $white-color;
+  border: none;
+}
+
+.textbook-delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: $seventh-level;
+}
+
+.textbook-star-difficult {
+  color: $accent-color;
   position: absolute;
   top: 10px;
   left: 30px;
@@ -147,3 +159,9 @@
   }
 }
 
+//AUTHORIZED
+
+.textbook-difficult-btn.disable {
+  pointer-events: none;
+  opacity: 0.3;
+}

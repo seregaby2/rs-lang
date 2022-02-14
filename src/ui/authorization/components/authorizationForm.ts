@@ -31,10 +31,10 @@ export class AuthorizationForm {
     formWrap.innerHTML = `
     <div class="tabs">
         <h3 class="signup-tab">
-            <a class="active" href="#">Регистрация</a>
+            <button class="active">Регистрация</button>
         </h3>
         <h3 class="login-tab">
-            <a href="#">Вход</a>
+            <button>Вход</button>
         </h3>
     </div>
     <div class="tabs-content">
@@ -70,7 +70,7 @@ export class AuthorizationForm {
   }
 
   private toggleAuthorizationMode(): void {
-    const tabs = document.querySelectorAll('.tabs h3 a') as NodeListOf<HTMLElement>;
+    const tabs = document.querySelectorAll('.tabs h3 button') as NodeListOf<HTMLElement>;
     const signUP = document.querySelector('#signup-tab-content') as HTMLElement;
     const logIn = document.querySelector('#login-tab-content') as HTMLElement;
     tabs.forEach((tab) => {

@@ -66,23 +66,26 @@ export class Pagination {
     }
 
     pagContainer.innerHTML = pagBtn;
-    pagContainer.querySelector('.prev')?.addEventListener('click', () => {
-      this.createPaginationButtons(currentPageBtn - 1);
-      this.setToLocalStorage('currPage', currentPageBtn - 1);
-    });
-
-    pagContainer.querySelector('.next')?.addEventListener('click', () => {
-      this.createPaginationButtons(currentPageBtn + 1);
-      this.setToLocalStorage('currPage', currentPageBtn + 1);
-    });
-
-    pagContainer.querySelectorAll('.textbook-pag-btn')?.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const page = e.target as HTMLElement;
-        this.createPaginationButtons(parseInt(page.innerHTML, 10));
-        this.setToLocalStorage('currPage', parseInt(page.innerHTML, 10));
+    pagContainer.querySelector('.prev')
+      ?.addEventListener('click', () => {
+        this.createPaginationButtons(currentPageBtn - 1);
+        this.setToLocalStorage('currPage', currentPageBtn - 1);
       });
-    });
+
+    pagContainer.querySelector('.next')
+      ?.addEventListener('click', () => {
+        this.createPaginationButtons(currentPageBtn + 1);
+        this.setToLocalStorage('currPage', currentPageBtn + 1);
+      });
+
+    pagContainer.querySelectorAll('.textbook-pag-btn')
+      ?.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const page = e.target as HTMLElement;
+          this.createPaginationButtons(parseInt(page.innerHTML, 10));
+          this.setToLocalStorage('currPage', parseInt(page.innerHTML, 10));
+        });
+      });
     return pagContainer;
   }
 

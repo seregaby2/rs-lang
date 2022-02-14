@@ -1,10 +1,13 @@
 import { MenuAside } from '../common/header/components/menuAside';
 import { AuthHelper } from './authHelper';
+import { TextbookPageView } from '../textbookPage/components/textbookPageView';
 
 export class LogOut {
   private menuAside = new MenuAside();
 
   private helper: AuthHelper = new AuthHelper();
+
+  private textbookPage: TextbookPageView = new TextbookPageView();
 
   public drawLogOutBtn(): void {
     const menuAside = document.querySelector('.menu-aside') as HTMLElement;
@@ -25,6 +28,7 @@ export class LogOut {
       greeting.remove();
       this.helper.createAuthorizationBtn();
       this.menuAside.closeMenuAside();
+      this.textbookPage.drawTextbookPage();
     });
   }
 }
