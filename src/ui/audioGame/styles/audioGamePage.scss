@@ -14,7 +14,7 @@
 }
 
 .button-audio-game {
-  background-color: #FFFFFF;
+  background-color: $white-color;
   border-radius: 4px;
   border-style: solid;
   border-width: 1px;
@@ -25,8 +25,7 @@
 }
 
 .button-audio-game:hover:not(:disabled) {
-  color: #FFFFFF;
-  background-color: #B3B3B3;
+  background-color: $light-gray-color;
 }
 
 .button-volume-audio-game {
@@ -45,16 +44,16 @@
 }
 
 .button-word-audio-game.correct {
-  background-color: #4C9900;
+  background-color: $right-color;
 }
 
 .button-word-audio-game.incorrect {
-  background-color: #CC0000;
+  background-color: $wrong-color;
 }
 
 .answer-text {
   font-size: 38px;
-  color: #FFFFFF;
+  color: $white-color;
 }
 
 .button-next-card-audio-game {

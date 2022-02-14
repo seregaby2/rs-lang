@@ -159,7 +159,15 @@ export class AudioGamePage {
       const target = e.target as HTMLElement;
       const isSelectedButtonAnswer = target.classList.contains('button-answer-audio-game');
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+
       if (isSelectedButtonAnswer) {
+        const activeWord = this.words[this.activeWordIndex];
+        const id = activeWord.id as string;
+        const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
+
+        if (activeButton !== null) {
+          activeButton.classList.add('correct');
+        }
         buttonAnswer.style.display = 'none';
         buttonNext.style.display = 'inline-block';
         this.soundGame.playSoundIncorrectAnswer();
@@ -183,6 +191,7 @@ export class AudioGamePage {
     const audio = new Audio(this.url + word.audio);
     audio.play();
     const containerResult = document.querySelector('.container-result-info-audio-game');
+
     if (containerResult !== null) {
       audio.pause();
     }
@@ -214,12 +223,14 @@ export class AudioGamePage {
     if (e.code === KeyCode.BUTTON_ENTER) {
       const isLastWord = this.activeWordIndex + 1 === this.totalWord;
       const activeWord = this.words[this.activeWordIndex];
+
       if (!this.isAnswer) {
         this.incorrectAnswer.push(activeWord);
         buttonAnswer.style.display = 'none';
         buttonNext.style.display = 'inline-block';
         const id = activeWord.id as string;
         const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
+
         if (activeButton !== null) {
           activeButton.classList.add('correct');
         }
@@ -238,6 +249,7 @@ export class AudioGamePage {
 
   private handleSpaceButton(e: KeyboardEvent): void {
     const activeWord = this.words[this.activeWordIndex];
+
     if (e.code === KeyCode.BUTTON_SPACE) {
       this.startAudio(activeWord);
     }
@@ -245,18 +257,23 @@ export class AudioGamePage {
 
   private handleDigitsButtons(e: KeyboardEvent): void {
     const buttons = document.querySelectorAll('.button-word-audio-game') as NodeListOf<HTMLButtonElement>;
+
     if (!this.isAnswer && e.code === KeyCode.BUTTON_ONE) {
       this.handleButton(buttons[0]);
     }
+
     if (!this.isAnswer && e.code === KeyCode.BUTTON_TWO) {
       this.handleButton(buttons[1]);
     }
+
     if (!this.isAnswer && e.code === KeyCode.BUTTON_THREE) {
       this.handleButton(buttons[2]);
     }
+
     if (!this.isAnswer && e.code === KeyCode.BUTTON_FOUR) {
       this.handleButton(buttons[3]);
     }
+
     if (!this.isAnswer && e.code === KeyCode.BUTTON_FIVE) {
       this.handleButton(buttons[4]);
     }
