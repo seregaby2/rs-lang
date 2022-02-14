@@ -42,9 +42,11 @@ export class AudioGameResultCard {
     if (correctWords.length < incorrectWords.length) {
       mainTitle.innerHTML = 'В этот раз не получилось, продолжай тренироваться!';
     }
+
     if (correctWords.length > incorrectWords.length) {
       mainTitle.innerHTML = 'Поздравляем, отличный результат, но ты можешь лучше!';
     }
+
     if (correctWords.length === this.maxResult) {
       mainTitle.innerHTML = 'Превосходно!!! Вы все знаете!!!';
     }
