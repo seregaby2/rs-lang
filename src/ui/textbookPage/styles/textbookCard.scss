@@ -74,17 +74,14 @@
 .textbook-card-sound svg {
   fill: $seventh-level;
   height: 20px;
+  cursor: pointer;
 
   &:hover {
     opacity: 0.8;
   }
 }
 
-.textbook-card-sound.active svg {
-  fill: $dark-gray-color;
-}
-
-.textbook-card-sound.disable svg {
+.textbook-card-sound.disable {
   pointer-events: none;
 }
 
