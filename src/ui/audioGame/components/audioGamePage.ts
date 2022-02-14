@@ -17,6 +17,8 @@ enum KeyCode {
 }
 
 export class AudioGamePage {
+  private callback;
+
   private pageContainer;
 
   private activeWordIndex = 0;
@@ -45,9 +47,10 @@ export class AudioGamePage {
 
   private soundGame = new AudioGameSound();
 
-  constructor() {
+  constructor(callback: () => void) {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
+    this.callback = callback;
   }
 
   public draw(): void {
@@ -58,6 +61,7 @@ export class AudioGamePage {
 
     main.prepend(mainWrapper);
     mainWrapper.innerHTML = this.templateSettings;
+    this.showMainMenu();
     this.createLevelButtons();
     this.setListenerLevelButtons();
     this.startGame();
@@ -382,6 +386,13 @@ export class AudioGamePage {
         this.activeGroup = group;
         target.classList.add('active');
       }
+    });
+  }
+
+  private showMainMenu(): void {
+    const button = document.querySelector('.button-cancel-audio-game');
+    button?.addEventListener('click', () => {
+      this.callback();
     });
   }
 

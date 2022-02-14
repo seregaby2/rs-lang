@@ -23,7 +23,7 @@ export class Router {
 
   private sprintGame: LogicSprintGame = new LogicSprintGame();
 
-  private audioGame: AudioGamePage = new AudioGamePage();
+  private audioGame: AudioGamePage = new AudioGamePage(() => this.homePage.drawHomePage());
 
   private textbookPage: TextbookPageView = new TextbookPageView();
 
