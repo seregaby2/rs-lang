@@ -102,8 +102,8 @@
   }
 }
 
-.textbook-star-complicated {
-  color: #dc146f;
+.textbook-star-difficult {
+  color: $accent-color;
   position: absolute;
   top: 10px;
   left: 30px;
@@ -147,3 +147,9 @@
   }
 }
 
+//AUTHORIZED
+
+.textbook-difficult-btn.disable {
+  pointer-events: none;
+  opacity: 0.3;
+}

@@ -21,7 +21,7 @@ export class CardStyles {
     const authorizedBtns = document
       .querySelectorAll('.textbook-authorized-buttons button') as NodeListOf<HTMLElement>;
     const complicatedStar = document
-      .querySelectorAll('.textbook-star-complicated') as NodeListOf<HTMLElement>;
+      .querySelectorAll('.textbook-star-difficult') as NodeListOf<HTMLElement>;
 
     [...decoration, ...authorizedBtns].forEach((item) => {
       const decorationEl = item;

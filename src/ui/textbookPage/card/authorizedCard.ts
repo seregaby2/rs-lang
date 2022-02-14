@@ -15,6 +15,8 @@ export class AuthorizedCard {
 
   private userToken = localStorage.getItem('user_access_token')!;
 
+  private levelColor: string[] = ['#F1C50EFF', '#FFBF00', '#FF9515', '#FF6A2B', '#e21818', '#e21818', '#dc146f'];
+
   public drawComplicatedGroup(): void {
     const cardsContainer = document
       .querySelector('.textbook-cards-container') as HTMLDivElement;
@@ -55,32 +57,46 @@ export class AuthorizedCard {
     buttonsContainer.classList.add('textbook-authorized-buttons');
 
     const complicatedBtn = document.createElement('button') as HTMLButtonElement;
-    complicatedBtn.classList.add('textbook-complicated-btn', 'btn');
+    complicatedBtn.classList.add('textbook-difficult-btn', 'btn');
     complicatedBtn.innerHTML = 'Сложное';
-    complicatedBtn.setAttribute('data-word-id', id);
+    complicatedBtn.setAttribute('data-difficult-btn', id);
 
     complicatedBtn.addEventListener('click', () => {
-      if (complicatedBtn.dataset.wordId) {
-        const { wordId } = complicatedBtn.dataset;
+      if (complicatedBtn.dataset.difficultBtn) {
+        const wordId = complicatedBtn.dataset.difficultBtn;
         this.makeWordDifficult(wordId);
 
-        const f = complicatedBtn.closest('.textbook-card-container') as HTMLElement;
-        const k = document.createElement('div') as HTMLElement;
-        k.innerHTML = '<i class="fa fa-solid fa-star textbook-star-complicated"></i>';
-        f.append(k);
-        complicatedBtn.style.background = 'gray';
-        complicatedBtn.style.pointerEvents = 'none';
+        const card = complicatedBtn.closest('.textbook-card-container') as HTMLElement;
+        card.append(this.createDifficultStar());
+
+        this.disableDifficultBtn(complicatedBtn);
       }
     });
 
     const learntBtn = document.createElement('button') as HTMLButtonElement;
     learntBtn.classList.add('textbook-learnt-btn', 'btn');
     learntBtn.innerHTML = 'Изученное';
-    learntBtn.setAttribute('data-word-id', id);
+    learntBtn.setAttribute('data-learnt-btn', id);
 
     buttonsContainer.append(complicatedBtn);
     buttonsContainer.append(learntBtn);
     return buttonsContainer;
+  }
+
+  public createDifficultStar(): HTMLElement {
+    const star = document.createElement('div') as HTMLElement;
+    const group = localStorage.getItem('currGroup');
+
+    if (group) {
+      const index = parseInt(group, 10);
+      star
+        .innerHTML = `<i class="fa fa-solid fa-star textbook-star-difficult" style="color: ${this.levelColor[index]}"></i>`;
+    }
+    return star;
+  }
+
+  public disableDifficultBtn(btn: HTMLElement): void {
+    btn.classList.add('disable');
   }
 
   private createBtnRemoveFromDifficult(wordId: IWordsData['id']): HTMLButtonElement {

@@ -89,10 +89,11 @@ export class TextbookPageController {
 
                 promisesArr.forEach((complicatedWordId) => {
                   if (complicatedWordId === word.id) {
-                    const z = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
-                    const k = document.createElement('div') as HTMLElement;
-                    k.innerHTML = '<i class="fa fa-solid fa-star textbook-star-complicated"></i>';
-                    z.append(k);
+                    const card = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
+                    card.append(this.textbookAuthCard.createDifficultStar());
+
+                    const btn = document.querySelector(`[data-difficult-btn="${complicatedWordId}"]`) as HTMLElement;
+                    this.textbookAuthCard.disableDifficultBtn(btn);
                   }
                 });
               }
