@@ -52,7 +52,7 @@ export class TextbookPageController {
       });
   }
 
-  private loadUserInfo(group: number, page: number): void {
+  public loadUserInfo(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
 
     const promisesArr: string[] = [];

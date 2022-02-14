@@ -4,11 +4,14 @@ import {
 import { AuthHelper } from './authHelper';
 import { Controller } from './controller';
 import { LogOut } from './logOut';
+import { TextbookPageView } from '../textbookPage/components/textbookPageView';
 
 export class Authorization extends Controller {
   private helper: AuthHelper = new AuthHelper();
 
   private logOut: LogOut = new LogOut();
+
+  private textbookView: TextbookPageView = new TextbookPageView();
 
   constructor() {
     super('users');
@@ -53,7 +56,10 @@ export class Authorization extends Controller {
         password: inputPassword.value,
       };
 
-      this.signIn({ email: userInfo.email, password: userInfo.password })
+      this.signIn({
+        email: userInfo.email,
+        password: userInfo.password,
+      })
         .then((tokenInfo) => {
           if (tokenInfo) {
             this.helper.saveUserInfoInLocalStorage(tokenInfo);
@@ -61,6 +67,10 @@ export class Authorization extends Controller {
             this.logOut.drawLogOutBtn();
             this.helper.removeLogInBtn();
             this.helper.closeAuthorizationForm();
+          }
+
+          if (window.location.href === 'http://localhost:8080/#/book') {
+            this.textbookView.drawTextbookPage();
           }
         })
         .catch((error) => {
