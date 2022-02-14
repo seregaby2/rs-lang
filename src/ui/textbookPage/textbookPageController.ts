@@ -55,13 +55,21 @@ export class TextbookPageController {
   public loadUserInfo(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
 
-    const promisesArr: string[] = [];
+    const promisesArrId: string[] = [];
+    const promisesProgress: { progress: number, id: string }[] = [];
     this.controllerUserWords
       .getUserWords(localStorage.getItem('user_id')!, localStorage.getItem('user_access_token')!)
       .then((data) => {
         data.forEach((i) => {
           if (i.difficulty != null && i.difficulty === 'difficult' && i.wordId != null) {
-            promisesArr.push(i.wordId);
+            promisesArrId.push(i.wordId);
+          }
+          if (i.optional.progress != null && i.wordId != null) {
+            const obj: { progress: number, id: string } = {
+              progress: i.optional.progress,
+              id: i.wordId,
+            };
+            promisesProgress.push(obj);
           }
         });
       })
@@ -87,13 +95,19 @@ export class TextbookPageController {
                 cardTextContainer[index]
                   .append(this.textbookAuthCard.createWordAuthorisedCardBtns(word.id));
 
-                promisesArr.forEach((complicatedWordId) => {
+                promisesArrId.forEach((complicatedWordId) => {
                   if (complicatedWordId === word.id) {
                     const card = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
                     card.append(this.textbookAuthCard.createDifficultStar());
 
                     const btn = document.querySelector(`[data-difficult-btn="${complicatedWordId}"]`) as HTMLElement;
                     this.textbookAuthCard.disableDifficultBtn(btn);
+                  }
+                });
+
+                promisesProgress.forEach((i) => {
+                  if (i.id === word.id) {
+                    console.log(`${word.id}`, i.progress);
                   }
                 });
               }
