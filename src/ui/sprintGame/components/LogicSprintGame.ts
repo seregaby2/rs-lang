@@ -5,6 +5,7 @@ import { IUserWord, IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
+import { UsersData } from '../../common/usersData';
 
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
@@ -36,6 +37,8 @@ export class LogicSprintGame {
   private count: number = 0;
 
   private controller: ControllerWords = new ControllerWords();
+
+  private usersData: UsersData = new UsersData();
 
   constructor() {
     this.myInterval = null;
@@ -75,6 +78,7 @@ export class LogicSprintGame {
   private createArrayEnglishAndRussianWordsHelper = async (group: number) => {
     const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
+    const userWords = await this.getUserWordsGame();
     const pageStorage = Number(localStorage.getItem('currPage'));
     if (header.classList.contains('sprint-game')) {
       promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage));
@@ -97,7 +101,9 @@ export class LogicSprintGame {
     this.itemsSprintGameData = result.flat(1);
     this.arrayRussianWords = this.createArrayRussianWord(this.itemsSprintGameData);
     for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
-      this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
+      if (userWords[j].optional.progress !== 3 || userWords[j].optional.progress !== 5) {
+        this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
+      }
     }
   };
 
@@ -162,12 +168,24 @@ export class LogicSprintGame {
     if (this.bestContinuousSeries < this.continuousSeries) {
       this.bestContinuousSeries = this.continuousSeries;
     }
-    const WordId = this.itemsSprintGameData[this.resultAnswer.length - 1].id;
-    // const en = this.itemsSprintGameData[this.resultAnswer.length - 1].word;
-    // const ru = this.itemsSprintGameData[this.resultAnswer.length - 1].wordTranslate;
-    const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
-    this.createUserWordsGame(WordId, rightWrongAnswer);
-    // this.getUserWordGame('5e9f5ee35eb9e72bc21af4a0').then((e) => console.log(e));
+    const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+    if (userGreeting) {
+      const WordId = this.itemsSprintGameData[this.resultAnswer.length - 1].id;
+      const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
+      let repeatWord: boolean = false;
+      this.getUserWordsGame().then((item) => {
+        item.forEach((e) => {
+          if (e.id === WordId) {
+            repeatWord = true;
+            this.usersData
+              .updateUserWordsGame(WordId, rightWrongAnswer, e.difficulty, e.optional.progress);
+          }
+        });
+        if (!repeatWord || item.length === 0) {
+          this.usersData.createUserWordsGame(WordId, rightWrongAnswer);
+        }
+      });
+    }
     return count;
   }
 
