@@ -41,16 +41,18 @@ export class UsersData {
     const token = localStorage.getItem('user_access_token') || '';
     let progressHelpTwo = progressHelp;
     let difficultHelp = difficult;
-    if ((rightWrongAnswer === 1 && difficult === 'simple' && progressHelpTwo < 3)
-    || (rightWrongAnswer === 1 && difficult === 'difficult' && progressHelpTwo < 5)) {
+    const maxProgressDifficult = 5;
+    const maxProgressSimple = 3;
+    if ((rightWrongAnswer === 1 && difficult === 'simple' && progressHelpTwo < maxProgressSimple)
+    || (rightWrongAnswer === 1 && difficult === 'difficult' && progressHelpTwo < maxProgressDifficult)) {
       progressHelpTwo += 1;
     }
     if (rightWrongAnswer === 0 && progressHelpTwo > 0) {
       progressHelpTwo -= 1;
     }
-    if (progressHelpTwo === 5) {
+    if (progressHelpTwo === maxProgressDifficult) {
       difficultHelp = 'simple';
-      progressHelpTwo = 3;
+      progressHelpTwo = maxProgressSimple;
     }
     const body: IUserWord = {
       difficulty: difficultHelp,

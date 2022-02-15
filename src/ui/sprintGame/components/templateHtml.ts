@@ -84,8 +84,6 @@ export class TemplateHtml {
     for (let i = 0; i < arrayResultAnswer.length; i += 1) {
       this.createRowTableWithResult(wrapperTable, i, arrayWordsForSprintGame, arrayResultAnswer);
     }
-    // const logic = new LogicSprintGame();
-    // logic.runVoice();
   }
 
   createRowTableWithResult(
