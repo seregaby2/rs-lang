@@ -4,9 +4,9 @@ import { ControllerWords } from '../common/controller/controllerWords';
 import { clearCardsContainer } from './textbookHelper';
 import { TextbookCard } from './card/textbookCard';
 import { ControllerUserWords } from '../common/controller/controllerUserWords';
-import { AuthorizedCard } from './card/authorizedCard';
+import { UserCard } from './card/userCard';
 
-export class TextbookPageController {
+export class TextbookPageDisplay {
   private audio: CardAudio = new CardAudio();
 
   private style: CardStyles = new CardStyles();
@@ -17,17 +17,17 @@ export class TextbookPageController {
 
   private textbookCard: TextbookCard = new TextbookCard();
 
-  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
+  private textbookUserCard: UserCard = new UserCard();
 
-  public toggleWordsInfoLoading(group: number, page: number): void {
+  public toggleCards(group: number, page: number): void {
     if (localStorage.getItem('user_id') && localStorage.getItem('user_access_token')) {
-      this.loadUserInfo(group, page);
+      this.createUserCards(group, page);
     } else {
-      this.loadInfo(group, page);
+      this.createUsualCards(group, page);
     }
   }
 
-  private loadInfo(group: number, page: number): void {
+  private createUsualCards(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
     this.controllerWords.getWords(group, page)
       .then((words) => {
@@ -52,13 +52,16 @@ export class TextbookPageController {
       });
   }
 
-  public loadUserInfo(group: number, page: number): void {
+  public createUserCards(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
 
     const promisesArrId: string[] = [];
     const promisesProgress: { progress: number, id: string }[] = [];
     this.controllerUserWords
-      .getUserWords(localStorage.getItem('user_id')!, localStorage.getItem('user_access_token')!)
+      .getUserWords(
+        localStorage.getItem('user_id') || '',
+        localStorage.getItem('user_access_token') || '',
+      )
       .then((data) => {
         data.forEach((i) => {
           if (i.difficulty != null && i.difficulty === 'difficult' && i.wordId != null) {
@@ -93,21 +96,21 @@ export class TextbookPageController {
                 const cardTextContainer = document
                   .querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
                 cardTextContainer[index]
-                  .append(this.textbookAuthCard.createWordAuthorisedCardBtns(word.id));
+                  .append(this.textbookUserCard.drawWordAuthorisedCardBtns(word.id));
 
                 promisesArrId.forEach((complicatedWordId) => {
                   if (complicatedWordId === word.id) {
                     const card = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
-                    card.append(this.textbookAuthCard.createDifficultStar());
+                    card.append(this.textbookUserCard.drawDifficultStar());
 
                     const btn = document.querySelector(`[data-difficult-btn="${complicatedWordId}"]`) as HTMLElement;
-                    this.textbookAuthCard.disableDifficultBtn(btn);
+                    this.textbookUserCard.disableDifficultBtn(btn);
                   }
                 });
 
                 promisesProgress.forEach((i) => {
                   if (i.id === word.id) {
-                    console.log(`${word.id}`, i.progress);
+                    // console.log(`${word.id}`, i.progress);
                   }
                 });
               }

@@ -1,15 +1,15 @@
 import { Pagination } from '../pagination';
 import { CardStyles } from '../card/cardStyles';
-import { TextbookPageController } from '../textbookPageController';
-import { AuthorizedCard } from '../card/authorizedCard';
+import { TextbookPageDisplay } from '../textbookPageDisplay';
 import { hidePagination } from '../textbookHelper';
+import { DifficultGroup } from '../difficultGroup/difficultGroup';
 
 export class TextbookPageView {
   private pagination: Pagination = new Pagination(30);
 
-  private textbookPageController = new TextbookPageController();
+  private textbookDisplay = new TextbookPageDisplay();
 
-  private textbookAuthCard: AuthorizedCard = new AuthorizedCard();
+  private difficultGroup: DifficultGroup = new DifficultGroup();
 
   private style: CardStyles = new CardStyles();
 
@@ -20,7 +20,7 @@ export class TextbookPageView {
   private numberOfGroups: number = 6;
 
   public drawTextbookPage() {
-    this.createTextbookPage();
+    this.createTextbookPageTemplate();
 
     this.checkCurrGroupAndPage();
 
@@ -28,10 +28,9 @@ export class TextbookPageView {
       .createPaginationButtons(this.currentPage + 1);
 
     if (localStorage.getItem('currGroup') === '6') {
-      this.textbookAuthCard.drawComplicatedGroup();
+      this.difficultGroup.drawDifficultGroup();
     } else {
-      this.textbookPageController
-        .toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+      this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
     }
 
     this.changeGroups();
@@ -40,7 +39,7 @@ export class TextbookPageView {
     this.addClassForSprint();
   }
 
-  public createTextbookPage() {
+  private createTextbookPageTemplate() {
     const main = document.querySelector('.main') as HTMLElement;
     main.innerHTML = '';
 
@@ -152,15 +151,17 @@ export class TextbookPageView {
 
         if (btn.dataset.textbook) {
           if (btn.dataset.textbook === '7') {
-            this.textbookAuthCard.drawComplicatedGroup();
+            this.difficultGroup.drawDifficultGroup();
             this.currentGroup = 6;
           } else {
             this.currentGroup = parseInt(btn.dataset.textbook, 10) - 1;
             this.currentPage = 0;
+
             this.pagination.createPaginationButtons(1);
             this.pagination.setToLocalStorage('currPage', 0);
-            this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+            this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
             this.changePages();
+
             hidePagination(false);
           }
           this.style.makeBookmarkActive(this.currentGroup);
@@ -171,7 +172,8 @@ export class TextbookPageView {
   }
 
   private changePages(): void {
-    const paginationBtns = document.querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
+    const paginationBtns = document
+      .querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
     let page: number;
 
     paginationBtns.forEach((btn) => {
@@ -180,7 +182,7 @@ export class TextbookPageView {
         this.currentPage = page;
         this.pagination.setToLocalStorage('currPage', page);
 
-        this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+        this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
     });
@@ -196,7 +198,7 @@ export class TextbookPageView {
         }
       }
 
-      this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+      this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
       this.changePages();
     });
 
@@ -214,7 +216,7 @@ export class TextbookPageView {
           }
         }
 
-        this.textbookPageController.toggleWordsInfoLoading(this.currentGroup, this.currentPage);
+        this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
     }
