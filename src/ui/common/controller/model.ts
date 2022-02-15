@@ -26,3 +26,18 @@ export interface IUserWord {
   optional: IOptionalWord,
   wordId?: string,
 }
+
+interface IOptionalStatistics {
+  countNewWordsGame: number,
+  percentRightAnswerGame: number,
+  longestSeriesOfRightAnswerGame: number,
+  countNewWords: number,
+  countLearnedWords: number,
+  percentRightAnswer: number,
+}
+
+export interface IStatistics {
+  id?: string,
+  learnedWords: number,
+  optional: IOptionalStatistics,
+}
