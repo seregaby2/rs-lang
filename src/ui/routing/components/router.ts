@@ -14,6 +14,7 @@ enum CurrentPage {
   Book = 'book',
   Overview = 'overview',
   TextBookSprintGame = 'sprint-textbook',
+  TextBookAudioGame = 'audiocall-textbook',
 }
 
 export class Router {
@@ -51,6 +52,9 @@ export class Router {
         break;
       case `#/${CurrentPage.AudioGame}`:
         this.audioGame.draw();
+        break;
+      case `#/${CurrentPage.TextBookAudioGame}`:
+        this.audioGame.drawAudioGameFromBookPage();
         break;
       default:
         this.homePage.drawHomePage();
@@ -98,6 +102,9 @@ export class Router {
           break;
         case CurrentPage.AudioGame:
           this.audioGame.draw();
+          break;
+        case CurrentPage.TextBookAudioGame:
+          this.audioGame.drawAudioGameFromBookPage();
           break;
         default:
           this.homePage.drawHomePage();

@@ -396,6 +396,24 @@ export class AudioGamePage {
     });
   }
 
+  public drawAudioGameFromBookPage(): void {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    main.innerHTML = '';
+    this.resetGame();
+    const currPage = Number(localStorage.getItem('currPage'));
+    const currGroup = Number(localStorage.getItem('currGroup'));
+    this.controller
+      .getWords(currGroup, currPage)
+      .then((data) => {
+        this.draw();
+        this.words = this.helpers.shuffleArray(data);
+        this.activeWordIndex = 0;
+        this.drawGameCard();
+        document.removeEventListener('keydown', this.handleKeyboardEvent);
+        document.addEventListener('keydown', this.handleKeyboardEvent);
+      });
+  }
+
   get templateSettings(): string {
     return `
     <div class="main-container-settings-audio-game">
