@@ -61,11 +61,12 @@ export class LogicSprintGame {
   };
 
   private createArrayRussianWord(items: IWordsData[]): string[][] {
+    const itemsNew = items;
     const arrayRussianWordsTotal = [];
-    const shuffleWordsData: IWordsData[] = shuffle(items);
-    for (let j = 0; j < items.length; j += 1) {
+    const shuffleWordsData: IWordsData[] = shuffle(itemsNew);
+    for (let j = 0; j < itemsNew.length; j += 1) {
       const arrayRussianWordsRandomAnswer: string[] = [];
-      arrayRussianWordsRandomAnswer.push(items[j].wordTranslate || '');
+      arrayRussianWordsRandomAnswer.push(itemsNew[j].wordTranslate || '');
       for (let i = 0; i < 1; i += 1) {
         const index = getRandomNumber(shuffleWordsData.length - 1, 0);
         arrayRussianWordsRandomAnswer.push(shuffleWordsData[index].wordTranslate || '');
@@ -101,7 +102,6 @@ export class LogicSprintGame {
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
       const newItemSprintGameResult: IWordsData[] = [];
-      const newItemSprintGameResult1: IWordsData[] = [];
       console.log(this.itemsSprintGameData, arrayLearntUserWords, 'kkk');
       for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
         let repeatWord: boolean = false;
@@ -113,10 +113,9 @@ export class LogicSprintGame {
         }
         if (repeatWord) { continue; }
         newItemSprintGameResult.push(this.itemsSprintGameData[j]);
-        newItemSprintGameResult.push(this.itemsSprintGameData[j]);
         this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
       }
-      console.log(this.arrayEnglishWord, newItemSprintGameResult1, this.itemsSprintGameData, 'item');
+      console.log(this.arrayEnglishWord, newItemSprintGameResult, this.itemsSprintGameData, 'item');
       this.arrayRussianWords = this.createArrayRussianWord(newItemSprintGameResult);
     } else {
       promiseArray.push(this.getWords(group));
