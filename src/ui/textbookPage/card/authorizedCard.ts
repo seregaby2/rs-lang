@@ -72,7 +72,15 @@ export class AuthorizedCard {
         const card = complicatedBtn.closest('.textbook-card-container') as HTMLElement;
         card.append(this.createDifficultStar());
 
-        this.disableDifficultBtn(complicatedBtn);
+        const z = document.querySelector(`[data-learnt-btn="${wordId}"]`) as HTMLButtonElement;
+        z.classList.remove('disable');
+
+        const star = document.querySelector(`[data-word-id="${wordId}"] .check`) as HTMLElement;
+        if (star) {
+          star.remove();
+        }
+
+        this.disableBtn(complicatedBtn);
       }
     });
 
@@ -81,6 +89,26 @@ export class AuthorizedCard {
     learntBtn.innerHTML = 'Изученное';
     learntBtn.setAttribute('data-learnt-btn', id);
 
+    learntBtn.addEventListener('click', () => {
+      if (learntBtn.dataset.learntBtn) {
+        const wordId = learntBtn.dataset.learntBtn;
+        this.makeWordLearnt(wordId);
+
+        const card = learntBtn.closest('.textbook-card-container') as HTMLElement;
+        card.append(this.createLearntCheckmark());
+
+        const z = document.querySelector(`[data-difficult-btn="${wordId}"]`) as HTMLButtonElement;
+        z.classList.remove('disable');
+
+        const star = document.querySelector(`[data-word-id="${wordId}"] .star`) as HTMLElement;
+        if (star) {
+          star.remove();
+        }
+
+        this.disableBtn(learntBtn);
+      }
+    });
+
     buttonsContainer.append(complicatedBtn);
     buttonsContainer.append(learntBtn);
     return buttonsContainer;
@@ -88,6 +116,7 @@ export class AuthorizedCard {
 
   public createDifficultStar(): HTMLElement {
     const star = document.createElement('div') as HTMLElement;
+    star.classList.add('star');
     const group = localStorage.getItem('currGroup');
 
     if (group) {
@@ -98,8 +127,21 @@ export class AuthorizedCard {
     return star;
   }
 
-  public disableDifficultBtn(btn: HTMLElement): void {
+  public disableBtn(btn: HTMLElement): void {
     btn.classList.add('disable');
+  }
+
+  private createLearntCheckmark(): HTMLElement {
+    const check = document.createElement('div') as HTMLElement;
+    check.classList.add('check');
+    const group = localStorage.getItem('currGroup');
+
+    if (group) {
+      const index = parseInt(group, 10);
+      check
+        .innerHTML = `<i class="fa fa-solid fa-check textbook-learnt-check" style="color: ${this.levelColor[index]}"></i>`;
+    }
+    return check;
   }
 
   private createBtnRemoveFromDifficult(wordId: IWordsData['id']): HTMLButtonElement {
@@ -133,12 +175,14 @@ export class AuthorizedCard {
           },
         )
           .then(() => {
-            this.drawComplicatedGroup();
+            if (localStorage.getItem('currGroup') === '6') {
+              this.drawComplicatedGroup();
+            }
           });
       });
   }
 
-  private makeWordDifficult(wordId: string): void {
+  private makeWordDifficult(wordId: IWordsData['id']): void {
     this.controllerUserWords.createUserWord(
       this.userId,
       this.userToken,
@@ -161,7 +205,44 @@ export class AuthorizedCard {
                 wordId,
                 {
                   difficulty: 'difficult',
-                  optional: currentWord.optional,
+                  optional: {
+                    new: currentWord.optional.new,
+                    progress: 0,
+                  },
+                },
+              );
+            });
+        }
+      });
+  }
+
+  private makeWordLearnt(wordId: IWordsData['id']): void {
+    this.controllerUserWords.createUserWord(
+      this.userId,
+      this.userToken,
+      wordId,
+      {
+        difficulty: 'simple',
+        optional: {
+          new: false,
+          progress: 3,
+        },
+      },
+    )
+      .catch((err) => {
+        if (err) {
+          this.controllerUserWords.getUserWord(this.userId, this.userToken, wordId)
+            .then(() => {
+              this.controllerUserWords.updateUserWord(
+                this.userId,
+                this.userToken,
+                wordId,
+                {
+                  difficulty: 'simple',
+                  optional: {
+                    new: false,
+                    progress: 3,
+                  },
                 },
               );
             });

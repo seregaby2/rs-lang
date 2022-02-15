@@ -101,7 +101,7 @@ export class TextbookPageController {
                     card.append(this.textbookAuthCard.createDifficultStar());
 
                     const btn = document.querySelector(`[data-difficult-btn="${complicatedWordId}"]`) as HTMLElement;
-                    this.textbookAuthCard.disableDifficultBtn(btn);
+                    this.textbookAuthCard.disableBtn(btn);
                   }
                 });
 

@@ -114,6 +114,7 @@
   background: $seventh-level;
 }
 
+.textbook-learnt-check,
 .textbook-star-difficult {
   color: $accent-color;
   position: absolute;
@@ -160,7 +161,7 @@
 }
 
 //AUTHORIZED
-
+.textbook-learnt-btn.disable,
 .textbook-difficult-btn.disable {
   pointer-events: none;
   opacity: 0.3;
