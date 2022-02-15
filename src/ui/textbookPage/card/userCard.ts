@@ -1,11 +1,15 @@
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
+import { CURRENT_GROUP, USER_ACCESS_TOKEN, USER_ID } from '../../common/model/localStorageKeys';
+import { LocalStorageService } from '../../common/services/localStorageService';
 
 export class UserCard {
+  private localStorageService: LocalStorageService = new LocalStorageService();
+
   private controllerUserWords: ControllerUserWords = new ControllerUserWords();
 
-  private userId = localStorage.getItem('user_id') || '';
+  private userId = this.localStorageService.get(USER_ID);
 
-  private userToken = localStorage.getItem('user_access_token') || '';
+  private userToken = this.localStorageService.get(USER_ACCESS_TOKEN);
 
   private levelColor: string[] = ['#F1C50EFF', '#FFBF00', '#FF9515', '#FF6A2B', '#e21818', '#e21818', '#dc146f'];
 
@@ -42,7 +46,7 @@ export class UserCard {
 
   public drawDifficultStar(): HTMLElement {
     const star = document.createElement('div') as HTMLElement;
-    const group = localStorage.getItem('currGroup');
+    const group = this.localStorageService.get(CURRENT_GROUP);
 
     if (group) {
       const index = parseInt(group, 10);

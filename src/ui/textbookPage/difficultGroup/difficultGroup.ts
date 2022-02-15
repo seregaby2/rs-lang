@@ -3,17 +3,21 @@ import { IWordsData } from '../../common/controller/model';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { TextbookCard } from '../card/textbookCard';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
+import { LocalStorageService } from '../../common/services/localStorageService';
+import { USER_ACCESS_TOKEN, USER_ID } from '../../common/model/localStorageKeys';
 
 export class DifficultGroup {
+  private localStorageService: LocalStorageService = new LocalStorageService();
+
   private controllerWords: ControllerWords = new ControllerWords();
 
   private textbookCard: TextbookCard = new TextbookCard();
 
   private controllerUserWords: ControllerUserWords = new ControllerUserWords();
 
-  private userId = localStorage.getItem('user_id') || '';
+  private userId = this.localStorageService.get(USER_ID);
 
-  private userToken = localStorage.getItem('user_access_token') || '';
+  private userToken = this.localStorageService.get(USER_ACCESS_TOKEN);
 
   public drawDifficultGroup(): void {
     const cardsContainer = document

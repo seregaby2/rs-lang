@@ -3,8 +3,12 @@ import { CardStyles } from '../card/cardStyles';
 import { TextbookPageDisplay } from '../textbookPageDisplay';
 import { hidePagination } from '../textbookHelper';
 import { DifficultGroup } from '../difficultGroup/difficultGroup';
+import { LocalStorageService } from '../../common/services/localStorageService';
+import { CURRENT_GROUP, CURRENT_PAGE, USER_ID } from '../../common/model/localStorageKeys';
 
 export class TextbookPageView {
+  private localStorageService: LocalStorageService = new LocalStorageService();
+
   private pagination: Pagination = new Pagination(30);
 
   private textbookDisplay = new TextbookPageDisplay();
@@ -27,7 +31,7 @@ export class TextbookPageView {
     this.pagination
       .createPaginationButtons(this.currentPage + 1);
 
-    if (localStorage.getItem('currGroup') === '6') {
+    if (this.localStorageService.get(CURRENT_GROUP) === '6') {
       this.difficultGroup.drawDifficultGroup();
     } else {
       this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
@@ -69,22 +73,22 @@ export class TextbookPageView {
   }
 
   private checkCurrGroupAndPage(): void {
-    if (localStorage.getItem('currGroup')) {
-      const group = localStorage.getItem('currGroup');
+    if (this.localStorageService.get(CURRENT_GROUP)) {
+      const group = this.localStorageService.get(CURRENT_GROUP);
       if (group) {
         this.currentGroup = parseInt(group, 10);
         this.style.makeBookmarkActive(this.currentGroup);
       }
     } else {
-      this.pagination.setToLocalStorage('currGroup', 0);
+      this.localStorageService.set(CURRENT_GROUP, 0);
     }
-    if (localStorage.getItem('currPage')) {
-      const page = localStorage.getItem('currPage');
+    if (this.localStorageService.get(CURRENT_PAGE)) {
+      const page = this.localStorageService.get(CURRENT_PAGE);
       if (page) {
         this.currentPage = parseInt(page, 10);
       }
     } else {
-      this.pagination.setToLocalStorage('currPage', 0);
+      this.localStorageService.set(CURRENT_PAGE, 0);
     }
   }
 
@@ -100,7 +104,7 @@ export class TextbookPageView {
     const navigationContainer = document.createElement('div') as HTMLDivElement;
     navigationContainer.classList.add('textbook-pages');
 
-    if (localStorage.getItem('user_id')) {
+    if (this.localStorageService.get(USER_ID)) {
       this.numberOfGroups = 7;
     }
 
@@ -158,14 +162,14 @@ export class TextbookPageView {
             this.currentPage = 0;
 
             this.pagination.createPaginationButtons(1);
-            this.pagination.setToLocalStorage('currPage', 0);
+            this.localStorageService.set(CURRENT_PAGE, 0);
             this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
             this.changePages();
 
             hidePagination(false);
           }
           this.style.makeBookmarkActive(this.currentGroup);
-          this.pagination.setToLocalStorage('currGroup', this.currentGroup);
+          this.localStorageService.set(CURRENT_GROUP, this.currentGroup);
         }
       });
     });
@@ -189,12 +193,12 @@ export class TextbookPageView {
 
     const prevBtn = document.querySelector('.prev') as HTMLElement;
     prevBtn.addEventListener('click', () => {
-      if (localStorage.getItem('currPage')) {
-        const pageLocalS = localStorage.getItem('currPage');
+      if (this.localStorageService.get(CURRENT_PAGE)) {
+        const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
         if (pageLocalS) {
           const currPage = parseInt(pageLocalS, 10) - 1;
           this.currentPage = currPage;
-          this.pagination.setToLocalStorage('currPage', currPage);
+          this.localStorageService.set(CURRENT_PAGE, currPage);
         }
       }
 
@@ -205,13 +209,13 @@ export class TextbookPageView {
     const nextBtn = document.querySelector('.next') as HTMLElement;
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        if (localStorage.getItem('currPage')) {
-          if (localStorage.getItem('currPage')) {
-            const pageLocalS = localStorage.getItem('currPage');
+        if (this.localStorageService.get(CURRENT_PAGE)) {
+          if (this.localStorageService.get(CURRENT_PAGE)) {
+            const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
             if (pageLocalS) {
               const currPage = parseInt(pageLocalS, 10) - 1;
               this.currentPage = currPage;
-              this.pagination.setToLocalStorage('currPage', currPage);
+              this.localStorageService.set(CURRENT_PAGE, currPage);
             }
           }
         }
