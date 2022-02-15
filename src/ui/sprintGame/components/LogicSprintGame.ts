@@ -28,6 +28,8 @@ export class LogicSprintGame {
 
   private itemsSprintGameData: IWordsData[] = [];
 
+  private finalyItemsSprintGameData: IWordsData[] = [];
+
   private resultAnswer: number[] = [];
 
   private maxCountProgressAnswer: number = 60;
@@ -60,23 +62,21 @@ export class LogicSprintGame {
     return items;
   };
 
-  private createArrayRussianWord(items: IWordsData[]): string[][] {
-    const itemsNew = items;
-    const arrayRussianWordsTotal = [];
-    const shuffleWordsData: IWordsData[] = shuffle(itemsNew);
-    for (let j = 0; j < itemsNew.length; j += 1) {
+  private createArrayRussianWord(items: IWordsData[]): void {
+    this.arrayRussianWords = [];
+    const shuffleWordsData: IWordsData[] = shuffle(items);
+    for (let j = 0; j < items.length; j += 1) {
       const arrayRussianWordsRandomAnswer: string[] = [];
-      arrayRussianWordsRandomAnswer.push(itemsNew[j].wordTranslate || '');
+      arrayRussianWordsRandomAnswer.push(items[j].wordTranslate || '');
       for (let i = 0; i < 1; i += 1) {
         const index = getRandomNumber(shuffleWordsData.length - 1, 0);
         arrayRussianWordsRandomAnswer.push(shuffleWordsData[index].wordTranslate || '');
       }
-      arrayRussianWordsTotal.push(arrayRussianWordsRandomAnswer);
+      this.arrayRussianWords.push(arrayRussianWordsRandomAnswer);
     }
-    return arrayRussianWordsTotal;
   }
 
-  private createArrayEnglishAndRussianWordsHelper = async (group: number) => {
+  private createArrayEnglishAndRussianWordsHelper = async (group: number): Promise<void> => {
     const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
     const arrayLearntUserWords = [];
@@ -102,7 +102,6 @@ export class LogicSprintGame {
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
       const newItemSprintGameResult: IWordsData[] = [];
-      console.log(this.itemsSprintGameData, arrayLearntUserWords, 'kkk');
       for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
         let repeatWord: boolean = false;
         for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
@@ -113,24 +112,25 @@ export class LogicSprintGame {
         }
         if (repeatWord) { continue; }
         newItemSprintGameResult.push(this.itemsSprintGameData[j]);
-        this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
       }
-      console.log(this.arrayEnglishWord, newItemSprintGameResult, this.itemsSprintGameData, 'item');
-      this.arrayRussianWords = this.createArrayRussianWord(newItemSprintGameResult);
+      this.createArrayRussianWord(newItemSprintGameResult);
+      for (let i = 0; i < newItemSprintGameResult.length; i += 1) {
+        this.arrayEnglishWord.push(newItemSprintGameResult[i].word || '');
+      }
+      this.finalyItemsSprintGameData = newItemSprintGameResult;
     } else {
       promiseArray.push(this.getWords(group));
       promiseArray.push(this.getWords(group));
       promiseArray.push(this.getWords(group));
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
-      this.arrayRussianWords = this.createArrayRussianWord(this.itemsSprintGameData);
-      console.log(this.itemsSprintGameData, arrayLearntUserWords, 'kkk');
+      this.createArrayRussianWord(this.itemsSprintGameData);
       for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
         this.arrayEnglishWord.push(this.itemsSprintGameData[j].word || '');
       }
+      this.finalyItemsSprintGameData = this.itemsSprintGameData;
     }
     this.maxCountProgressAnswer = this.arrayEnglishWord.length;
-    console.log(this.arrayEnglishWord, this.arrayRussianWords, 'translate');
   };
 
   private createArrayEnglishAndRussianWords = async (group: number): Promise<void> => {
@@ -190,14 +190,13 @@ export class LogicSprintGame {
     }
     this.countProgressAnswer += 1;
     const count = getRandomNumber(1, 0);
-    this.getAnswer(count);
+
     if (this.bestContinuousSeries < this.continuousSeries) {
       this.bestContinuousSeries = this.continuousSeries;
     }
     const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
     if (userGreeting) {
-      console.log(this.resultAnswer.length, this.itemsSprintGameData[this.resultAnswer.length - 1].id, 'id');
-      const WordId = this.itemsSprintGameData[this.resultAnswer.length - 1].id;
+      const WordId = this.finalyItemsSprintGameData[this.resultAnswer.length - 1].id;
       const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
       let repeatWord: boolean = false;
       this.getUserWordsGame().then((item) => {
@@ -213,19 +212,24 @@ export class LogicSprintGame {
         }
       });
     }
+    this.getAnswer(count);
     return count;
   }
 
   private addControlKeyboard = (e: KeyboardEvent): void => {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     if (e.key === 'ArrowLeft' && buttonWrongRight[0]) {
-      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      this.count = this.writeDataForClickAnswer(
+        this.finalyItemsSprintGameData[this.countProgressAnswer]
+          .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count],
+      );
       buttonWrongRight[0].classList.add('key-down-wrong');
     }
     if (e.key === 'ArrowRight' && buttonWrongRight[0]) {
-      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      this.count = this.writeDataForClickAnswer(
+        this.finalyItemsSprintGameData[this.countProgressAnswer]
+          .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count],
+      );
       buttonWrongRight[1].classList.add('key-down-right');
     }
   };
@@ -249,13 +253,17 @@ export class LogicSprintGame {
     });
     fullScreen.addEventListener('click', this.toggleFullscreen);
     buttonWrongRight[0].addEventListener('click', () => {
-      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      this.count = this.writeDataForClickAnswer(
+        this.finalyItemsSprintGameData[this.countProgressAnswer]
+          .wordTranslate !== this.arrayRussianWords[this.countProgressAnswer][this.count],
+      );
     });
 
     buttonWrongRight[1].addEventListener('click', () => {
-      this.count = this.writeDataForClickAnswer(this.itemsSprintGameData[this.countProgressAnswer]
-        .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count]);
+      this.count = this.writeDataForClickAnswer(
+        this.finalyItemsSprintGameData[this.countProgressAnswer]
+          .wordTranslate === this.arrayRussianWords[this.countProgressAnswer][this.count],
+      );
     });
     document.addEventListener('keydown', this.addControlKeyboard);
     document.addEventListener('keyup', () => this.removeClassFromButton());
@@ -314,7 +322,7 @@ export class LogicSprintGame {
     voice.forEach((e, i) => {
       e.addEventListener('click', () => {
         const audio = new Audio();
-        audio.src = `https://rs-lang-2022.herokuapp.com/${this.itemsSprintGameData[i].audio}`;
+        audio.src = `https://rs-lang-2022.herokuapp.com/${this.finalyItemsSprintGameData[i].audio}`;
         audio.play();
       });
     });
@@ -325,7 +333,7 @@ export class LogicSprintGame {
     if (this.myInterval) {
       clearInterval(this.myInterval);
       main.innerHTML = '';
-      this.template.createTableWithResults(main, this.itemsSprintGameData, this.resultAnswer);
+      this.template.createTableWithResults(main, this.finalyItemsSprintGameData, this.resultAnswer);
       this.runVoice();
       const score = document.querySelector('.score-for-result') as HTMLDListElement;
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
@@ -353,7 +361,7 @@ export class LogicSprintGame {
     if (this.myInterval && this.time < 0) {
       clearInterval(this.myInterval);
       main.innerHTML = '';
-      this.template.createTableWithResults(main, this.itemsSprintGameData, this.resultAnswer);
+      this.template.createTableWithResults(main, this.finalyItemsSprintGameData, this.resultAnswer);
       this.runVoice();
       this.resetTimer();
     }
