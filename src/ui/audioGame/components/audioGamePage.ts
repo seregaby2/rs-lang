@@ -105,10 +105,6 @@ export class AudioGamePage {
       if (isOption) {
         this.handleButton(target as HTMLButtonElement);
       }
-
-      if (this.activeWordIndex === this.totalWord) {
-        this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
-      }
     });
   }
 
@@ -159,34 +155,30 @@ export class AudioGamePage {
     const buttonAnswer = this.pageContainer.querySelector('.button-answer-audio-game') as HTMLButtonElement;
     const buttonNext = this.pageContainer.querySelector('.button-next-card-audio-game') as HTMLButtonElement;
 
-    buttonAnswer?.addEventListener('click', (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isSelectedButtonAnswer = target.classList.contains('button-answer-audio-game');
+    buttonAnswer?.addEventListener('click', () => {
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+      const activeWord = this.words[this.activeWordIndex];
+      const id = activeWord.id as string;
+      const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
 
-      if (isSelectedButtonAnswer) {
-        const activeWord = this.words[this.activeWordIndex];
-        const id = activeWord.id as string;
-        const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
-
-        if (activeButton !== null) {
-          activeButton.classList.add('correct');
-        }
-        buttonAnswer.style.display = 'none';
-        buttonNext.style.display = 'inline-block';
-        this.soundGame.playSoundIncorrectAnswer();
-        this.createAnswer();
+      if (activeButton !== null) {
+        activeButton.classList.add('correct');
       }
-    });
-    buttonNext.addEventListener('click', (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isSelectedButtonNext = target.classList.contains('button-next-card-audio-game');
 
-      if (isSelectedButtonNext) {
+      buttonAnswer.style.display = 'none';
+      buttonNext.style.display = 'inline-block';
+      this.soundGame.playSoundIncorrectAnswer();
+      this.createAnswer();
+    });
+
+    buttonNext.addEventListener('click', () => {
+      if (this.activeWordIndex < this.totalWord - 1) {
         buttonNext.style.display = 'none';
         buttonAnswer.style.display = 'inline-block';
         this.activeWordIndex += 1;
         this.drawGameCard();
+      } else {
+        this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
       }
     });
   }
