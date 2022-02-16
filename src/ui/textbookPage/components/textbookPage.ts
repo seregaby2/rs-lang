@@ -6,7 +6,7 @@ import { DifficultGroup } from '../difficultGroup/difficultGroup';
 import { LocalStorageService } from '../../common/services/localStorageService';
 import { CURRENT_GROUP, CURRENT_PAGE, USER_ID } from '../../common/model/localStorageKeys';
 
-export class TextbookPageView {
+export class TextbookPage {
   private localStorageService: LocalStorageService = new LocalStorageService();
 
   private pagination: Pagination = new Pagination(30);
@@ -151,6 +151,7 @@ export class TextbookPageView {
       btn.addEventListener('click', () => {
         groupsBtns.forEach((item) => {
           item.classList.remove('active');
+          item.classList.remove('disable');
         });
 
         if (btn.dataset.textbook) {
@@ -170,6 +171,7 @@ export class TextbookPageView {
           }
           this.style.makeBookmarkActive(this.currentGroup);
           this.localStorageService.set(CURRENT_GROUP, this.currentGroup);
+          btn.classList.add('disable');
         }
       });
     });
@@ -184,7 +186,7 @@ export class TextbookPageView {
       btn.addEventListener('click', () => {
         page = parseInt(btn.innerHTML, 10) - 1;
         this.currentPage = page;
-        this.pagination.setToLocalStorage('currPage', page);
+        this.localStorageService.set(CURRENT_PAGE, page);
 
         this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();

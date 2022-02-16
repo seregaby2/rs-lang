@@ -1,13 +1,16 @@
 import { MenuAside } from '../common/header/components/menuAside';
 import { AuthHelper } from './authHelper';
-import { TextbookPageView } from '../textbookPage/components/textbookPageView';
+import { TextbookPage } from '../textbookPage/components/textbookPage';
+import { LocalStorageService } from '../common/services/localStorageService';
 
 export class LogOut {
   private menuAside = new MenuAside();
 
   private helper: AuthHelper = new AuthHelper();
 
-  private textbookView: TextbookPageView = new TextbookPageView();
+  private textbookView: TextbookPage = new TextbookPage();
+
+  private localStorageService: LocalStorageService = new LocalStorageService();
 
   public drawLogOutBtn(): void {
     const menuAside = document.querySelector('.menu-aside') as HTMLElement;
@@ -23,9 +26,12 @@ export class LogOut {
     const logOutBtn = document.querySelector('.log-out-btn') as HTMLButtonElement;
     logOutBtn.addEventListener('click', () => {
       const greeting = document.querySelector('.user-greeting') as HTMLButtonElement;
-      localStorage.clear();
+
+      this.localStorageService.clear();
+
       logOutBtn.remove();
       greeting.remove();
+
       this.helper.createAuthorizationBtn();
       this.menuAside.closeMenuAside();
 

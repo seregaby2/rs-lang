@@ -2,9 +2,16 @@ import { CardAudio } from './card/cardAudio';
 import { CardStyles } from './card/cardStyles';
 import { ControllerWords } from '../common/controller/controllerWords';
 import { clearCardsContainer } from './textbookHelper';
-import { TextbookCard } from './card/textbookCard';
+import { TextbookCard } from './card/component/textbookCard';
 import { ControllerUserWords } from '../common/controller/controllerUserWords';
-import { UserCard } from './card/userCard';
+import { UserCard } from './card/component/userCard';
+import { USER_ID } from '../common/model/localStorageKeys';
+
+interface Za {
+  progress: number,
+  id: string,
+  difficulty: string,
+}
 
 export class TextbookPageDisplay {
   private audio: CardAudio = new CardAudio();
@@ -19,8 +26,16 @@ export class TextbookPageDisplay {
 
   private textbookUserCard: UserCard = new UserCard();
 
+  private difficultWords: string[] = [];
+
+  private learntWords: string[] = [];
+
+  private promisesProgress: Za[] = [];
+
+  private userId = localStorage.getItem(USER_ID) || '';
+
   public toggleCards(group: number, page: number): void {
-    if (localStorage.getItem('user_id') && localStorage.getItem('user_access_token')) {
+    if (this.userId && localStorage.getItem('user_access_token')) {
       this.createUserCards(group, page);
     } else {
       this.createUsualCards(group, page);
@@ -54,26 +69,31 @@ export class TextbookPageDisplay {
 
   public createUserCards(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
-
-    const promisesArrId: string[] = [];
-    const promisesProgress: { progress: number, id: string }[] = [];
     this.controllerUserWords
       .getUserWords(
         localStorage.getItem('user_id') || '',
         localStorage.getItem('user_access_token') || '',
       )
       .then((data) => {
-        data.forEach((i) => {
-          if (i.difficulty != null && i.difficulty === 'difficult' && i.wordId != null) {
-            promisesArrId.push(i.wordId);
+        data.forEach((word) => {
+          if (word.difficulty === 'difficult' && word.wordId) {
+            this.difficultWords.push(word.wordId);
           }
-          if (i.optional.progress != null && i.wordId != null) {
-            const obj: { progress: number, id: string } = {
-              progress: i.optional.progress,
-              id: i.wordId,
-            };
-            promisesProgress.push(obj);
+
+          if (word.difficulty === 'difficult' && word.optional.progress === 5 && word.wordId) {
+            this.learntWords.push(word.wordId);
           }
+
+          if (word.difficulty === 'simple' && word.optional.progress === 3 && word.wordId) {
+            this.learntWords.push(word.wordId);
+          }
+
+          const obj: { progress: number, id: string, difficulty: string } = {
+            progress: word.optional.progress,
+            id: word.wordId || '',
+            difficulty: word.difficulty,
+          };
+          this.promisesProgress.push(obj);
         });
       })
       .then(() => {
@@ -93,30 +113,40 @@ export class TextbookPageDisplay {
                   word.textExample,
                   word.textExampleTranslate,
                 ));
+
                 const cardTextContainer = document
                   .querySelectorAll('.textbook-card-text') as NodeListOf<HTMLDivElement>;
                 cardTextContainer[index]
                   .append(this.textbookUserCard.drawWordAuthorisedCardBtns(word.id));
 
-                promisesArrId.forEach((complicatedWordId) => {
-                  if (complicatedWordId === word.id) {
-                    const card = document.querySelector(`[data-word-id="${complicatedWordId}"]`) as HTMLElement;
-                    card.append(this.textbookUserCard.drawDifficultStar());
-
-                    const btn = document.querySelector(`[data-difficult-btn="${complicatedWordId}"]`) as HTMLElement;
-                    this.textbookUserCard.disableDifficultBtn(btn);
+                this.difficultWords.forEach((difficultWordId) => {
+                  if (difficultWordId === word.id) {
+                    this.textbookUserCard.addDifficultWordsStyle(difficultWordId);
                   }
                 });
 
-                promisesProgress.forEach((i) => {
+                this.learntWords.forEach((learntWordId) => {
+                  if (learntWordId === word.id) {
+                    this.textbookUserCard.addLearntWordsStyle(learntWordId);
+                  }
+                });
+
+                this.promisesProgress.forEach((i) => {
                   if (i.id === word.id) {
-                    // console.log(`${word.id}`, i.progress);
+                    const card = document
+                      .querySelector(`[data-word-id="${i.id}"] .textbook-card-text`) as HTMLElement;
+                    const prog = card.querySelector('.progress-container') as HTMLElement;
+                    if (prog) {
+                      prog.remove();
+                    }
+                    this.textbookUserCard.drawProgressElement(i);
                   }
                 });
               }
             });
             this.audio.playCardAudio(group, page);
             this.style.changeStyles(group);
+            this.textbookUserCard.checkIfAllBtnsActive();
           });
       });
   }
