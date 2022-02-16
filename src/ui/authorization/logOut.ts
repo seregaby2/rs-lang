@@ -18,26 +18,26 @@ export class LogOut {
     logOutBtn.classList.add('menu-item', 'log-out-btn');
     logOutBtn.innerHTML = `<i class="fas fa-sign-out-alt menu-icon"></i>
                     <div class="menu-text">Выход</div>`;
+
+    logOutBtn.addEventListener('click', () => {
+      logOutBtn.remove();
+      this.logOut();
+    });
     menuAside.append(logOutBtn);
-    this.logOut();
   }
 
   public logOut(): void {
-    const logOutBtn = document.querySelector('.log-out-btn') as HTMLButtonElement;
-    logOutBtn.addEventListener('click', () => {
-      const greeting = document.querySelector('.user-greeting') as HTMLButtonElement;
+    const greeting = document.querySelector('.user-greeting') as HTMLButtonElement;
 
-      this.localStorageService.clear();
+    this.localStorageService.clear();
 
-      logOutBtn.remove();
-      greeting.remove();
+    greeting.remove();
 
-      this.helper.createAuthorizationBtn();
-      this.menuAside.closeMenuAside();
+    this.helper.createAuthorizationBtn();
+    this.menuAside.closeMenuAside();
 
-      if (window.location.href === 'http://localhost:8080/#/book') {
-        this.textbookView.drawTextbookPage();
-      }
-    });
+    if (window.location.href === 'http://localhost:8080/#/book') {
+      this.textbookView.drawTextbookPage();
+    }
   }
 }
