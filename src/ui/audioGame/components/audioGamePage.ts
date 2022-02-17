@@ -1,3 +1,5 @@
+import { ControllerUserWords } from '../../common/controller/controllerUserWords';
+import { TemplateHtmlAudioGame } from './templateHtmlAudioGame';
 import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
 import { IWordsData } from '../../common/controller/model';
@@ -47,6 +49,10 @@ export class AudioGamePage {
 
   private soundGame = new AudioGameSound();
 
+  private templateAudioGame = new TemplateHtmlAudioGame();
+
+  private controllerUserWords = new ControllerUserWords();
+
   constructor(callback: () => void) {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
@@ -60,7 +66,7 @@ export class AudioGamePage {
     mainWrapper.classList.add('main-wrapper-audio-game-page');
 
     main.prepend(mainWrapper);
-    mainWrapper.innerHTML = this.templateSettings;
+    mainWrapper.innerHTML = this.templateAudioGame.templateSettings;
     this.showMainMenu();
     this.createLevelButtons();
     this.setListenerLevelButtons();
@@ -112,12 +118,13 @@ export class AudioGamePage {
     const { id } = button.dataset;
     const activeWord = this.words[this.activeWordIndex];
     const isCorrect = activeWord.id === id;
-
     if (isCorrect) {
+      this.checkWordForSendBeck(activeWord.id, true);
       button.classList.add('correct');
       this.correctAnswer.push(this.words[this.activeWordIndex]);
       this.soundGame.playSoundCorrectAnswer();
     } else {
+      this.checkWordForSendBeck(activeWord.id, false);
       button.classList.add('incorrect');
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
       const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
@@ -125,6 +132,27 @@ export class AudioGamePage {
       this.soundGame.playSoundIncorrectAnswer();
     }
     this.createAnswer();
+  }
+
+  private checkWordForSendBeck(wordId: string, isCorrect: boolean): void {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const delta: number = isCorrect ? 1 : -1;
+    this.controllerUserWords.getUserWord(userId, token, wordId).then((data) => {
+      this.controllerUserWords.updateUserWord(userId, token, wordId, {
+        difficulty: data.difficulty,
+        optional: {
+          new: data.optional.new,
+          progress: data.optional.progress + delta,
+        },
+      }).catch(() => this.controllerUserWords.createUserWord(userId, token, wordId, {
+        difficulty: 'simple',
+        optional: {
+          new: false,
+          progress: 0,
+        },
+      }));
+    });
   }
 
   private createAnswer(): void {
@@ -300,7 +328,7 @@ export class AudioGamePage {
   private createButtonsWithAnswer(options: OptionsType[]): void {
     const mainWrapper = document.querySelector('.main-wrapper-audio-game-page') as HTMLElement;
     mainWrapper.innerHTML = '';
-    mainWrapper.innerHTML = this.baseTemplate;
+    mainWrapper.innerHTML = this.templateAudioGame.baseTemplate;
     const mainContainer = this.pageContainer.querySelector('.main-container-audio-game') as HTMLDivElement;
     const container = document.createElement('div') as HTMLDivElement;
     container.classList.add('button-wrapper-audio-game');
@@ -404,37 +432,5 @@ export class AudioGamePage {
         document.removeEventListener('keydown', this.handleKeyboardEvent);
         document.addEventListener('keydown', this.handleKeyboardEvent);
       });
-  }
-
-  get templateSettings(): string {
-    return `
-    <div class="main-container-settings-audio-game">
-      <div class="container-settings-audio-game-main-title">
-        <h3 class="main-title-setting-audio-game">Настойки игры</h2>
-      </div>
-      <div class="container-support-title-settings-game">
-        <h4 class="support-title-setting-audio-game">Выберите сложность игры</h4>
-      </div>
-      <div class="container-buttons-level-audio-game"></div>
-      <div class="container-buttons-settings-audio-game">
-        <button class="button-audio-game button-cancel-audio-game">Отмена</button>
-        <button class="button-audio-game button-start-audio-game">Старт</button>
-      </div>
-    </div>`;
-  }
-
-  get baseTemplate(): string {
-    return `
-    <div class="main-wrapper-audio-game">
-      <div class="main-container-audio-game">
-        <div class="answer-info-container">
-          <button class="button-audio-game button-volume-audio-game"></button>
-        </div>
-      </div>
-      <button class="button-audio-game button-answer-audio-game">не знаю</button>
-      <button class="button-audio-game button-next-card-audio-game"> → </button>
-
-    </div>
-      `;
   }
 }
