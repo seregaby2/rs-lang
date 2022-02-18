@@ -18,6 +18,8 @@ export interface IWordsData {
 interface IOptionalWord {
   new: boolean,
   progress: number,
+  timeStamp: string,
+  addingMethodWords?: string,
 }
 
 export interface IUserWord {
@@ -28,16 +30,35 @@ export interface IUserWord {
 }
 
 interface IOptionalStatistics {
-  countNewWordsGame: number,
-  percentRightAnswerGame: number,
-  longestSeriesOfRightAnswerGame: number,
-  countNewWords: number,
-  countLearnedWords: number,
-  percentRightAnswer: number,
+  countNewWordsSprint: number,
+  percentRightAnswerSprint: number,
+  longestSeriesOfRightAnswerSprint: number,
+  countNewWordsAudio: number,
+  percentRightAnswerAudio: number,
+  longestSeriesOfRightAnswerAudio: number,
+  countNewWordsBook: number,
+  countLearnedWordsBook: number,
+  percentRightAnswerBook: number,
 }
 
 export interface IStatistics {
   id?: string,
   learnedWords: number,
   optional: IOptionalStatistics,
+}
+
+interface IOptionalSettings {
+  countRightAnswerSprint: number,
+  countTotalAnswerSprint: number,
+  longestContinuosSeriesSprint: number
+}
+
+export interface ISettings {
+  id?: string,
+  wordsPerDay: number,
+  optional: IOptionalSettings,
+}
+
+export interface IAggregated {
+  paginatedResults: IWordsData[],
 }

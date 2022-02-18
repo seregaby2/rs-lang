@@ -60,6 +60,14 @@ export class UserCard {
     btn.classList.add('disable');
   }
 
+  private getDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  }
+
   private makeWordDifficult(wordId: string): void {
     this.controllerUserWords.createUserWord(
       this.userId,
@@ -70,6 +78,7 @@ export class UserCard {
         optional: {
           new: false,
           progress: 0,
+          timeStamp: this.getDate(),
         },
       },
     )

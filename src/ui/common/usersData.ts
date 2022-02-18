@@ -18,7 +18,12 @@ export class UsersData {
     return userWords;
   }
 
-  async createUserWordsGame(wordId: string, rightWrongAnswer: number) {
+  async createUserWordsGame(
+    wordId: string,
+    rightWrongAnswer: number,
+    addingMethodWord: string,
+    timesStamp: string,
+  ) {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
     const body: IUserWord = {
@@ -26,6 +31,8 @@ export class UsersData {
       optional: {
         new: true,
         progress: rightWrongAnswer,
+        addingMethodWords: addingMethodWord,
+        timeStamp: timesStamp,
       },
     };
     this.controllerUserWords.createUserWord(userId, token, wordId, body);
@@ -36,6 +43,7 @@ export class UsersData {
     rightWrongAnswer: number,
     difficult: string,
     progressHelp: number,
+    timesStamp: string,
   ) {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
@@ -59,6 +67,7 @@ export class UsersData {
       optional: {
         new: true,
         progress: progressHelpTwo,
+        timeStamp: timesStamp,
       },
     };
     this.controllerUserWords.updateUserWord(userId, token, wordId, body);
