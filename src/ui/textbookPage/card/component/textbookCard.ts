@@ -1,4 +1,4 @@
-import { IWordsData } from '../../common/controller/model';
+import { IWordsData } from '../../../common/controller/model';
 
 export class TextbookCard {
   public createWordCard(
