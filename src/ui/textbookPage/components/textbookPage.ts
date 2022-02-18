@@ -165,13 +165,12 @@ export class TextbookPage {
             this.pagination.createPaginationButtons(1);
             this.localStorageService.set(CURRENT_PAGE, 0);
             this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
-            this.changePages();
-
             hidePagination(false);
           }
           this.style.makeBookmarkActive(this.currentGroup);
           this.localStorageService.set(CURRENT_GROUP, this.currentGroup);
           btn.classList.add('disable');
+          this.changePages();
         }
       });
     });
@@ -180,11 +179,10 @@ export class TextbookPage {
   private changePages(): void {
     const paginationBtns = document
       .querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
-    let page: number;
 
     paginationBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
-        page = parseInt(btn.innerHTML, 10) - 1;
+        const page = parseInt(btn.innerHTML, 10) - 1;
         this.currentPage = page;
         this.localStorageService.set(CURRENT_PAGE, page);
 
@@ -193,38 +191,22 @@ export class TextbookPage {
       });
     });
 
-    const prevBtn = document.querySelector('.prev') as HTMLElement;
-    prevBtn.addEventListener('click', () => {
-      if (this.localStorageService.get(CURRENT_PAGE)) {
-        const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
-        if (pageLocalS) {
-          const currPage = parseInt(pageLocalS, 10) - 1;
-          this.currentPage = currPage;
-          this.localStorageService.set(CURRENT_PAGE, currPage);
-        }
-      }
-
-      this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
-      this.changePages();
-    });
-
     const nextBtn = document.querySelector('.next') as HTMLElement;
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
+    const prevBtn = document.querySelector('.prev') as HTMLElement;
+    [nextBtn, prevBtn].forEach((btn) => {
+      btn.addEventListener('click', () => {
         if (this.localStorageService.get(CURRENT_PAGE)) {
-          if (this.localStorageService.get(CURRENT_PAGE)) {
-            const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
-            if (pageLocalS) {
-              const currPage = parseInt(pageLocalS, 10) - 1;
-              this.currentPage = currPage;
-              this.localStorageService.set(CURRENT_PAGE, currPage);
-            }
+          const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
+          if (pageLocalS) {
+            const currPage = parseInt(pageLocalS, 10) - 1;
+            this.currentPage = currPage;
+            this.localStorageService.set(CURRENT_PAGE, currPage);
           }
         }
 
         this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
-    }
+    });
   }
 }

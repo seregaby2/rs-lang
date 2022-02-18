@@ -12,7 +12,6 @@ export class UserCard {
   public drawWordAuthorisedCardBtns(wordId: string): HTMLElement {
     const buttonsContainer = document.createElement('div') as HTMLElement;
     buttonsContainer.classList.add('textbook-authorized-buttons');
-
     buttonsContainer.append(this.drawDifficultBtn(wordId));
     buttonsContainer.append(this.drawLearntBtn(wordId));
     return buttonsContainer;
@@ -30,19 +29,20 @@ export class UserCard {
 
         const card = difficultBtn
           .closest('.textbook-card-container') as HTMLElement;
-        card.append(this.createDifficultStar());
+
+        card.append(this.createDifficultStar(wordId));
 
         const learntBtn = document
           .querySelector(`[data-learnt-btn="${wordId}"]`) as HTMLButtonElement;
         learntBtn.classList.remove('disable');
 
-        const star = document
+        const check = document
           .querySelector(`[data-word-id="${wordId}"] .check`) as HTMLElement;
-        if (star) {
-          star.remove();
+        if (check) {
+          check.remove();
         }
 
-        this.checkIfAllBtnsActive();
+        this.checkIfAllBtnsActive(false);
         this.disableBtn(difficultBtn);
       }
     });
@@ -62,7 +62,7 @@ export class UserCard {
 
         const card = learntBtn
           .closest('.textbook-card-container') as HTMLElement;
-        card.append(this.createLearntCheckmark());
+        card.append(this.createLearntCheckmark(wordId));
 
         const difficultBtn = document
           .querySelector(`[data-difficult-btn="${wordId}"]`) as HTMLButtonElement;
@@ -74,7 +74,7 @@ export class UserCard {
           star.remove();
         }
 
-        this.checkIfAllBtnsActive();
+        this.checkIfAllBtnsActive(false);
         this.disableBtn(learntBtn);
       }
     });
@@ -105,9 +105,16 @@ export class UserCard {
     return progressContainer;
   }
 
-  public createDifficultStar(): HTMLElement {
-    const star = document.createElement('div') as HTMLElement;
-    star.classList.add('star');
+  public createDifficultStar(wordId: string): HTMLElement {
+    let star = document
+      .querySelector(`[data-word-id="${wordId}"] .star`) as HTMLElement;
+    if (star) {
+      star.remove();
+    } else {
+      star = document.createElement('div') as HTMLElement;
+      star.classList.add('star');
+    }
+
     const group = this.localStorageService.get(CURRENT_GROUP);
 
     if (group) {
@@ -118,9 +125,16 @@ export class UserCard {
     return star;
   }
 
-  public createLearntCheckmark(): HTMLElement {
-    const check = document.createElement('div') as HTMLElement;
-    check.classList.add('check');
+  public createLearntCheckmark(wordId: string): HTMLElement {
+    let check = document
+      .querySelector(`[data-word-id="${wordId}"] .check`) as HTMLElement;
+    if (check) {
+      check.remove();
+    } else {
+      check = document.createElement('div') as HTMLElement;
+      check.classList.add('check');
+    }
+
     const group = this.localStorageService.get(CURRENT_GROUP);
 
     if (group) {
@@ -138,7 +152,7 @@ export class UserCard {
   public addLearntWordsStyle(learntWordId: string): void {
     const card = document
       .querySelector(`[data-word-id="${learntWordId}"]`) as HTMLElement;
-    card.append(this.createLearntCheckmark());
+    card.append(this.createLearntCheckmark(learntWordId));
     const btn = document
       .querySelector(`[data-learnt-btn="${learntWordId}"]`) as HTMLElement;
     this.disableBtn(btn);
@@ -147,7 +161,7 @@ export class UserCard {
   public addDifficultWordsStyle(difficultWordId: string): void {
     const card = document
       .querySelector(`[data-word-id="${difficultWordId}"]`) as HTMLElement;
-    card.append(this.createDifficultStar());
+    card.append(this.createDifficultStar(difficultWordId));
 
     const btn = document
       .querySelector(`[data-difficult-btn="${difficultWordId}"]`) as HTMLElement;
@@ -171,8 +185,14 @@ export class UserCard {
     card.append(this.drawProgress(width));
   }
 
-  public checkIfAllBtnsActive(): void {
+  public checkIfAllBtnsActive(onload: boolean): void {
     const amountOfCards = 20;
+    let count = 0;
+    if (onload) {
+      count = 0;
+    } else {
+      count = 1;
+    }
     const main = document
       .querySelector('.main') as HTMLElement;
 
@@ -188,8 +208,8 @@ export class UserCard {
     const gamesButtons = document
       .querySelectorAll('.games-links-container i') as NodeListOf<HTMLButtonElement>;
 
-    const count = difficultBtn.length + learntBtn.length + 1;
-    if (count >= amountOfCards) {
+    count = count + difficultBtn.length + learntBtn.length;
+    if (count === amountOfCards) {
       main.style.backgroundColor = 'rgba(0,0,0, 0.1)';
 
       paginationBtn.style.background = this
@@ -202,6 +222,11 @@ export class UserCard {
       });
     } else {
       main.style.backgroundColor = 'rgba(255,255,255)';
+      gamesButtons.forEach((btn) => {
+        const button = btn;
+        btn.classList.remove('disable');
+        button.style.opacity = '1';
+      });
     }
   }
 }

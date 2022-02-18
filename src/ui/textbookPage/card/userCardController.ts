@@ -47,7 +47,7 @@ export class UserCardController {
   }
 
   public makeWordLearnt(wordId: IWordsData['id']): void {
-    this.controllerUserWords.createUserWord(
+    this.controllerUserWords.updateUserWord(
       this.userId,
       this.userToken,
       wordId,
@@ -61,21 +61,18 @@ export class UserCardController {
     )
       .catch((err) => {
         if (err) {
-          this.controllerUserWords.getUserWord(this.userId, this.userToken, wordId)
-            .then(() => {
-              this.controllerUserWords.updateUserWord(
-                this.userId,
-                this.userToken,
-                wordId,
-                {
-                  difficulty: 'simple',
-                  optional: {
-                    new: false,
-                    progress: 3,
-                  },
-                },
-              );
-            });
+          this.controllerUserWords.createUserWord(
+            this.userId,
+            this.userToken,
+            wordId,
+            {
+              difficulty: 'simple',
+              optional: {
+                new: false,
+                progress: 3,
+              },
+            },
+          );
         }
       });
   }

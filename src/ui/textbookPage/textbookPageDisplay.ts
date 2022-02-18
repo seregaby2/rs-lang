@@ -5,7 +5,7 @@ import { clearCardsContainer } from './textbookHelper';
 import { TextbookCard } from './card/component/textbookCard';
 import { ControllerUserWords } from '../common/controller/controllerUserWords';
 import { UserCard } from './card/component/userCard';
-import { USER_ID } from '../common/model/localStorageKeys';
+import { USER_ACCESS_TOKEN, USER_ID } from '../common/model/localStorageKeys';
 
 interface Za {
   progress: number,
@@ -26,16 +26,14 @@ export class TextbookPageDisplay {
 
   private textbookUserCard: UserCard = new UserCard();
 
-  private difficultWords: string[] = [];
-
-  private learntWords: string[] = [];
-
   private promisesProgress: Za[] = [];
 
   private userId = localStorage.getItem(USER_ID) || '';
 
+  private userToken = localStorage.getItem(USER_ACCESS_TOKEN) || '';
+
   public toggleCards(group: number, page: number): void {
-    if (this.userId && localStorage.getItem('user_access_token')) {
+    if (this.userId && this.userToken) {
       this.createUserCards(group, page);
     } else {
       this.createUsualCards(group, page);
@@ -69,23 +67,24 @@ export class TextbookPageDisplay {
 
   public createUserCards(group: number, page: number): void {
     const cardsContainer = document.querySelector('.textbook-cards-container') as HTMLDivElement;
+
+    const difficultWords: string[] = [];
+
+    const learntWords: string[] = [];
     this.controllerUserWords
-      .getUserWords(
-        localStorage.getItem('user_id') || '',
-        localStorage.getItem('user_access_token') || '',
-      )
+      .getUserWords(this.userId, this.userToken)
       .then((data) => {
         data.forEach((word) => {
           if (word.difficulty === 'difficult' && word.wordId) {
-            this.difficultWords.push(word.wordId);
+            difficultWords.push(word.wordId);
           }
 
           if (word.difficulty === 'difficult' && word.optional.progress === 5 && word.wordId) {
-            this.learntWords.push(word.wordId);
+            learntWords.push(word.wordId);
           }
 
           if (word.difficulty === 'simple' && word.optional.progress === 3 && word.wordId) {
-            this.learntWords.push(word.wordId);
+            learntWords.push(word.wordId);
           }
 
           const obj: { progress: number, id: string, difficulty: string } = {
@@ -119,13 +118,13 @@ export class TextbookPageDisplay {
                 cardTextContainer[index]
                   .append(this.textbookUserCard.drawWordAuthorisedCardBtns(word.id));
 
-                this.difficultWords.forEach((difficultWordId) => {
+                difficultWords.forEach((difficultWordId) => {
                   if (difficultWordId === word.id) {
                     this.textbookUserCard.addDifficultWordsStyle(difficultWordId);
                   }
                 });
 
-                this.learntWords.forEach((learntWordId) => {
+                learntWords.forEach((learntWordId) => {
                   if (learntWordId === word.id) {
                     this.textbookUserCard.addLearntWordsStyle(learntWordId);
                   }
@@ -146,7 +145,7 @@ export class TextbookPageDisplay {
             });
             this.audio.playCardAudio(group, page);
             this.style.changeStyles(group);
-            this.textbookUserCard.checkIfAllBtnsActive();
+            this.textbookUserCard.checkIfAllBtnsActive(true);
           });
       });
   }
