@@ -1,3 +1,5 @@
+import { USER_ID } from '../../model/localStorageKeys';
+
 interface MenuSection {
   readonly className: string;
   readonly text: string;
@@ -6,11 +8,54 @@ interface MenuSection {
 
 export class MenuAside {
   private readonly menuButtons: MenuSection[] = [
-    { className: 'book', iconClass: 'book', text: 'учебник' },
-    { className: 'games', iconClass: 'gamepad', text: 'игры' },
-    { className: 'stats', iconClass: 'signal', text: 'статистика' },
-    { className: 'team', iconClass: 'user-friends', text: 'о команде' },
-    { className: 'overview', iconClass: 'film', text: 'обзор' },
+    {
+      className: 'book',
+      iconClass: 'book',
+      text: 'учебник'
+    },
+    {
+      className: 'games',
+      iconClass: 'gamepad',
+      text: 'игры'
+    },
+    {
+      className: 'team',
+      iconClass: 'user-friends',
+      text: 'о команде'
+    },
+    {
+      className: 'overview',
+      iconClass: 'film',
+      text: 'обзор'
+    },
+  ];
+
+  private readonly menuUserButtons: MenuSection[] = [
+    {
+      className: 'book',
+      iconClass: 'book',
+      text: 'учебник'
+    },
+    {
+      className: 'games',
+      iconClass: 'gamepad',
+      text: 'игры'
+    },
+    {
+      className: 'stats',
+      iconClass: 'signal',
+      text: 'статистика'
+    },
+    {
+      className: 'team',
+      iconClass: 'user-friends',
+      text: 'о команде'
+    },
+    {
+      className: 'overview',
+      iconClass: 'film',
+      text: 'обзор'
+    },
   ];
 
   public drawMenuAside(): void {
@@ -64,14 +109,29 @@ export class MenuAside {
     menu.classList.add('menu-aside');
 
     let content = '';
-    this.menuButtons.forEach((item) => {
-      content += `<button class="menu-${item.className} menu-item" data-route="${item.className}">
-                    <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
-                    <div class="menu-text" data-route="${item.className}">${item.text}</div>
-                  </button>`;
+    let buttons: MenuSection[];
+    if (localStorage.getItem(USER_ID)) {
+      buttons = this.menuUserButtons;
+    } else {
+      buttons = this.menuButtons;
+    }
+    buttons.forEach((item) => {
+      // content += `<button class="menu-${item.className} menu-item" data-route="${item.className}">
+      //               <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
+      //               <div class="menu-text" data-route="${item.className}">${item.text}</div>
+      //             </button>`;
+      content += this.createMenuButton(item);
     });
     menu.innerHTML = content;
     return menu;
+  }
+
+  private createMenuButton(item: MenuSection): string {
+    const content = `<button class="menu-${item.className} menu-item" data-route="${item.className}">
+                    <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
+                    <div class="menu-text" data-route="${item.className}">${item.text}</div>
+                  </button>`;
+    return content;
   }
 
   private createGamesDropdown(): void {

@@ -73,15 +73,13 @@ export class Authorization extends Controller {
         .then((tokenInfo) => {
           if (tokenInfo) {
             this.helper.saveUserInfoInLocalStorage(tokenInfo);
-            this.helper.drawGreeting(tokenInfo.name);
-            this.logOut.drawLogOutBtn();
-            this.helper.removeLogInBtn();
             this.helper.closeAuthorizationForm();
           }
 
           if (window.location.href === 'http://localhost:8080/#/book') {
             this.textbookView.drawTextbookPage();
           }
+          window.location.reload();
         })
         .catch((error) => {
           if (error) {

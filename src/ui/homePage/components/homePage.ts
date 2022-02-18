@@ -26,17 +26,19 @@ export class HomePage {
     const cardsOpportunityContainer = document.createElement('div') as HTMLElement;
     cardsOpportunityContainer.classList.add('opportunity-container');
     const cards = [
-      { text: 'Изучай', img: 'learn' },
-      { text: 'Играй', img: 'play' },
-      { text: 'Развивайся', img: 'progress' },
+      { text: 'Изучай', img: 'learn', route: 'book' },
+      { text: 'Играй', img: 'play', route: 'audiocall' },
+      { text: 'Развивайся', img: 'progress', route: 'sprint' },
     ];
 
     cards.forEach((item) => {
       const card = document.createElement('div') as HTMLElement;
       card.classList.add('opportunity-card');
+      card.setAttribute('data-route', `${item.route}`);
 
       const cardImg = document.createElement('div') as HTMLElement;
       cardImg.classList.add('opportunity-img', `opportunity-${item.img}`);
+      cardImg.setAttribute('data-route', `${item.route}`);
       const cardText = document.createElement('h3') as HTMLElement;
       cardText.innerHTML = `${item.text}`;
 
