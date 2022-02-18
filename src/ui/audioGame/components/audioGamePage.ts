@@ -118,18 +118,19 @@ export class AudioGamePage {
     const { id } = button.dataset;
     const activeWord = this.words[this.activeWordIndex];
     const isCorrect = activeWord.id === id;
+
     if (isCorrect) {
-      this.checkWordForSendBeck(activeWord.id, true);
       button.classList.add('correct');
       this.correctAnswer.push(this.words[this.activeWordIndex]);
       this.soundGame.playSoundCorrectAnswer();
+      this.checkWordForSendBeck(activeWord.id, true);
     } else {
-      this.checkWordForSendBeck(activeWord.id, false);
       button.classList.add('incorrect');
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
       const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
       correctButton.classList.add('correct');
       this.soundGame.playSoundIncorrectAnswer();
+      this.checkWordForSendBeck(activeWord.id, false);
     }
     this.createAnswer();
   }
@@ -145,14 +146,14 @@ export class AudioGamePage {
           new: data.optional.new,
           progress: data.optional.progress + delta,
         },
-      }).catch(() => this.controllerUserWords.createUserWord(userId, token, wordId, {
-        difficulty: 'simple',
-        optional: {
-          new: false,
-          progress: 0,
-        },
-      }));
-    });
+      });
+    }).catch(() => this.controllerUserWords.createUserWord(userId, token, wordId, {
+      difficulty: 'simple',
+      optional: {
+        new: false,
+        progress: 0,
+      },
+    }));
   }
 
   private createAnswer(): void {
@@ -197,6 +198,7 @@ export class AudioGamePage {
       buttonNext.style.display = 'inline-block';
       this.soundGame.playSoundIncorrectAnswer();
       this.createAnswer();
+      this.checkWordForSendBeck(activeWord.id, false);
     });
 
     buttonNext.addEventListener('click', () => {
@@ -259,6 +261,7 @@ export class AudioGamePage {
         }
         this.soundGame.playSoundIncorrectAnswer();
         this.createAnswer();
+        this.checkWordForSendBeck(activeWord.id, false);
       } else if (!isLastWord) {
         buttonAnswer.style.display = 'inline-block';
         buttonNext.style.display = 'none';
