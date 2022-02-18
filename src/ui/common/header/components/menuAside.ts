@@ -7,7 +7,6 @@ interface MenuSection {
 export class MenuAside {
   private readonly menuButtons: MenuSection[] = [
     { className: 'book', iconClass: 'book', text: 'учебник' },
-    { className: 'vocabulary', iconClass: 'book-reader', text: 'словарь' },
     { className: 'games', iconClass: 'gamepad', text: 'игры' },
     { className: 'stats', iconClass: 'signal', text: 'статистика' },
     { className: 'team', iconClass: 'user-friends', text: 'о команде' },
