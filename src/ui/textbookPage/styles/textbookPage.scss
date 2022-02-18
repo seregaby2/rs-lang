@@ -33,6 +33,10 @@
   width: 100%;
 }
 
+.disable {
+  pointer-events: none;
+}
+
 .textbook-header {
   min-height: $header-height;
   display: flex;

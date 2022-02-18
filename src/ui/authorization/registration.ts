@@ -3,7 +3,7 @@ import { UserDto } from './models';
 import { Authorization } from './authorization';
 import { AuthHelper } from './authHelper';
 import { LogOut } from './logOut';
-import { TextbookPageView } from '../textbookPage/components/textbookPageView';
+import { TextbookPage } from '../textbookPage/components/textbookPage';
 
 export class Registration extends Controller {
   private signIn: Authorization = new Authorization();
@@ -12,7 +12,7 @@ export class Registration extends Controller {
 
   private logOut: LogOut = new LogOut();
 
-  private textbookView: TextbookPageView = new TextbookPageView();
+  private textbookView: TextbookPage = new TextbookPage();
 
   constructor() {
     super('users');

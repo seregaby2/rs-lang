@@ -1,7 +1,7 @@
 import { clearCardsContainer, hidePagination } from '../textbookHelper';
 import { IWordsData } from '../../common/controller/model';
 import { ControllerWords } from '../../common/controller/controllerWords';
-import { TextbookCard } from '../card/textbookCard';
+import { TextbookCard } from '../card/component/textbookCard';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { LocalStorageService } from '../../common/services/localStorageService';
 import { USER_ACCESS_TOKEN, USER_ID } from '../../common/model/localStorageKeys';
