@@ -6,6 +6,7 @@ import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
+import { StartGame } from '../../common/startGames/startGames';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -18,9 +19,11 @@ enum KeyCode {
   BUTTON_ENTER = 'Enter',
 }
 
-export class AudioGamePage {
-  private callback;
+const gameTitle = 'Аудио вызов';
+const gameDescription = `Проверьте свои навыки слушания,
+  пытаясь подобрать правильное значение после услышанного слова`;
 
+export class AudioGamePage {
   private pageContainer;
 
   private activeWordIndex = 0;
@@ -53,10 +56,11 @@ export class AudioGamePage {
 
   private controllerUserWords = new ControllerUserWords();
 
-  constructor(callback: () => void) {
+  private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
+
+  constructor() {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
-    this.callback = callback;
   }
 
   public draw(): void {
@@ -66,12 +70,13 @@ export class AudioGamePage {
     mainWrapper.classList.add('main-wrapper-audio-game-page');
 
     main.prepend(mainWrapper);
-    mainWrapper.innerHTML = this.templateAudioGame.templateSettings;
-    this.showMainMenu();
-    this.createLevelButtons();
-    this.setListenerLevelButtons();
-    this.startGame();
+    this.start.showGameSetting(mainWrapper);
     this.soundGame.createSoundButton();
+  }
+
+  private startCallback(group: number): void {
+    this.activeGroup = group;
+    this.startNewGame();
   }
 
   private startNewGame(): void {
@@ -86,13 +91,6 @@ export class AudioGamePage {
         document.removeEventListener('keydown', this.handleKeyboardEvent);
         document.addEventListener('keydown', this.handleKeyboardEvent);
       });
-  }
-
-  private startGame(): void {
-    const buttonStart = this.pageContainer.querySelector('.button-start-audio-game') as HTMLButtonElement;
-    buttonStart.addEventListener('click', () => {
-      this.startNewGame();
-    });
   }
 
   private resetGame(): void {
@@ -111,6 +109,10 @@ export class AudioGamePage {
       if (isOption) {
         this.handleButton(target as HTMLButtonElement);
       }
+
+      if (this.activeWordIndex === this.totalWord) {
+        this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
+      }
     });
   }
 
@@ -123,19 +125,19 @@ export class AudioGamePage {
       button.classList.add('correct');
       this.correctAnswer.push(this.words[this.activeWordIndex]);
       this.soundGame.playSoundCorrectAnswer();
-      this.checkWordForSendBeck(activeWord.id, true);
+      this.checkWordForSend(activeWord.id, true);
     } else {
       button.classList.add('incorrect');
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
       const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
       correctButton.classList.add('correct');
       this.soundGame.playSoundIncorrectAnswer();
-      this.checkWordForSendBeck(activeWord.id, false);
+      this.checkWordForSend(activeWord.id, false);
     }
     this.createAnswer();
   }
 
-  private checkWordForSendBeck(wordId: string, isCorrect: boolean): void {
+  private checkWordForSend(wordId: string, isCorrect: boolean): void {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
     const delta: number = isCorrect ? 1 : -1;
@@ -186,6 +188,7 @@ export class AudioGamePage {
 
     buttonAnswer?.addEventListener('click', () => {
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+
       const activeWord = this.words[this.activeWordIndex];
       const id = activeWord.id as string;
       const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
@@ -193,14 +196,11 @@ export class AudioGamePage {
       if (activeButton !== null) {
         activeButton.classList.add('correct');
       }
-
       buttonAnswer.style.display = 'none';
       buttonNext.style.display = 'inline-block';
       this.soundGame.playSoundIncorrectAnswer();
       this.createAnswer();
-      this.checkWordForSendBeck(activeWord.id, false);
     });
-
     buttonNext.addEventListener('click', () => {
       if (this.activeWordIndex < this.totalWord - 1) {
         buttonNext.style.display = 'none';
@@ -261,7 +261,7 @@ export class AudioGamePage {
         }
         this.soundGame.playSoundIncorrectAnswer();
         this.createAnswer();
-        this.checkWordForSendBeck(activeWord.id, false);
+        this.checkWordForSend(activeWord.id, false);
       } else if (!isLastWord) {
         buttonAnswer.style.display = 'inline-block';
         buttonNext.style.display = 'none';
@@ -345,78 +345,6 @@ export class AudioGamePage {
     });
     this.drawNextCard();
     this.setGameCardListener();
-  }
-
-  private createLevelButtons(): void {
-    const levelButtons = [
-      {
-        group: 0,
-        label: '1',
-        class: 'button-level-one-audio-game',
-      },
-      {
-        group: 1,
-        label: '2',
-        class: 'button-level-two-audio-game',
-      },
-      {
-        group: 2,
-        label: '3',
-        class: 'button-level-three-audio-game',
-      },
-      {
-        group: 3,
-        label: '4',
-        class: 'button-level-four-audio-game',
-      },
-      {
-        group: 4,
-        label: '5',
-        class: 'button-level-five-audio-game',
-      },
-      {
-        group: 5,
-        label: '6',
-        class: 'button-level-six-audio-game',
-      },
-    ];
-
-    const container = document.querySelector('.container-buttons-level-audio-game');
-
-    levelButtons.forEach((item) => {
-      const button = document.createElement('button') as HTMLButtonElement;
-      button.classList.add('button-level-audio-game', item.class);
-      button.innerHTML = item.label;
-      button.dataset.group = String(item.group);
-      container?.appendChild(button);
-
-      if (this.activeGroup === item.group) {
-        button.classList.add('active');
-      }
-    });
-  }
-
-  private setListenerLevelButtons(): void {
-    const container = this.pageContainer.querySelector('.container-buttons-level-audio-game') as HTMLElement;
-    container.addEventListener('click', (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isClickedButton = target.classList.contains('button-level-audio-game');
-
-      if (isClickedButton) {
-        const activeButton = document.querySelector('.button-level-audio-game.active');
-        activeButton?.classList.remove('active');
-        const group = Number(target.dataset.group);
-        this.activeGroup = group;
-        target.classList.add('active');
-      }
-    });
-  }
-
-  private showMainMenu(): void {
-    const button = document.querySelector('.button-cancel-audio-game');
-    button?.addEventListener('click', () => {
-      this.callback();
-    });
   }
 
   public drawAudioGameFromBookPage(): void {
