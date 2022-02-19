@@ -3,6 +3,7 @@ import { HomePage } from '../../homePage/components/homePage';
 import { TeamInfo } from '../../homePage/components/teamInfo';
 import { TextbookPage } from '../../textbookPage/components/textbookPage';
 import { LogicSprintGame } from '../../sprintGame/components/LogicSprintGame';
+import { TemplateStatistics } from '../../statistics/templateStatistics';
 
 enum CurrentPage {
   Team = 'team',
@@ -27,6 +28,8 @@ export class Router {
 
   private textbookPage: TextbookPage = new TextbookPage();
 
+  private templateStatistics: TemplateStatistics = new TemplateStatistics();
+
   public drawCurrentPage(): void {
     const currentHash = window.location.hash;
 
@@ -37,6 +40,7 @@ export class Router {
       case `#/${CurrentPage.Vocabulary}`:
         break;
       case `#/${CurrentPage.Stats}`:
+        this.templateStatistics.drawStatistics();
         break;
       case `#/${CurrentPage.Team}`:
         this.team.drawTeamInfo();
@@ -84,6 +88,7 @@ export class Router {
         case CurrentPage.Vocabulary:
           break;
         case CurrentPage.Stats:
+          this.templateStatistics.drawStatistics();
           break;
         case CurrentPage.Team:
           this.team.drawTeamInfo();

@@ -30,7 +30,11 @@ export class LogicSprintGame {
 
   private finalyItemsSprintGameData: IWordsData[] = [];
 
-  private resultAnswer: number[] = [];
+  resultAnswer: number[] = [];
+
+  countRightAnswer: number = 0;
+
+  countTotalAnswer: number = 0;
 
   private maxCountProgressAnswer: number = 60;
 
@@ -176,10 +180,19 @@ export class LogicSprintGame {
     }
   }
 
+  private getDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  }
+
   private writeDataForClickAnswer(condition: boolean): number {
     const audio = new Audio();
     if (condition) {
       this.resultAnswer.push(1);
+      this.countRightAnswer += 1;
       this.score += 10;
       this.continuousSeries += 1;
       this.playSounds(audio, 'RightAnswer.mp3');
@@ -188,6 +201,7 @@ export class LogicSprintGame {
       this.continuousSeries = 0;
       this.playSounds(audio, 'WrongAnswer.mp3');
     }
+    this.countTotalAnswer += 1;
     this.countProgressAnswer += 1;
     const count = getRandomNumber(1, 0);
 
@@ -195,6 +209,9 @@ export class LogicSprintGame {
       this.bestContinuousSeries = this.continuousSeries;
     }
     const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+    const timesStamp = this.getDate();
+    localStorage.setItem('countRightAnswer', this.countRightAnswer.toString());
+    localStorage.setItem('countTotalAnswer', this.countTotalAnswer.toString());
     if (userGreeting) {
       const WordId = this.finalyItemsSprintGameData[this.resultAnswer.length - 1].id;
       const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
@@ -204,11 +221,17 @@ export class LogicSprintGame {
           if (e.wordId === WordId) {
             repeatWord = true;
             this.userData
-              .updateUserWordsGame(WordId, rightWrongAnswer, e.difficulty, e.optional.progress);
+              .updateUserWordsGame(
+                WordId,
+                rightWrongAnswer,
+                e.difficulty,
+                e.optional.progress,
+                timesStamp,
+              );
           }
         });
         if (!repeatWord || item.length === 0) {
-          this.userData.createUserWordsGame(WordId, rightWrongAnswer);
+          this.userData.createUserWordsGame(WordId, rightWrongAnswer, 'sprint', timesStamp);
         }
       });
     }
@@ -339,6 +362,7 @@ export class LogicSprintGame {
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
       score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
+      localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
       this.resultAnswer = [];
       this.time = 60;
       this.arrayEnglishWord = [];
@@ -406,6 +430,7 @@ export class LogicSprintGame {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
     const usersWordsGame = await this.getUserWordsGame();
+    const date = this.getDate();
     let repeatWord: boolean = false;
     usersWordsGame.forEach((e) => {
       if (e.id === wordId) { repeatWord = true; }
@@ -416,6 +441,7 @@ export class LogicSprintGame {
         optional: {
           new: false,
           progress: rightWrongAnswer,
+          timeStamp: date,
         },
 
       };
