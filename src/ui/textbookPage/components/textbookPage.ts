@@ -6,7 +6,7 @@ import { DifficultGroup } from '../difficultGroup/difficultGroup';
 import { LocalStorageService } from '../../common/services/localStorageService';
 import { CURRENT_GROUP, CURRENT_PAGE, USER_ID } from '../../common/model/localStorageKeys';
 
-export class TextbookPageView {
+export class TextbookPage {
   private localStorageService: LocalStorageService = new LocalStorageService();
 
   private pagination: Pagination = new Pagination(30);
@@ -151,6 +151,7 @@ export class TextbookPageView {
       btn.addEventListener('click', () => {
         groupsBtns.forEach((item) => {
           item.classList.remove('active');
+          item.classList.remove('disable');
         });
 
         if (btn.dataset.textbook) {
@@ -164,12 +165,12 @@ export class TextbookPageView {
             this.pagination.createPaginationButtons(1);
             this.localStorageService.set(CURRENT_PAGE, 0);
             this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
-            this.changePages();
-
             hidePagination(false);
           }
           this.style.makeBookmarkActive(this.currentGroup);
           this.localStorageService.set(CURRENT_GROUP, this.currentGroup);
+          btn.classList.add('disable');
+          this.changePages();
         }
       });
     });
@@ -178,51 +179,34 @@ export class TextbookPageView {
   private changePages(): void {
     const paginationBtns = document
       .querySelectorAll('.textbook-pag-btn') as NodeListOf<HTMLButtonElement>;
-    let page: number;
 
     paginationBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
-        page = parseInt(btn.innerHTML, 10) - 1;
+        const page = parseInt(btn.innerHTML, 10) - 1;
         this.currentPage = page;
-        this.pagination.setToLocalStorage('currPage', page);
+        this.localStorageService.set(CURRENT_PAGE, page);
 
         this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
     });
 
-    const prevBtn = document.querySelector('.prev') as HTMLElement;
-    prevBtn.addEventListener('click', () => {
-      if (this.localStorageService.get(CURRENT_PAGE)) {
-        const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
-        if (pageLocalS) {
-          const currPage = parseInt(pageLocalS, 10) - 1;
-          this.currentPage = currPage;
-          this.localStorageService.set(CURRENT_PAGE, currPage);
-        }
-      }
-
-      this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
-      this.changePages();
-    });
-
     const nextBtn = document.querySelector('.next') as HTMLElement;
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
+    const prevBtn = document.querySelector('.prev') as HTMLElement;
+    [nextBtn, prevBtn].forEach((btn) => {
+      btn.addEventListener('click', () => {
         if (this.localStorageService.get(CURRENT_PAGE)) {
-          if (this.localStorageService.get(CURRENT_PAGE)) {
-            const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
-            if (pageLocalS) {
-              const currPage = parseInt(pageLocalS, 10) - 1;
-              this.currentPage = currPage;
-              this.localStorageService.set(CURRENT_PAGE, currPage);
-            }
+          const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
+          if (pageLocalS) {
+            const currPage = parseInt(pageLocalS, 10) - 1;
+            this.currentPage = currPage;
+            this.localStorageService.set(CURRENT_PAGE, currPage);
           }
         }
 
         this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
-    }
+    });
   }
 }

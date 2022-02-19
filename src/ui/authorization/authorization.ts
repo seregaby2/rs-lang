@@ -4,14 +4,18 @@ import {
 import { AuthHelper } from './authHelper';
 import { Controller } from './controller';
 import { LogOut } from './logOut';
-import { TextbookPageView } from '../textbookPage/components/textbookPageView';
+import { TextbookPage } from '../textbookPage/components/textbookPage';
+import { LocalStorageService } from '../common/services/localStorageService';
+import { USER_ACCESS_TOKEN, USER_ID } from '../common/model/localStorageKeys';
 
 export class Authorization extends Controller {
+  private localStorageService: LocalStorageService = new LocalStorageService();
+
   private helper: AuthHelper = new AuthHelper();
 
   private logOut: LogOut = new LogOut();
 
-  private textbookView: TextbookPageView = new TextbookPageView();
+  private textbookView: TextbookPage = new TextbookPage();
 
   constructor() {
     super('users');
@@ -30,8 +34,8 @@ export class Authorization extends Controller {
   }
 
   public checkIfAuthorized(): void {
-    const id = localStorage.getItem('user_id');
-    const token = localStorage.getItem('user_access_token');
+    const id = this.localStorageService.get(USER_ID);
+    const token = this.localStorageService.get(USER_ACCESS_TOKEN);
 
     if (id && token) {
       this.helper.removeLogInBtn();
@@ -39,6 +43,12 @@ export class Authorization extends Controller {
         .then((user) => {
           this.helper.drawGreeting(user.name);
           this.logOut.drawLogOutBtn();
+        })
+        .catch((err) => {
+          if (err) {
+            this.localStorageService.clear();
+            this.logOut.logOut();
+          }
         });
     }
   }

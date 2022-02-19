@@ -1,5 +1,10 @@
+import { LocalStorageService } from '../common/services/localStorageService';
+import { CURRENT_PAGE } from '../common/model/localStorageKeys';
+
 export class Pagination {
   private readonly totalPages: number;
+
+  private localStorageService: LocalStorageService = new LocalStorageService();
 
   constructor(totalPages: number) {
     this.totalPages = totalPages;
@@ -47,7 +52,7 @@ export class Pagination {
         pageLength += 1;
       }
       if (currentPageBtn === pageLength) {
-        activeBtn = 'active';
+        activeBtn = 'active disable';
       } else {
         activeBtn = '';
       }
@@ -69,13 +74,13 @@ export class Pagination {
     pagContainer.querySelector('.prev')
       ?.addEventListener('click', () => {
         this.createPaginationButtons(currentPageBtn - 1);
-        this.setToLocalStorage('currPage', currentPageBtn - 1);
+        this.localStorageService.set(CURRENT_PAGE, currentPageBtn - 1);
       });
 
     pagContainer.querySelector('.next')
       ?.addEventListener('click', () => {
         this.createPaginationButtons(currentPageBtn + 1);
-        this.setToLocalStorage('currPage', currentPageBtn + 1);
+        this.localStorageService.set(CURRENT_PAGE, currentPageBtn + 1);
       });
 
     pagContainer.querySelectorAll('.textbook-pag-btn')
@@ -83,13 +88,9 @@ export class Pagination {
         btn.addEventListener('click', (e) => {
           const page = e.target as HTMLElement;
           this.createPaginationButtons(parseInt(page.innerHTML, 10));
-          this.setToLocalStorage('currPage', parseInt(page.innerHTML, 10));
+          this.localStorageService.set(CURRENT_PAGE, parseInt(page.innerHTML, 10));
         });
       });
     return pagContainer;
-  }
-
-  public setToLocalStorage(itemName: string, itemValue: number): void {
-    localStorage.setItem(itemName, `${itemValue}`);
   }
 }
