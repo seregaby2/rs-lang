@@ -1,3 +1,4 @@
+import { StartGame } from '../../common/startGame/startGame';
 import { AudioGameSound } from './audioGameSound';
 import { AudioGameResultCard } from './audioGameResultCard';
 import { IWordsData } from '../../common/controller/model';
@@ -15,6 +16,10 @@ enum KeyCode {
   BUTTON_SPACE = 'Space',
   BUTTON_ENTER = 'Enter',
 }
+
+const gameTitle = 'Аудио вызов';
+const gameDescription = `Проверьте свои навыки слушания,
+  пытаясь подобрать правильное значение после услышанного слова`;
 
 export class AudioGamePage {
   private pageContainer;
@@ -45,6 +50,9 @@ export class AudioGamePage {
 
   private soundGame = new AudioGameSound();
 
+  // eslint-disable-next-line max-len
+  private startGame = new StartGame((group) => this.startGameCallback(group), gameTitle, gameDescription);
+
   constructor() {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
@@ -57,11 +65,13 @@ export class AudioGamePage {
     mainWrapper.classList.add('main-wrapper-audio-game-page');
 
     main.prepend(mainWrapper);
-    mainWrapper.innerHTML = this.templateSettings;
-    this.createLevelButtons();
-    this.setListenerLevelButtons();
-    this.startGame();
+    this.startGame.showGameSetting(mainWrapper);
     this.soundGame.createSoundButton();
+  }
+
+  private startGameCallback(group: number): void {
+    this.activeGroup = group;
+    this.startNewGame();
   }
 
   private startNewGame(): void {
@@ -76,13 +86,6 @@ export class AudioGamePage {
         document.removeEventListener('keydown', this.handleKeyboardEvent);
         document.addEventListener('keydown', this.handleKeyboardEvent);
       });
-  }
-
-  private startGame(): void {
-    const buttonStart = this.pageContainer.querySelector('.button-start-audio-game') as HTMLButtonElement;
-    buttonStart.addEventListener('click', () => {
-      this.startNewGame();
-    });
   }
 
   private resetGame(): void {
@@ -320,87 +323,22 @@ export class AudioGamePage {
     this.setGameCardListener();
   }
 
-  private createLevelButtons(): void {
-    const levelButtons = [
-      {
-        group: 0,
-        label: '1',
-        class: 'button-level-one-audio-game',
-      },
-      {
-        group: 1,
-        label: '2',
-        class: 'button-level-two-audio-game',
-      },
-      {
-        group: 2,
-        label: '3',
-        class: 'button-level-three-audio-game',
-      },
-      {
-        group: 3,
-        label: '4',
-        class: 'button-level-four-audio-game',
-      },
-      {
-        group: 4,
-        label: '5',
-        class: 'button-level-five-audio-game',
-      },
-      {
-        group: 5,
-        label: '6',
-        class: 'button-level-six-audio-game',
-      },
-    ];
-
-    const container = document.querySelector('.container-buttons-level-audio-game');
-
-    levelButtons.forEach((item) => {
-      const button = document.createElement('button') as HTMLButtonElement;
-      button.classList.add('button-level-audio-game', item.class);
-      button.innerHTML = item.label;
-      button.dataset.group = String(item.group);
-      container?.appendChild(button);
-
-      if (this.activeGroup === item.group) {
-        button.classList.add('active');
-      }
-    });
-  }
-
-  private setListenerLevelButtons(): void {
-    const container = this.pageContainer.querySelector('.container-buttons-level-audio-game') as HTMLElement;
-    container.addEventListener('click', (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isClickedButton = target.classList.contains('button-level-audio-game');
-
-      if (isClickedButton) {
-        const activeButton = document.querySelector('.button-level-audio-game.active');
-        activeButton?.classList.remove('active');
-        const group = Number(target.dataset.group);
-        this.activeGroup = group;
-        target.classList.add('active');
-      }
-    });
-  }
-
-  get templateSettings(): string {
-    return `
-    <div class="main-container-settings-audio-game">
-      <div class="container-settings-audio-game-main-title">
-        <h3 class="main-title-setting-audio-game">Настойки игры</h2>
-      </div>
-      <div class="container-support-title-settings-game">
-        <h4 class="support-title-setting-audio-game">Выберите сложность игры</h4>
-      </div>
-      <div class="container-buttons-level-audio-game"></div>
-      <div class="container-buttons-settings-audio-game">
-        <button class="button-audio-game button-cancel-audio-game">Отмена</button>
-        <button class="button-audio-game button-start-audio-game">Старт</button>
-      </div>
-    </div>`;
-  }
+  // get templateSettings(): string {
+  //   return `
+  //   <div class="main-container-settings-audio-game">
+  //     <div class="container-settings-audio-game-main-title">
+  //       <h3 class="main-title-setting-audio-game">Настойки игры</h2>
+  //     </div>
+  //     <div class="container-support-title-settings-game">
+  //       <h4 class="support-title-setting-audio-game">Выберите сложность игры</h4>
+  //     </div>
+  //     <div class="container-buttons-level-audio-game"></div>
+  //     <div class="container-buttons-settings-audio-game">
+  //       <button class="button-audio-game button-cancel-audio-game">Отмена</button>
+  //       <button class="button-audio-game button-start-audio-game">Старт</button>
+  //     </div>
+  //   </div>`;
+  // }
 
   get baseTemplate(): string {
     return `
