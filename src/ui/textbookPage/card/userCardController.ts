@@ -22,6 +22,7 @@ export class UserCardController {
         optional: {
           new: false,
           progress: 0,
+          timeStamp: this.getDate(),
         },
       },
     )
@@ -38,12 +39,21 @@ export class UserCardController {
                   optional: {
                     new: currentWord.optional.new,
                     progress: 0,
+                    timeStamp: this.getDate(),
                   },
                 },
               );
             });
         }
       });
+  }
+
+  private getDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
   }
 
   public makeWordLearnt(wordId: IWordsData['id']): void {
@@ -56,6 +66,7 @@ export class UserCardController {
         optional: {
           new: false,
           progress: 3,
+          timeStamp: this.getDate(),
         },
       },
     )
@@ -70,6 +81,7 @@ export class UserCardController {
               optional: {
                 new: false,
                 progress: 3,
+                timeStamp: this.getDate(),
               },
             },
           );

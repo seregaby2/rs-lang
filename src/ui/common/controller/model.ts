@@ -18,7 +18,7 @@ export interface IWordsData {
 interface IOptionalWord {
   new: boolean,
   progress: number,
-  timeStamp: string,
+  timeStamp?: string,
   addingMethodWords?: string,
 }
 

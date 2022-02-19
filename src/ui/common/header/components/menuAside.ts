@@ -11,22 +11,22 @@ export class MenuAside {
     {
       className: 'book',
       iconClass: 'book',
-      text: 'учебник'
+      text: 'учебник',
     },
     {
       className: 'games',
       iconClass: 'gamepad',
-      text: 'игры'
+      text: 'игры',
     },
     {
       className: 'team',
       iconClass: 'user-friends',
-      text: 'о команде'
+      text: 'о команде',
     },
     {
       className: 'overview',
       iconClass: 'film',
-      text: 'обзор'
+      text: 'обзор',
     },
   ];
 
@@ -34,27 +34,27 @@ export class MenuAside {
     {
       className: 'book',
       iconClass: 'book',
-      text: 'учебник'
+      text: 'учебник',
     },
     {
       className: 'games',
       iconClass: 'gamepad',
-      text: 'игры'
+      text: 'игры',
     },
     {
       className: 'stats',
       iconClass: 'signal',
-      text: 'статистика'
+      text: 'статистика',
     },
     {
       className: 'team',
       iconClass: 'user-friends',
-      text: 'о команде'
+      text: 'о команде',
     },
     {
       className: 'overview',
       iconClass: 'film',
-      text: 'обзор'
+      text: 'обзор',
     },
   ];
 
@@ -116,10 +116,6 @@ export class MenuAside {
       buttons = this.menuButtons;
     }
     buttons.forEach((item) => {
-      // content += `<button class="menu-${item.className} menu-item" data-route="${item.className}">
-      //               <i class="fas fa-${item.iconClass} menu-icon" data-route="${item.className}"></i>
-      //               <div class="menu-text" data-route="${item.className}">${item.text}</div>
-      //             </button>`;
       content += this.createMenuButton(item);
     });
     menu.innerHTML = content;
