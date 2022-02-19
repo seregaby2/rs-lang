@@ -2,15 +2,12 @@ import { Controller } from './controller';
 import { UserDto } from './models';
 import { Authorization } from './authorization';
 import { AuthHelper } from './authHelper';
-import { LogOut } from './logOut';
 import { TextbookPage } from '../textbookPage/components/textbookPage';
 
 export class Registration extends Controller {
   private signIn: Authorization = new Authorization();
 
   private helper: AuthHelper = new AuthHelper();
-
-  private logOut: LogOut = new LogOut();
 
   private textbookView: TextbookPage = new TextbookPage();
 
@@ -42,17 +39,15 @@ export class Registration extends Controller {
       };
 
       this.createUser(userInfo)
-        .then((user) => {
+        .then(() => {
           this.signIn.signIn({
             email: userInfo.email,
             password: userInfo.password,
           })
             .then((tokenInfo) => {
               this.helper.saveUserInfoInLocalStorage(tokenInfo);
-              this.helper.drawGreeting(user.name);
-              this.helper.removeLogInBtn();
               this.helper.closeAuthorizationForm();
-              this.logOut.drawLogOutBtn();
+              window.location.reload();
 
               if (window.location.href === 'http://localhost:8080/#/book') {
                 this.textbookView.drawTextbookPage();

@@ -23,6 +23,4 @@ export interface ApiParams {
 export enum ApiMethod {
   Get = 'GET',
   Post = 'POST',
-  Delete = 'DELETE',
-  Put = 'PUT',
 }
