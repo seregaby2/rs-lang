@@ -11,6 +11,8 @@ export class LogicStatistics {
 
   private percentSprint: number = 0;
 
+  private theBestSeriesSprint: number = 0;
+
   private controllerAggregated: ControllerAggregated = new ControllerAggregated();
 
   private controllerStatistics: ControllerStatistics = new ControllerStatistics();
@@ -42,6 +44,15 @@ export class LogicStatistics {
     }
   }
 
+  private GetContinuosSeriesSprint() {
+    const bestSeriesSprint = Number(localStorage.getItem('theBestContinuosSeries'));
+    if (bestSeriesSprint) {
+      this.theBestSeriesSprint = bestSeriesSprint;
+    } else {
+      this.theBestSeriesSprint = 0;
+    }
+  }
+
   getCurrentDay() {
     const date = new Date();
     return date.getDay();
@@ -61,17 +72,19 @@ export class LogicStatistics {
     if (day !== currentDay) {
       localStorage.setItem('countRightAnswer', '0');
       localStorage.setItem('countTotalAnswer', '1');
+      localStorage.setItem('theBestContinuosSeries', '0');
       repeat = true;
     }
 
     await this.getNewWords();
     await this.getPercentSprint();
+    this.GetContinuosSeriesSprint();
     const body: IStatistics = {
       learnedWords: 0,
       optional: {
         countNewWordsSprint: this.newWordsSprint,
         percentRightAnswerSprint: this.percentSprint,
-        longestSeriesOfRightAnswerSprint: 0,
+        longestSeriesOfRightAnswerSprint: this.theBestSeriesSprint,
         countNewWordsAudio: this.newWordsAudio,
         percentRightAnswerAudio: 0,
         longestSeriesOfRightAnswerAudio: 0,
@@ -80,7 +93,7 @@ export class LogicStatistics {
         percentRightAnswerBook: 0,
       },
     };
-    this.controllerStatistics.updateStatistics(userId, token, body);
+    await this.controllerStatistics.updateStatistics(userId, token, body);
   }
 
   getStats() {

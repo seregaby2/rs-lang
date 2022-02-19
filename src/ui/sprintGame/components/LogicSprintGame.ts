@@ -42,8 +42,6 @@ export class LogicSprintGame {
 
   private count: number = 0;
 
-  private longestContinuosSeriesSprint: number = 0;
-
   private controller: ControllerWords = new ControllerWords();
 
   private userData: UsersData = new UsersData();
@@ -355,8 +353,6 @@ export class LogicSprintGame {
 
   private resetTimer(): void {
     const main = document.querySelector('.main') as HTMLElement;
-    // const userId = localStorage.getItem('user_id') || '';
-    // const token = localStorage.getItem('user_access_token') || '';
     if (this.myInterval) {
       clearInterval(this.myInterval);
       main.innerHTML = '';
@@ -366,9 +362,7 @@ export class LogicSprintGame {
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
       score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
-      if (this.longestContinuosSeriesSprint < this.bestContinuousSeries) {
-        this.longestContinuosSeriesSprint = this.bestContinuousSeries;
-      }
+      localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
       this.resultAnswer = [];
       this.time = 60;
       this.arrayEnglishWord = [];

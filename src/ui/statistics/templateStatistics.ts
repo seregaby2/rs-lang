@@ -5,40 +5,60 @@ import { LogicStatistics } from './logicStatistics';
 export class TemplateStatistics {
   private logicStatistics: LogicStatistics = new LogicStatistics();
 
-  async drawStatistics() {
-    await this.logicStatistics.updateStat();
-    const main = document.querySelector('.main') as HTMLDivElement;
-    main.innerHTML = '';
-    const templateStats = `
-    <div class="wrapper-stats">
-      <div class="wrapper-sprint-total">
-        <div class="header-sprint">Мини-игра "Спринт"</div>
-        <div class="wrapper-sprint">
-          <div class="new-words-sprint"></div>
-          <div class="percent-right-answer-sprint"></div>
-          <div class="longest-series-sprint"></div>
-        </div>
-      </div>
-      <div class="wrapper-audio-total">
-        <div class="header-audio">Мини-игра "Аудиовызов"</div>
-        <div class="wrapper-audio">
-          <div class="new-words-audio"></div>
-          <div class="percent-right-answer-audio"></div>
-          <div class="longest-series-audio"></div>
-        </div>
-      </div>
-      <div class="wrapper-book-total">
-        <div class="header-book">Учебник</div>
-        <div class="wrapper-book">
-          <div class="new-words-book"></div>
-          <div class="count-learnt-book"></div>
-          <div class="percent-right-answer-book"></div>
-        </div>
-      </div>
+  templateStatisticsForAuthorizedUser() {
+    return `
+<div class="wrapper-stats">
+  <div class="wrapper-sprint-total">
+    <div class="header-sprint">Мини-игра "Спринт"</div>
+    <div class="wrapper-sprint">
+      <div class="new-words-sprint"></div>
+      <div class="percent-right-answer-sprint"></div>
+      <div class="longest-series-sprint"></div>
     </div>
-    `;
-    main.innerHTML = templateStats;
-    await this.writeDataHtml();
+  </div>
+  <div class="wrapper-audio-total">
+    <div class="header-audio">Мини-игра "Аудиовызов"</div>
+    <div class="wrapper-audio">
+      <div class="new-words-audio"></div>
+      <div class="percent-right-answer-audio"></div>
+      <div class="longest-series-audio"></div>
+    </div>
+  </div>
+  <div class="wrapper-book-total">
+    <div class="header-book">Учебник</div>
+    <div class="wrapper-book">
+      <div class="new-words-book"></div>
+      <div class="count-learnt-book"></div>
+      <div class="percent-right-answer-book"></div>
+    </div>
+  </div>
+</div>
+`;
+  }
+
+  templateStatisticsForNoAuthorizedUser() {
+    return `
+    <div class="wrapper-stats">
+    <div class="text-no-authorized"> Статистика доступна только авторизованным пользователям</div>
+    </div>`;
+  }
+
+  async drawStatistics() {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    if (localStorage.getItem('user_access_token')) {
+      const loader = document.querySelector('.loader') as HTMLDListElement;
+      if (loader) {
+        loader.classList.add('show-loader');
+        main.classList.add('disabled-wrapper');
+        await this.logicStatistics.updateStat();
+        main.innerHTML = this.templateStatisticsForAuthorizedUser();
+        await this.writeDataHtml();
+        loader.classList.remove('show-loader');
+        main.classList.remove('disabled-wrapper');
+      }
+    } else {
+      main.innerHTML = this.templateStatisticsForNoAuthorizedUser();
+    }
   }
 
   async writeDataHtml() {

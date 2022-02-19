@@ -9,10 +9,14 @@ export class HomePage {
     const mainContent = document.createElement('div') as HTMLElement;
     mainContent.classList.add('main-content');
 
+    const loader = document.createElement('div') as HTMLElement;
+    loader.classList.add('loader');
+
     homePageBackground.append(mainContent);
     mainContent.append(this.createMainHeading());
     mainContent.append(this.createOpportunityCards());
     main.append(homePageBackground);
+    main.append(loader);
   }
 
   private createMainHeading(): HTMLElement {
