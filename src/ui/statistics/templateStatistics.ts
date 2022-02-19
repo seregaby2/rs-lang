@@ -45,6 +45,7 @@ export class TemplateStatistics {
 
   async drawStatistics() {
     const main = document.querySelector('.main') as HTMLDivElement;
+    main.innerHTML = '';
     if (localStorage.getItem('user_access_token')) {
       const loader = document.querySelector('.loader') as HTMLDListElement;
       if (loader) {

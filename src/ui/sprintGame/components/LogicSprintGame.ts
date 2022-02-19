@@ -83,13 +83,7 @@ export class LogicSprintGame {
   private createArrayEnglishAndRussianWordsHelper = async (group: number): Promise<void> => {
     const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
-    const arrayLearntUserWords = [];
-    const userWords = await this.getUserWordsGame();
-    for (let i = 0; i < userWords.length; i += 1) {
-      if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
-        arrayLearntUserWords.push(userWords[i]);
-      }
-    }
+
     const pageStorage = Number(localStorage.getItem('currPage'));
     if (header.classList.contains('sprint-game')) {
       promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage));
@@ -106,17 +100,28 @@ export class LogicSprintGame {
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
       const newItemSprintGameResult: IWordsData[] = [];
-      for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
-        let repeatWord: boolean = false;
-        for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
-          if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
-            repeatWord = true;
-            break;
+      const arrayLearntUserWords = [];
+      const userWords = await this.getUserWordsGame();
+      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+      if (userGreeting) {
+        for (let i = 0; i < userWords.length; i += 1) {
+          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
+            arrayLearntUserWords.push(userWords[i]);
           }
         }
-        if (repeatWord) { continue; }
-        newItemSprintGameResult.push(this.itemsSprintGameData[j]);
+        for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
+          let repeatWord: boolean = false;
+          for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
+            if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
+              repeatWord = true;
+              break;
+            }
+          }
+          if (repeatWord) { continue; }
+          newItemSprintGameResult.push(this.itemsSprintGameData[j]);
+        }
       }
+
       this.createArrayRussianWord(newItemSprintGameResult);
       for (let i = 0; i < newItemSprintGameResult.length; i += 1) {
         this.arrayEnglishWord.push(newItemSprintGameResult[i].word || '');
