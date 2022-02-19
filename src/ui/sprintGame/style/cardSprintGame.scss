@@ -80,8 +80,6 @@
   }
 }
 
-
-
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
@@ -90,8 +88,6 @@
   height: 120px;
   animation: spin 2s linear infinite;
   position: fixed;
-  top: 44%;
-  left: 46%;
   display: none;
 }
 

@@ -1,11 +1,14 @@
-/* eslint-disable import/no-mutable-exports */
-/* eslint-disable import/no-cycle */
 import { getRandomNumber, shuffle } from './HelpFunction';
 import { IUserWord, IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { UsersData } from '../../common/usersData';
+import { StartGame } from '../../common/startGames/startGames';
+
+const gameTitle = 'Спринт вызов';
+const gameDescription = `Выбирайте соответсвующий перевод предложенным словам.
+  Эта игра поможет Вам развить навык быстрого перевода`;
 
 export class LogicSprintGame {
   myInterval: NodeJS.Timer | null;
@@ -45,6 +48,8 @@ export class LogicSprintGame {
   private controller: ControllerWords = new ControllerWords();
 
   private userData: UsersData = new UsersData();
+
+  private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
     this.myInterval = null;
@@ -138,13 +143,14 @@ export class LogicSprintGame {
   };
 
   private createArrayEnglishAndRussianWords = async (group: number): Promise<void> => {
-    const loader = document.querySelector('.loader') as HTMLDListElement;
-    const wrapperChooseLevelPage = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDListElement;
-    loader.classList.add('show-loader');
-    wrapperChooseLevelPage.classList.add('disabled-wrapper');
+    const wrapperCardGame = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
+    const div = document.createElement('div');
+    div.classList.add('loader');
+    wrapperCardGame.append(div);
+
+    wrapperCardGame.classList.add('disabled-wrapper');
     await this.createArrayEnglishAndRussianWordsHelper(group);
-    loader.classList.remove('show-loader');
-    wrapperChooseLevelPage.classList.remove('disabled-wrapper');
+    wrapperCardGame.classList.remove('disabled-wrapper');
   };
 
   private writeEnglishAndRussianWord(RussianWord: string, EnglishWord: string): void {
@@ -318,26 +324,23 @@ export class LogicSprintGame {
 
   drawSprintGame(): void {
     const main = document.querySelector('.main') as HTMLDivElement;
+    const div = document.createElement('div');
+    div.classList.add('wrapper-choose-level-sprint-game');
     this.resetTimer();
     main.innerHTML = '';
-    const header = document.querySelector('.header') as HTMLElement;
-    this.template.createChooseLevelSprintGame(main);
-    const squareChooseLevel = document.querySelectorAll('.square-choose-level-sprint-game') as NodeListOf<HTMLDivElement>;
-    squareChooseLevel.forEach((e, i) => {
-      e.addEventListener('click', async () => {
-        if (!header.classList.contains('sprint-game')) {
-          this.bestContinuousSeries = 0;
-          await this.createArrayEnglishAndRussianWords(i);
-          main.innerHTML = '';
-          this.template.createTemplateCardGame(main);
-          const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
-          wrapperCardGame.style.display = 'flex';
-          this.timer();
-          this.addTimer();
-          this.countAnswer();
-        }
-      });
-    });
+    main.append(div);
+    this.start.showGameSetting(div);
+  }
+
+  private async startCallback(group: number): Promise<void> {
+    const main = document.querySelector('.main') as HTMLDivElement;
+    this.bestContinuousSeries = 0;
+    await this.createArrayEnglishAndRussianWords(group);
+    main.innerHTML = '';
+    this.template.createTemplateCardGame(main);
+    this.timer();
+    this.addTimer();
+    this.countAnswer();
   }
 
   private runVoice(): void {
@@ -443,7 +446,6 @@ export class LogicSprintGame {
           progress: rightWrongAnswer,
           timeStamp: date,
         },
-
       };
       this.controllerUserWords.createUserWord(userId, token, wordId, body);
     }
