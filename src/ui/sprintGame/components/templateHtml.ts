@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import { IWordsData } from '../../common/controller/model';
 
 export class TemplateHtml {
@@ -38,32 +37,6 @@ export class TemplateHtml {
         buttonNextPrev.textContent = 'Верно';
       }
     }
-    wrapperCardSprintGame.style.display = 'none';
-  }
-
-  createChooseLevelSprintGame(wrapperSprintGame: HTMLDivElement): void {
-    const wrapperChooseLevelSprintGame = this.createElement('wrapper-choose-level-sprint-game', wrapperSprintGame, 'div');
-
-    const containerCardChooseLevel = this.createElement('container-choose-level-sprint-game', wrapperChooseLevelSprintGame, 'div');
-    const containerTextChooseLevel = this.createElement('container-text-choose-level-sprint-game', containerCardChooseLevel, 'div');
-
-    const headerChooseLevelSprintGame = this.createElement('header-choose-level-sprint-game', containerTextChooseLevel, 'div');
-    const textChooseLevelSprintGame = this.createElement('text-choose-level-sprint-game', containerTextChooseLevel, 'div');
-
-    const containerSquareChooseLevelSprint = this.createElement('container-square-choose-level-sprint-game', containerCardChooseLevel, 'div');
-    const headerSquareChooseLevelSprintGame = this.createElement('header-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
-    const wrapperSquareChooseLevelSprintGame = this.createElement('wrapper-square-choose-level-sprint-game', containerSquareChooseLevelSprint, 'div');
-
-    textChooseLevelSprintGame.textContent = 'Выбирайте соответсвующий перевод предложенным словам. Эта игра поможет Вам развить навык быстрого перевода.';
-    headerChooseLevelSprintGame.textContent = 'Спринт вызов';
-    headerSquareChooseLevelSprintGame.textContent = 'Выберите уровень';
-
-    const countDifficultyLevel = 6;
-    for (let i = 0; i < countDifficultyLevel; i += 1) {
-      const square = this.createElement('square-choose-level-sprint-game', wrapperSquareChooseLevelSprintGame, 'div');
-      square.textContent = (i + 1).toString();
-    }
-    this.loader(wrapperSprintGame);
   }
 
   createTableWithResults(
@@ -107,9 +80,5 @@ export class TemplateHtml {
     } else {
       answer.style.backgroundImage = 'url(../assets/svg/rightAnswer.svg)';
     }
-  }
-
-  loader(wrapperTable: HTMLElement) {
-    this.createElement('loader', wrapperTable, 'div');
   }
 }
