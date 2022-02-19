@@ -1,0 +1,135 @@
+.main-container-settings-games {
+  padding: 10px;
+  max-width: 500px;
+  max-height: 500px;
+  background-color: $white-color;
+  border-radius: 4px;
+}
+
+.main-title-setting-games {
+  font-size: 45px;
+  font-weight: bold;
+  border-bottom: solid 1px $dark-gray-color;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.description-title-setting-games {
+  max-width: 500px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.title-difficulty-setting-games {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.container-buttons-level-setting-game {
+  text-align: center;
+  display: flex;
+  text-align: center;
+}
+
+.button-level-games {
+  border-style: solid;
+  border-width: 1px;
+  width: 60px;
+  line-height: 40px;
+  margin: 20px auto;
+  padding: 8px 12px;
+  margin-right: 15px;
+  font-size: 60px;
+}
+
+.button-level-games:last-child {
+  margin-right: 15px;
+}
+
+.button-level-games.active {
+  color: $white-color;
+}
+
+.button-level-games:hover {
+  color: $white-color;
+}
+
+.button-level-one {
+  background-color: $first-level;
+}
+
+.button-level-two {
+  background-color: $second-level;
+}
+
+.button-level-three {
+  background-color: $third-level;
+}
+
+.button-level-four {
+  background-color:$fourth-level;
+}
+
+
+.button-level-five {
+  background-color: $fifth-level;
+}
+
+.button-level-six {
+  background-color: $sixth-level;
+}
+
+@media (max-width: 640px) {
+  .main-title-setting-games {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .description-title-setting-games {
+    font-size: 20px;
+  }
+
+  .button-level-games {
+    width: 50px;
+    line-height: 50px;
+    font-size: 50px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .main-title-setting-games {
+    font-size: 28px;
+  }
+
+  .description-title-setting-games {
+    font-size: 16px;
+  }
+
+  .button-level-games {
+    width: 40px;
+    line-height: 40px;
+    font-size: 40px;
+    margin: 5px 0 10px 0;
+  }
+
+  .container-buttons-level-setting-game {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+  }
+
+  .main-container-settings-games {
+    max-width: 270px;
+  }
+
+  .button-level-games:last-child {
+    margin-right: 0;
+  }
+
+  .title-difficulty-setting-games {
+    margin-top: 20px;
+  }
+}

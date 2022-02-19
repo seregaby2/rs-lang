@@ -50,8 +50,7 @@ export class AudioGamePage {
 
   private soundGame = new AudioGameSound();
 
-  // eslint-disable-next-line max-len
-  private startGame = new StartGame((group) => this.startGameCallback(group), gameTitle, gameDescription);
+  private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
     this.resultCard = new AudioGameResultCard(() => this.startNewGame());
@@ -65,11 +64,11 @@ export class AudioGamePage {
     mainWrapper.classList.add('main-wrapper-audio-game-page');
 
     main.prepend(mainWrapper);
-    this.startGame.showGameSetting(mainWrapper);
+    this.start.showGameSetting(mainWrapper);
     this.soundGame.createSoundButton();
   }
 
-  private startGameCallback(group: number): void {
+  private startCallback(group: number): void {
     this.activeGroup = group;
     this.startNewGame();
   }

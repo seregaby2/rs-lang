@@ -45,11 +45,7 @@ export class LogicSprintGame {
 
   private userData: UsersData = new UsersData();
 
-  private startGame = new StartGame(
-    (group) => this.startGameCallback(group),
-    gameTitle,
-    gameDescription,
-  );
+  private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
     this.myInterval = null;
@@ -310,10 +306,10 @@ export class LogicSprintGame {
     this.resetTimer();
     main.innerHTML = '';
     main.append(div);
-    this.startGame.showGameSetting(div);
+    this.start.showGameSetting(div);
   }
 
-  private async startGameCallback(group: number): Promise<void> {
+  private async startCallback(group: number): Promise<void> {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.bestContinuousSeries = 0;
     await this.createArrayEnglishAndRussianWords(group);
