@@ -44,6 +44,8 @@ export class LogicSprintGame {
 
   private bestContinuousSeries: number = 0;
 
+  private bestContinuousSeriesForDay: number = 0;
+
   private count: number = 0;
 
   private controller: ControllerWords = new ControllerWords();
@@ -224,6 +226,9 @@ export class LogicSprintGame {
     if (this.bestContinuousSeries < this.continuousSeries) {
       this.bestContinuousSeries = this.continuousSeries;
     }
+    if (this.bestContinuousSeriesForDay < this.bestContinuousSeries) {
+      this.bestContinuousSeriesForDay = this.bestContinuousSeries;
+    }
     const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
@@ -235,7 +240,7 @@ export class LogicSprintGame {
         optional: {
           countRightAnswerSprint: this.countRightAnswer,
           countTotalAnswerSprint: this.countTotalAnswer,
-          longestContinuosSeriesSprint: this.bestContinuousSeries,
+          longestContinuosSeriesSprint: this.bestContinuousSeriesForDay,
         },
       };
       this.controllerSettings.updateSettings(userId, token, body);
