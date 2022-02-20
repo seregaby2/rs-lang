@@ -1,4 +1,3 @@
-@import "./audioGameResultInfo.scss";
 @import "./audioGameSound.scss";
 
 .main-wrapper-audio-game-page {
@@ -58,6 +57,12 @@
 .button-audio-game.button-next-card-audio-game {
   color: $white-color;
   background-color: $dark-gray-color;
+}
+
+.button-audio-game.button-answer-audio-game:hover,
+.button-audio-game.button-next-card-audio-game:hover {
+  background-color: $light-gray-color;
+  color: $black-color;
 }
 
 .answer-text {
