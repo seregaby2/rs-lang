@@ -42,6 +42,13 @@ export class UserCard {
           check.remove();
         }
 
+        const progress = document
+          .querySelector(`[data-word-id="${wordId}"] .progress-container`) as HTMLElement;
+        if (progress) {
+          progress.remove();
+        }
+
+        this.drawProgressElement({ progress: 0, id: wordId, difficulty: 'difficult'});
         this.checkIfAllBtnsActive(false);
         this.disableBtn(difficultBtn);
       }
@@ -73,6 +80,13 @@ export class UserCard {
         if (star) {
           star.remove();
         }
+
+        const progress = document
+          .querySelector(`[data-word-id="${wordId}"] .progress-container`) as HTMLElement;
+        if (progress) {
+          progress.remove();
+        }
+        this.drawProgressElement({ progress: 3, id: wordId, difficulty: 'simple'});
 
         this.checkIfAllBtnsActive(false);
         this.disableBtn(learntBtn);
@@ -175,12 +189,13 @@ export class UserCard {
   }): void {
     const card = document
       .querySelector(`[data-word-id="${progressInfo.id}"] .textbook-card-text`) as HTMLElement;
-
+    const learntSimple = 3;
+    const learntDifficult = 5;
     let width: number;
     if (progressInfo.difficulty === 'simple') {
-      width = Math.ceil((100 * progressInfo.progress) / 3);
+      width = Math.ceil((100 * progressInfo.progress) / learntSimple);
     } else {
-      width = Math.ceil((100 * progressInfo.progress) / 5);
+      width = Math.ceil((100 * progressInfo.progress) / learntDifficult);
     }
     card.append(this.drawProgress(width));
   }
