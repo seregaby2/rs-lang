@@ -48,9 +48,12 @@ export interface IStatistics {
 }
 
 interface IOptionalSettings {
-  countRightAnswerSprint: number,
-  countTotalAnswerSprint: number,
-  longestContinuosSeriesSprint: number
+  countRightAnswerSprint?: number,
+  countTotalAnswerSprint?: number,
+  longestContinuosSeriesSprint?: number,
+  countRightAnswerAudio?: number,
+  countTotalAnswerAudio?: number,
+  longestContinuosSeriesAudio?: number
 }
 
 export interface ISettings {

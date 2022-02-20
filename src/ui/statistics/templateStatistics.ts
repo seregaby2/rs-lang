@@ -45,17 +45,18 @@ export class TemplateStatistics {
 
   async drawStatistics() {
     const main = document.querySelector('.main') as HTMLDivElement;
+    main.innerHTML = '';
     if (localStorage.getItem('user_access_token')) {
-      const loader = document.querySelector('.loader') as HTMLDListElement;
-      if (loader) {
-        loader.classList.add('show-loader');
-        main.classList.add('disabled-wrapper');
-        await this.logicStatistics.updateStat();
-        main.innerHTML = this.templateStatisticsForAuthorizedUser();
-        await this.writeDataHtml();
-        loader.classList.remove('show-loader');
-        main.classList.remove('disabled-wrapper');
-      }
+      // const loader = document.querySelector('.loader') as HTMLDListElement;
+      // if (loader) {
+      // loader.classList.add('show-loader');
+      // main.classList.add('disabled-wrapper');
+      await this.logicStatistics.updateStat();
+      main.innerHTML = this.templateStatisticsForAuthorizedUser();
+      await this.writeDataHtml();
+      // loader.classList.remove('show-loader');
+      // main.classList.remove('disabled-wrapper');
+      // }
     } else {
       main.innerHTML = this.templateStatisticsForNoAuthorizedUser();
     }
@@ -86,6 +87,6 @@ export class TemplateStatistics {
 
     newWordsBook.textContent = `Новые слова за день: ${dataOfStatistics.optional.countNewWordsBook}`;
     countLearntBook.textContent = `Количество изученных слов: ${dataOfStatistics.optional.countLearnedWordsBook}`;
-    percentRightAnswerBook.textContent = `Самая длинная серия за день: ${dataOfStatistics.optional.percentRightAnswerBook}%`;
+    percentRightAnswerBook.textContent = `Процент правильных ответов за день: ${dataOfStatistics.optional.percentRightAnswerBook}%`;
   }
 }
