@@ -4,7 +4,6 @@ import {
 import { AuthHelper } from './authHelper';
 import { Controller } from './controller';
 import { LogOut } from './logOut';
-import { TextbookPage } from '../textbookPage/components/textbookPage';
 import { LocalStorageService } from '../common/services/localStorageService';
 import { USER_ACCESS_TOKEN, USER_ID } from '../common/model/localStorageKeys';
 
@@ -14,8 +13,6 @@ export class Authorization extends Controller {
   private helper: AuthHelper = new AuthHelper();
 
   private logOut: LogOut = new LogOut();
-
-  private textbookView: TextbookPage = new TextbookPage();
 
   constructor() {
     super('users');
@@ -76,10 +73,7 @@ export class Authorization extends Controller {
             this.helper.closeAuthorizationForm();
           }
 
-          if (window.location.href === 'http://localhost:8080/#/book') {
-            this.textbookView.drawTextbookPage();
-          }
-          window.location.reload();
+          window.location.replace(window.location.origin);
         })
         .catch((error) => {
           if (error) {
