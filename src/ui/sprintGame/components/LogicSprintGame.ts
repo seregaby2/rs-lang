@@ -108,33 +108,33 @@ export class LogicSprintGame {
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
       const newItemSprintGameResult: IWordsData[] = [];
-      const arrayLearntUserWords = [];
-      const userWords = await this.getUserWordsGame();
-      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
-      if (userGreeting) {
-        for (let i = 0; i < userWords.length; i += 1) {
-          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
-            arrayLearntUserWords.push(userWords[i]);
-          }
-        }
-        for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
-          let repeatWord: boolean = false;
-          for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
-            if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
-              repeatWord = true;
-              break;
-            }
-          }
-          if (repeatWord) { continue; }
-          newItemSprintGameResult.push(this.itemsSprintGameData[j]);
-        }
-      }
+      const arrayLearntUserWords:IUserWord[] = [];
 
+      for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
+        let repeatWord: boolean = false;
+        for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
+          if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
+            repeatWord = true;
+            break;
+          }
+        }
+        if (repeatWord) { continue; }
+        newItemSprintGameResult.push(this.itemsSprintGameData[j]);
+      }
       this.createArrayRussianWord(newItemSprintGameResult);
       for (let i = 0; i < newItemSprintGameResult.length; i += 1) {
         this.arrayEnglishWord.push(newItemSprintGameResult[i].word || '');
       }
       this.finalyItemsSprintGameData = newItemSprintGameResult;
+      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+      if (userGreeting) {
+        const userWords = await this.getUserWordsGame();
+        for (let i = 0; i < userWords.length; i += 1) {
+          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
+            arrayLearntUserWords.push(userWords[i]);
+          }
+        }
+      }
     } else {
       promiseArray.push(this.getWords(group));
       promiseArray.push(this.getWords(group));
@@ -147,18 +147,20 @@ export class LogicSprintGame {
       }
       this.finalyItemsSprintGameData = this.itemsSprintGameData;
     }
+
     this.maxCountProgressAnswer = this.arrayEnglishWord.length;
   };
 
   private createArrayEnglishAndRussianWords = async (group: number): Promise<void> => {
-    const wrapperCardGame = document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
-    const div = document.createElement('div');
-    div.classList.add('loader');
-    wrapperCardGame.append(div);
-
-    wrapperCardGame.classList.add('disabled-wrapper');
+    // const wrapperCardGame =
+    // document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
+    // const div = document.createElement('div');
+    // div.classList.add('loader');
+    // wrapperCardGame.append(div);
+    const loader = document.querySelector('.loader') as HTMLDListElement;
+    loader.classList.add('disabled-wrapper');
     await this.createArrayEnglishAndRussianWordsHelper(group);
-    wrapperCardGame.classList.remove('disabled-wrapper');
+    loader.classList.remove('disabled-wrapper');
   };
 
   private writeEnglishAndRussianWord(RussianWord: string, EnglishWord: string): void {
@@ -226,16 +228,17 @@ export class LogicSprintGame {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
     const timesStamp = this.getDate();
-    const body: ISettings = {
-      wordsPerDay: 1,
-      optional: {
-        countRightAnswerSprint: this.countRightAnswer,
-        countTotalAnswerSprint: this.countTotalAnswer,
-        longestContinuosSeriesSprint: this.bestContinuousSeries,
-      },
-    };
-    this.controllerSettings.updateSettings(userId, token, body);
+
     if (userGreeting) {
+      const body: ISettings = {
+        wordsPerDay: 1,
+        optional: {
+          countRightAnswerSprint: this.countRightAnswer,
+          countTotalAnswerSprint: this.countTotalAnswer,
+          longestContinuosSeriesSprint: this.bestContinuousSeries,
+        },
+      };
+      this.controllerSettings.updateSettings(userId, token, body);
       const WordId = this.finalyItemsSprintGameData[this.resultAnswer.length - 1].id;
       const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
       let repeatWord: boolean = false;

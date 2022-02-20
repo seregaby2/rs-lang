@@ -48,7 +48,7 @@ export class UserCard {
           progress.remove();
         }
 
-        this.drawProgressElement({ progress: 0, id: wordId, difficulty: 'difficult'});
+        this.drawProgressElement({ progress: 0, id: wordId, difficulty: 'difficult' });
         this.checkIfAllBtnsActive(false);
         this.disableBtn(difficultBtn);
       }
@@ -86,7 +86,7 @@ export class UserCard {
         if (progress) {
           progress.remove();
         }
-        this.drawProgressElement({ progress: 3, id: wordId, difficulty: 'simple'});
+        this.drawProgressElement({ progress: 3, id: wordId, difficulty: 'simple' });
 
         this.checkIfAllBtnsActive(false);
         this.disableBtn(learntBtn);
