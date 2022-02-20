@@ -4,7 +4,7 @@ export class CardStyles {
     '#FFBF00',
     '#FF9515',
     '#FF6A2B',
-    '#e21818',
+    '#db621c',
     '#e21818',
     '#dc146f'];
 

@@ -2,14 +2,11 @@ import { Controller } from './controller';
 import { UserDto } from './models';
 import { Authorization } from './authorization';
 import { AuthHelper } from './authHelper';
-import { TextbookPage } from '../textbookPage/components/textbookPage';
 
 export class Registration extends Controller {
   private signIn: Authorization = new Authorization();
 
   private helper: AuthHelper = new AuthHelper();
-
-  private textbookView: TextbookPage = new TextbookPage();
 
   constructor() {
     super('users');
@@ -47,11 +44,8 @@ export class Registration extends Controller {
             .then((tokenInfo) => {
               this.helper.saveUserInfoInLocalStorage(tokenInfo);
               this.helper.closeAuthorizationForm();
-              window.location.reload();
 
-              if (window.location.href === 'http://localhost:8080/#/book') {
-                this.textbookView.drawTextbookPage();
-              }
+              window.location.replace(window.location.origin);
             });
         })
         .catch((error) => {

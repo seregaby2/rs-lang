@@ -7,7 +7,7 @@ import { ControllerUserWords } from '../common/controller/controllerUserWords';
 import { UserCard } from './card/component/userCard';
 import { USER_ACCESS_TOKEN, USER_ID } from '../common/model/localStorageKeys';
 
-interface Za {
+interface Progress {
   progress: number,
   id: string,
   difficulty: string,
@@ -25,8 +25,6 @@ export class TextbookPageDisplay {
   private textbookCard: TextbookCard = new TextbookCard();
 
   private textbookUserCard: UserCard = new UserCard();
-
-  private promisesProgress: Za[] = [];
 
   private userId = localStorage.getItem(USER_ID) || '';
 
@@ -71,6 +69,8 @@ export class TextbookPageDisplay {
     const difficultWords: string[] = [];
 
     const learntWords: string[] = [];
+
+    const progress: Progress[] = [];
     this.controllerUserWords
       .getUserWords(this.userId, this.userToken)
       .then((data) => {
@@ -87,12 +87,12 @@ export class TextbookPageDisplay {
             learntWords.push(word.wordId);
           }
 
-          const obj: { progress: number, id: string, difficulty: string } = {
+          const progressObj: Progress = {
             progress: word.optional.progress,
             id: word.wordId || '',
             difficulty: word.difficulty,
           };
-          this.promisesProgress.push(obj);
+          progress.push(progressObj);
         });
       })
       .then(() => {
@@ -130,15 +130,15 @@ export class TextbookPageDisplay {
                   }
                 });
 
-                this.promisesProgress.forEach((i) => {
-                  if (i.id === word.id) {
+                progress.forEach((progressObj) => {
+                  if (progressObj.id === word.id) {
                     const card = document
-                      .querySelector(`[data-word-id="${i.id}"] .textbook-card-text`) as HTMLElement;
+                      .querySelector(`[data-word-id="${progressObj.id}"] .textbook-card-text`) as HTMLElement;
                     const prog = card.querySelector('.progress-container') as HTMLElement;
                     if (prog) {
                       prog.remove();
                     }
-                    this.textbookUserCard.drawProgressElement(i);
+                    this.textbookUserCard.drawProgressElement(progressObj);
                   }
                 });
               }

@@ -1,9 +1,6 @@
-import { TextbookPage } from '../textbookPage/components/textbookPage';
 import { LocalStorageService } from '../common/services/localStorageService';
 
 export class LogOut {
-  private textbookView: TextbookPage = new TextbookPage();
-
   private localStorageService: LocalStorageService = new LocalStorageService();
 
   public drawLogOutBtn(): void {
@@ -22,10 +19,6 @@ export class LogOut {
   public logOut(): void {
     this.localStorageService.clear();
 
-    if (window.location.href === 'http://localhost:8080/#/book') {
-      this.textbookView.drawTextbookPage();
-    }
-
-    window.location.reload();
+    window.location.replace(window.location.origin);
   }
 }
