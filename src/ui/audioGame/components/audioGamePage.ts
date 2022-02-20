@@ -1,12 +1,12 @@
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { TemplateHtmlAudioGame } from './templateHtmlAudioGame';
 import { AudioGameSound } from './audioGameSound';
-import { AudioGameResultCard } from './audioGameResultCard';
 import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
 import { StartGame } from '../../common/startGames/startGames';
+import { ResultCard } from '../../common/resultCard/resultCard';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -48,7 +48,7 @@ export class AudioGamePage {
 
   private helpers = new HelpersAudioGame();
 
-  private resultCard: AudioGameResultCard;
+  private resultCard: ResultCard;
 
   private soundGame = new AudioGameSound();
 
@@ -59,7 +59,7 @@ export class AudioGamePage {
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
-    this.resultCard = new AudioGameResultCard(() => this.startNewGame());
+    this.resultCard = new ResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
   }
 
