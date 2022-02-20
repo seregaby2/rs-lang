@@ -27,4 +27,17 @@ export class Footer {
 
     wrapper.append(footer);
   }
+
+  public hideFooter(): void {
+    const footer = document.querySelector('.footer') as HTMLElement;
+    if (window.location.hash === '#/sprint'
+      || window.location.hash === '#/audiocall'
+      || window.location.hash === '#/sprint-textbook'
+      || window.location.hash === '#/audiocall-textbook'
+    ) {
+      footer.style.display = 'none';
+    } else {
+      footer.style.display = 'flex';
+    }
+  }
 }
