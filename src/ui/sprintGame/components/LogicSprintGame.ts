@@ -52,7 +52,7 @@ export class LogicSprintGame {
 
   private userData: UsersData = new UsersData();
 
-  private controllerSettings: ControllerSettings = new ControllerSettings();
+  private controllerSettings = new ControllerSettings();
 
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 

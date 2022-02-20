@@ -12,7 +12,7 @@ export interface IWordsData {
   readonly transcription: string,
   readonly wordTranslate: string,
   readonly textMeaningTranslate: string,
-  readonly textExampleTranslate: string
+  readonly textExampleTranslate: string,
 }
 
 interface IOptionalWord {

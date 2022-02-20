@@ -1,12 +1,13 @@
+import { ControllerAggregated } from '../../common/controller/controllerAggregated';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { TemplateHtmlAudioGame } from './templateHtmlAudioGame';
 import { AudioGameSound } from './audioGameSound';
-import { AudioGameResultCard } from './audioGameResultCard';
 import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
 import { StartGame } from '../../common/startGames/startGames';
+import { ResultCard } from '../../common/resultCard/resultCard';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -38,6 +39,8 @@ export class AudioGamePage {
 
   private isAnswer = false;
 
+  private isPlaying = false;
+
   public correctAnswer: ResultType[] = [];
 
   public incorrectAnswer: ResultType[] = [];
@@ -48,7 +51,7 @@ export class AudioGamePage {
 
   private helpers = new HelpersAudioGame();
 
-  private resultCard: AudioGameResultCard;
+  private resultCard: ResultCard;
 
   private soundGame = new AudioGameSound();
 
@@ -56,10 +59,12 @@ export class AudioGamePage {
 
   private controllerUserWords = new ControllerUserWords();
 
+  private controllerAggregated = new ControllerAggregated();
+
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
-    this.resultCard = new AudioGameResultCard(() => this.startNewGame());
+    this.resultCard = new ResultCard(() => this.startNewGame());
     this.pageContainer = document.querySelector('body') as HTMLBodyElement;
   }
 
@@ -140,22 +145,39 @@ export class AudioGamePage {
   private checkWordForSend(wordId: string, isCorrect: boolean): void {
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
-    const delta: number = isCorrect ? 1 : -1;
+    const maxSimpleWordProgress = 3;
+    const maxHardWordProgress = 5;
+
     this.controllerUserWords.getUserWord(userId, token, wordId).then((data) => {
+      let { progress } = data.optional;
+      const { difficulty } = data;
+      if (isCorrect) {
+        if (difficulty === 'simple' && progress < maxSimpleWordProgress) {
+          progress += 1;
+        } else if (difficulty === 'difficult' && progress < maxHardWordProgress) {
+          progress += 1;
+        }
+      } else if (progress > 0) {
+        progress -= 1;
+      }
       this.controllerUserWords.updateUserWord(userId, token, wordId, {
         difficulty: data.difficulty,
         optional: {
           new: data.optional.new,
-          progress: data.optional.progress + delta,
+          progress,
         },
       });
-    }).catch(() => this.controllerUserWords.createUserWord(userId, token, wordId, {
-      difficulty: 'simple',
-      optional: {
-        new: false,
-        progress: 0,
-      },
-    }));
+    }).catch((err) => {
+      if (err) {
+        this.controllerUserWords.createUserWord(userId, token, wordId, {
+          difficulty: 'simple',
+          optional: {
+            new: false,
+            progress: 0,
+          },
+        });
+      }
+    });
   }
 
   private createAnswer(): void {
@@ -200,6 +222,7 @@ export class AudioGamePage {
       buttonNext.style.display = 'inline-block';
       this.soundGame.playSoundIncorrectAnswer();
       this.createAnswer();
+      this.checkWordForSend(activeWord.id, false);
     });
     buttonNext.addEventListener('click', () => {
       if (this.activeWordIndex < this.totalWord - 1) {
@@ -214,11 +237,17 @@ export class AudioGamePage {
   }
 
   private startAudio(word: IWordsData): void {
-    const audio = new Audio(this.url + word.audio);
-    audio.play();
-    const containerResult = document.querySelector('.container-result-info-audio-game');
-    if (containerResult !== null) {
-      audio.pause();
+    if (!this.isPlaying) {
+      const audio = new Audio(this.url + word.audio);
+      audio.play();
+      this.isPlaying = true;
+      audio.addEventListener('ended', () => {
+        this.isPlaying = false;
+      });
+      const containerResult = document.querySelector('.container-result-info-audio-game') as HTMLElement;
+      if (containerResult !== null) {
+        audio.pause();
+      }
     }
   }
 
@@ -355,13 +384,27 @@ export class AudioGamePage {
     const currGroup = Number(localStorage.getItem('currGroup'));
     this.controller
       .getWords(currGroup, currPage)
-      .then((data) => {
-        this.draw();
-        this.words = this.helpers.shuffleArray(data);
-        this.activeWordIndex = 0;
-        this.drawGameCard();
-        document.removeEventListener('keydown', this.handleKeyboardEvent);
-        document.addEventListener('keydown', this.handleKeyboardEvent);
+      .then((words) => {
+        const userId = localStorage.getItem('user_id') || '';
+        const token = localStorage.getItem('user_access_token') || '';
+        if (userId && token) {
+          this.controllerAggregated.getAggregatedLearnedWord(userId, token).then((learnWords) => {
+            const filerArr = words.filter((item) => learnWords[0].paginatedResults
+              .every((el) => item.word !== el.word));
+            this.drawBookGame(filerArr);
+          });
+        } else {
+          this.drawBookGame(words);
+        }
       });
+  }
+
+  private drawBookGame(words: IWordsData[]): void {
+    this.draw();
+    this.words = this.helpers.shuffleArray(words);
+    this.activeWordIndex = 0;
+    this.drawGameCard();
+    document.removeEventListener('keydown', this.handleKeyboardEvent);
+    document.addEventListener('keydown', this.handleKeyboardEvent);
   }
 }

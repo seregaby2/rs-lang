@@ -1,6 +1,6 @@
-import { ResultType } from '../model';
+import { ResultType } from '../../audioGame/model';
 
-export class AudioGameResultCard {
+export class ResultCard {
   private pageContainer;
 
   private url = 'https://rs-lang-2022.herokuapp.com/';
@@ -79,22 +79,28 @@ export class AudioGameResultCard {
       const correctAnswerWord = document.createElement('span') as HTMLSpanElement;
       const correctAnswerTranslate = document.createElement('span') as HTMLSpanElement;
       const correctAnswerDash = document.createElement('span') as HTMLSpanElement;
+      const correctAnswerTranscript = document.createElement('span') as HTMLSpanElement;
 
       mainContainer.classList.add('correct-answer-main-container-result-info-audio-game');
       container.classList.add('correct-answer');
       audioImg.classList.add('volume-correct-answer');
       correctAnswerWord.classList.add('correct-answer-word');
       correctAnswerTranslate.classList.add('correct-answer-translate');
+      correctAnswerTranscript.classList.add('correct-answer-transcript');
+
       audioImg.dataset.src = item.audio;
 
       correctAnswerWord.innerHTML = item.word as string;
       correctAnswerTranslate.innerHTML = item.wordTranslate as string;
       correctAnswerDash.innerText = ' - ';
+      correctAnswerTranscript.innerHTML = item.transcription as string;
 
       container.appendChild(audioImg);
       container.appendChild(correctAnswerWord);
+      container.appendChild(correctAnswerTranscript);
       container.appendChild(correctAnswerDash);
       container.appendChild(correctAnswerTranslate);
+
       mainContainer.appendChild(container);
       parent.appendChild(container);
     });
@@ -108,23 +114,28 @@ export class AudioGameResultCard {
       const incorrectAnswerWord = document.createElement('span') as HTMLSpanElement;
       const incorrectAnswerTranslate = document.createElement('span') as HTMLSpanElement;
       const incorrectAnswerDash = document.createElement('span') as HTMLSpanElement;
+      const incorrectAnswerTranscript = document.createElement('span') as HTMLSpanElement;
 
       mainContainer.classList.add('incorrect-answer-container');
       container.classList.add('incorrect-answer');
       audioImg.classList.add('volume-correct-answer');
       incorrectAnswerWord.classList.add('incorrect-answer-word');
       incorrectAnswerTranslate.classList.add('incorrect-answer-translate');
+      incorrectAnswerTranscript.classList.add('incorrect-answer-transcript');
 
       audioImg.dataset.src = item.audio;
 
       incorrectAnswerWord.innerHTML = item.word as string;
       incorrectAnswerTranslate.innerHTML = item.wordTranslate as string;
       incorrectAnswerDash.innerText = ' - ';
+      incorrectAnswerTranscript.innerHTML = item.transcription as string;
 
       container.appendChild(audioImg);
       container.appendChild(incorrectAnswerWord);
+      container.appendChild(incorrectAnswerTranscript);
       container.appendChild(incorrectAnswerDash);
       container.appendChild(incorrectAnswerTranslate);
+
       mainContainer.appendChild(container);
       parent.appendChild(mainContainer);
     });
@@ -135,10 +146,6 @@ export class AudioGameResultCard {
       {
         label: 'Играть еще',
         class: 'button-play-again-audio-game',
-      },
-      {
-        label: 'К списку игр',
-        class: 'button-game-list-audio-game',
       },
     ];
     const mainContainer = this.pageContainer.querySelector('.main-wrapper-audio-game') as HTMLElement;
