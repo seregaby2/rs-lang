@@ -7,11 +7,14 @@ export class HeaderView {
     const headerMenu = this.createBurgerMenu();
     const logo = this.createLogo();
 
+    const loader = document.createElement('div') as HTMLElement;
+    loader.classList.add('loader');
+
     headerSideCont.append(headerMenu);
 
     header.append(logo);
     header.append(headerSideCont);
-
+    header.append(loader);
     wrapper.prepend(header);
   }
 
