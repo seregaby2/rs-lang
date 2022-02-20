@@ -1,10 +1,11 @@
 import { getRandomNumber, shuffle } from './HelpFunction';
-import { IUserWord, IWordsData } from '../../common/controller/model';
+import { ISettings, IUserWord, IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { UsersData } from '../../common/usersData';
 import { StartGame } from '../../common/startGames/startGames';
+import { ControllerSettings } from '../../common/controller/controllerSettings';
 
 const gameTitle = 'Спринт вызов';
 const gameDescription = `Выбирайте соответсвующий перевод предложенным словам.
@@ -49,6 +50,8 @@ export class LogicSprintGame {
 
   private userData: UsersData = new UsersData();
 
+  private controllerSettings: ControllerSettings = new ControllerSettings();
+
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
@@ -88,13 +91,7 @@ export class LogicSprintGame {
   private createArrayEnglishAndRussianWordsHelper = async (group: number): Promise<void> => {
     const header = document.querySelector('.header') as HTMLElement;
     const promiseArray = [];
-    const arrayLearntUserWords = [];
-    const userWords = await this.getUserWordsGame();
-    for (let i = 0; i < userWords.length; i += 1) {
-      if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
-        arrayLearntUserWords.push(userWords[i]);
-      }
-    }
+
     const pageStorage = Number(localStorage.getItem('currPage'));
     if (header.classList.contains('sprint-game')) {
       promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage));
@@ -111,17 +108,28 @@ export class LogicSprintGame {
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
       const newItemSprintGameResult: IWordsData[] = [];
-      for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
-        let repeatWord: boolean = false;
-        for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
-          if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
-            repeatWord = true;
-            break;
+      const arrayLearntUserWords = [];
+      const userWords = await this.getUserWordsGame();
+      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+      if (userGreeting) {
+        for (let i = 0; i < userWords.length; i += 1) {
+          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
+            arrayLearntUserWords.push(userWords[i]);
           }
         }
-        if (repeatWord) { continue; }
-        newItemSprintGameResult.push(this.itemsSprintGameData[j]);
+        for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
+          let repeatWord: boolean = false;
+          for (let i = 0; i < arrayLearntUserWords.length; i += 1) {
+            if (arrayLearntUserWords[i].wordId === this.itemsSprintGameData[j].id) {
+              repeatWord = true;
+              break;
+            }
+          }
+          if (repeatWord) { continue; }
+          newItemSprintGameResult.push(this.itemsSprintGameData[j]);
+        }
       }
+
       this.createArrayRussianWord(newItemSprintGameResult);
       for (let i = 0; i < newItemSprintGameResult.length; i += 1) {
         this.arrayEnglishWord.push(newItemSprintGameResult[i].word || '');
@@ -215,9 +223,18 @@ export class LogicSprintGame {
       this.bestContinuousSeries = this.continuousSeries;
     }
     const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
     const timesStamp = this.getDate();
-    localStorage.setItem('countRightAnswer', this.countRightAnswer.toString());
-    localStorage.setItem('countTotalAnswer', this.countTotalAnswer.toString());
+    const body: ISettings = {
+      wordsPerDay: 1,
+      optional: {
+        countRightAnswerSprint: this.countRightAnswer,
+        countTotalAnswerSprint: this.countTotalAnswer,
+        longestContinuosSeriesSprint: this.bestContinuousSeries,
+      },
+    };
+    this.controllerSettings.updateSettings(userId, token, body);
     if (userGreeting) {
       const WordId = this.finalyItemsSprintGameData[this.resultAnswer.length - 1].id;
       const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
@@ -365,7 +382,7 @@ export class LogicSprintGame {
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
       score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
-      localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
+      // localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
       this.resultAnswer = [];
       this.time = 60;
       this.arrayEnglishWord = [];
