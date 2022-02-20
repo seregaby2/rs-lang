@@ -5,6 +5,12 @@ interface MemberInfo {
 }
 
 export class TeamInfo {
+  private readonly teamInfo: MemberInfo[] = [
+    { contribution: 'bla bla', github: 'https://github.com/Runeci', img: 'dasha' },
+    { contribution: 'bla bla', github: 'https://github.com/Alhladkiy', img: 'aleksei' },
+    { contribution: 'bla bla', github: 'https://github.com/seregaby2', img: 'sergei' },
+  ];
+
   public drawTeamInfo(): void {
     const main = document.querySelector('.main') as HTMLElement;
     main.innerHTML = '';
@@ -35,17 +41,11 @@ export class TeamInfo {
     const teamInfoCont = document.createElement('div') as HTMLElement;
     teamInfoCont.classList.add('members-info');
 
-    const teamInfo: MemberInfo[] = [
-      { contribution: 'bla bla', github: 'https://github.com/Runeci', img: 'dasha' },
-      { contribution: 'bla bla', github: 'https://github.com/Alhladkiy', img: 'aleksei' },
-      { contribution: 'bla bla', github: 'https://github.com/seregaby2', img: 'sergei' },
-    ];
-
-    teamInfo.forEach((item) => {
+    this.teamInfo.forEach((item) => {
       const memberInfo = document.createElement('div') as HTMLElement;
       memberInfo.classList.add('member-info');
 
-      memberInfo.innerHTML = `<a href="${item.github}" class="member-${item.img} member"></a>`
+      memberInfo.innerHTML = `<a href="${item.github}" class="member-${item.img} member" target="_blank"></a>`
         + `<p>${item.contribution}</p>`;
 
       teamInfoCont.append(memberInfo);
