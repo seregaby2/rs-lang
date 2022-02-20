@@ -1,6 +1,7 @@
 import { ControllerAggregated } from '../common/controller/controllerAggregated';
+import { ControllerSettings } from '../common/controller/controllerSettings';
 import { ControllerStatistics } from '../common/controller/controllerStatistics';
-import { IStatistics } from '../common/controller/model';
+import { ISettings, IStatistics } from '../common/controller/model';
 
 export class LogicStatistics {
   private newWordsSprint: number = 0;
@@ -11,11 +12,23 @@ export class LogicStatistics {
 
   private percentSprint: number = 0;
 
+  private percentAudio: number = 0;
+
+  private percentBook: number = 0;
+
   private theBestSeriesSprint: number = 0;
+
+  private theBestSeriesAudio: number = 0;
+
+  private learnedAnswer: number = 0;
+
+  private dataOfSettings!: ISettings;
 
   private controllerAggregated: ControllerAggregated = new ControllerAggregated();
 
   private controllerStatistics: ControllerStatistics = new ControllerStatistics();
+
+  private controllerSettings: ControllerSettings = new ControllerSettings();
 
   private getDate() {
     const date = new Date();
@@ -33,27 +46,63 @@ export class LogicStatistics {
     this.newWordsBook = this.newWordsSprint + this.newWordsAudio;
   }
 
-  private async getPercentSprint() {
-    const rightAnswer = Number(localStorage.getItem('countRightAnswer'));
-    const totalAnswer = Number(localStorage.getItem('countTotalAnswer'));
-    if (rightAnswer) {
-      this.percentSprint = Math.round((rightAnswer
-        / totalAnswer) * 10000) / 100;
+  private async getLearnedWordsFromBook() {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    this.learnedAnswer = (await this.controllerAggregated
+      .getAggregatedLearnedWord(userId, token))[0].paginatedResults.length;
+  }
+
+  private async getPercentForGame() {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+
+    this.dataOfSettings = await this.controllerSettings.getSettings(userId, token);
+    const rightAnswerSprint = this.dataOfSettings.optional.countRightAnswerSprint;
+    const totalAnswerSprint = this.dataOfSettings.optional.countTotalAnswerSprint || 1;
+    if (rightAnswerSprint) {
+      this.percentSprint = Math.round((rightAnswerSprint
+        / totalAnswerSprint) * 10000) / 100;
     } else {
       this.percentSprint = 0;
     }
-  }
 
-  private GetContinuosSeriesSprint() {
-    const bestSeriesSprint = Number(localStorage.getItem('theBestContinuosSeries'));
-    if (bestSeriesSprint) {
-      this.theBestSeriesSprint = bestSeriesSprint;
+    const rightAnswerAudio = this.dataOfSettings.optional.countRightAnswerAudio;
+    const totalAnswerAudio = this.dataOfSettings.optional.countTotalAnswerAudio || 1;
+    if (rightAnswerAudio) {
+      this.percentAudio = Math.round((rightAnswerAudio
+        / totalAnswerAudio) * 10000) / 100;
     } else {
-      this.theBestSeriesSprint = 0;
+      this.percentAudio = 0;
+    }
+
+    if (rightAnswerAudio && rightAnswerSprint) {
+      const rightAnswerBook = rightAnswerSprint + rightAnswerAudio;
+      const totalAnswerBook = totalAnswerAudio + totalAnswerSprint;
+      this.percentBook = Math.round((rightAnswerBook
+      / totalAnswerBook) * 10000) / 100;
+    } else if (!rightAnswerAudio) {
+      this.percentBook = this.percentSprint;
+    } else if (!rightAnswerSprint) {
+      this.percentBook = this.percentAudio;
     }
   }
 
-  getCurrentDay() {
+  private GetContinuosSeriesForGame() {
+    if (this.dataOfSettings.optional.longestContinuosSeriesSprint) {
+      this.theBestSeriesSprint = this.dataOfSettings.optional.longestContinuosSeriesSprint;
+    } else {
+      this.theBestSeriesSprint = 0;
+    }
+
+    if (this.dataOfSettings.optional.longestContinuosSeriesAudio) {
+      this.theBestSeriesAudio = this.dataOfSettings.optional.longestContinuosSeriesAudio;
+    } else {
+      this.theBestSeriesAudio = 0;
+    }
+  }
+
+  private getCurrentDay() {
     const date = new Date();
     return date.getDay();
   }
@@ -70,15 +119,25 @@ export class LogicStatistics {
     }
     const currentDay = this.getCurrentDay();
     if (day !== currentDay) {
-      localStorage.setItem('countRightAnswer', '0');
-      localStorage.setItem('countTotalAnswer', '1');
-      localStorage.setItem('theBestContinuosSeries', '0');
+      const bodySet: ISettings = {
+        wordsPerDay: 1,
+        optional: {
+          countRightAnswerSprint: 0,
+          countTotalAnswerSprint: 1,
+          longestContinuosSeriesSprint: 0,
+          countRightAnswerAudio: 0,
+          countTotalAnswerAudio: 1,
+          longestContinuosSeriesAudio: 0,
+        },
+
+      };
+      await this.controllerSettings.updateSettings(userId, token, bodySet);
       repeat = true;
     }
-
     await this.getNewWords();
-    await this.getPercentSprint();
-    this.GetContinuosSeriesSprint();
+    await this.getPercentForGame();
+    this.GetContinuosSeriesForGame();
+    await this.getLearnedWordsFromBook();
     const body: IStatistics = {
       learnedWords: 0,
       optional: {
@@ -86,11 +145,11 @@ export class LogicStatistics {
         percentRightAnswerSprint: this.percentSprint,
         longestSeriesOfRightAnswerSprint: this.theBestSeriesSprint,
         countNewWordsAudio: this.newWordsAudio,
-        percentRightAnswerAudio: 0,
-        longestSeriesOfRightAnswerAudio: 0,
+        percentRightAnswerAudio: this.percentAudio,
+        longestSeriesOfRightAnswerAudio: this.theBestSeriesAudio,
         countNewWordsBook: this.newWordsBook,
-        countLearnedWordsBook: 0,
-        percentRightAnswerBook: 0,
+        countLearnedWordsBook: this.learnedAnswer,
+        percentRightAnswerBook: this.percentBook,
       },
     };
     await this.controllerStatistics.updateStatistics(userId, token, body);
