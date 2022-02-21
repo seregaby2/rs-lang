@@ -6,6 +6,7 @@ import { Controller } from './controller';
 import { LogOut } from './logOut';
 import { LocalStorageService } from '../common/services/localStorageService';
 import { USER_ACCESS_TOKEN, USER_ID } from '../common/model/localStorageKeys';
+import { HOME_PATHNAME } from '../common/url';
 
 export class Authorization extends Controller {
   private localStorageService: LocalStorageService = new LocalStorageService();
@@ -73,7 +74,7 @@ export class Authorization extends Controller {
             this.helper.closeAuthorizationForm();
           }
 
-          window.location.replace(window.location.origin);
+          window.location.replace(HOME_PATHNAME);
         })
         .catch((error) => {
           if (error) {

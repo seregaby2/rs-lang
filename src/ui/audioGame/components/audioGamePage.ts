@@ -195,8 +195,8 @@ export class AudioGamePage {
     img.src = this.url + this.words[this.activeWordIndex].image as string;
     p.classList.add('answer-text');
     p.innerText = this.words[this.activeWordIndex].word as string;
-    container.appendChild(img);
     container.appendChild(p);
+    container.appendChild(img);
     const buttonAnswer = this.pageContainer.querySelector('.button-answer-audio-game') as HTMLButtonElement;
     const buttonNext = this.pageContainer.querySelector('.button-next-card-audio-game') as HTMLButtonElement;
     buttonAnswer.style.display = 'none';

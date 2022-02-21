@@ -1,4 +1,5 @@
 import { LocalStorageService } from '../common/services/localStorageService';
+import { HOME_PATHNAME } from '../common/url';
 
 export class LogOut {
   private localStorageService: LocalStorageService = new LocalStorageService();
@@ -19,6 +20,6 @@ export class LogOut {
   public logOut(): void {
     this.localStorageService.clear();
 
-    window.location.replace(window.location.origin);
+    window.location.replace(HOME_PATHNAME);
   }
 }
