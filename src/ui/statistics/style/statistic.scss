@@ -67,3 +67,36 @@
   font-size: 40px;
 }
 
+@media (max-width: 610px) {
+  .wrapper-sprint-total,
+  .wrapper-audio-total,
+  .wrapper-book-total {
+    max-width: 300px;
+  }
+
+  .header-sprint,
+  .header-audio,
+  .header-book {
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+
+  .wrapper-sprint,
+  .wrapper-audio,
+  .wrapper-book {
+    height: 107px;
+  }
+
+  .new-words-sprint,
+  .percent-right-answer-sprint,
+  .longest-series-sprint,
+  .new-words-audio,
+  .percent-right-answer-audio,
+  .longest-series-audio,
+  .new-words-book,
+  .count-learnt-book,
+  .percent-right-answer-book {
+    font-size: 13px;
+  }
+}
+

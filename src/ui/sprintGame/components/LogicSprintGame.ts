@@ -1,4 +1,4 @@
-import { getRandomNumber, shuffle } from './HelpFunction';
+import { getRandomNumber } from './HelpFunction';
 import { ISettings, IUserWord, IWordsData } from '../../common/controller/model';
 import { TemplateHtml } from './templateHtml';
 import { ControllerWords } from '../../common/controller/controllerWords';
@@ -77,14 +77,14 @@ export class LogicSprintGame {
   };
 
   private createArrayRussianWord(items: IWordsData[]): void {
+    const newItems = items.slice();
     this.arrayRussianWords = [];
-    const shuffleWordsData: IWordsData[] = shuffle(items);
-    for (let j = 0; j < items.length; j += 1) {
+    for (let j = 0; j < newItems.length; j += 1) {
       const arrayRussianWordsRandomAnswer: string[] = [];
-      arrayRussianWordsRandomAnswer.push(items[j].wordTranslate || '');
+      arrayRussianWordsRandomAnswer.push(newItems[j].wordTranslate || '');
       for (let i = 0; i < 1; i += 1) {
-        const index = getRandomNumber(shuffleWordsData.length - 1, 0);
-        arrayRussianWordsRandomAnswer.push(shuffleWordsData[index].wordTranslate || '');
+        const index = getRandomNumber(newItems.length - 1, 0);
+        arrayRussianWordsRandomAnswer.push(newItems[index].wordTranslate || '');
       }
       this.arrayRussianWords.push(arrayRussianWordsRandomAnswer);
     }
@@ -97,20 +97,26 @@ export class LogicSprintGame {
     const pageStorage = Number(localStorage.getItem('currPage'));
     if (header.classList.contains('sprint-game')) {
       promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage));
-      if (pageStorage === 0) {
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 2));
-      } else if (pageStorage === 29) {
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 2));
-      } else {
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
-        promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
+      for (let i = 0; i < 29; i += 1) {
+        if (i !== pageStorage) {
+          promiseArray.push(this.getWordsAtTransitionFromBookPage(group, i));
+        }
       }
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
+
       const newItemSprintGameResult: IWordsData[] = [];
       const arrayLearntUserWords:IUserWord[] = [];
+      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
+
+      if (userGreeting) {
+        const userWords = await this.getUserWordsGame();
+        for (let i = 0; i < userWords.length; i += 1) {
+          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
+            arrayLearntUserWords.push(userWords[i]);
+          }
+        }
+      }
 
       for (let j = 0; j < this.itemsSprintGameData.length; j += 1) {
         let repeatWord: boolean = false;
@@ -123,19 +129,10 @@ export class LogicSprintGame {
         if (repeatWord) { continue; }
         newItemSprintGameResult.push(this.itemsSprintGameData[j]);
       }
+      this.finalyItemsSprintGameData = newItemSprintGameResult.slice(0, 60);
       this.createArrayRussianWord(newItemSprintGameResult);
-      for (let i = 0; i < newItemSprintGameResult.length; i += 1) {
-        this.arrayEnglishWord.push(newItemSprintGameResult[i].word || '');
-      }
-      this.finalyItemsSprintGameData = newItemSprintGameResult;
-      const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
-      if (userGreeting) {
-        const userWords = await this.getUserWordsGame();
-        for (let i = 0; i < userWords.length; i += 1) {
-          if (userWords[i].optional.progress === 3 || userWords[i].optional.progress === 5) {
-            arrayLearntUserWords.push(userWords[i]);
-          }
-        }
+      for (let i = 0; i < this.finalyItemsSprintGameData.length; i += 1) {
+        this.arrayEnglishWord.push(this.finalyItemsSprintGameData[i].word || '');
       }
     } else {
       promiseArray.push(this.getWords(group));
@@ -149,20 +146,11 @@ export class LogicSprintGame {
       }
       this.finalyItemsSprintGameData = this.itemsSprintGameData;
     }
-
     this.maxCountProgressAnswer = this.arrayEnglishWord.length;
   };
 
   private createArrayEnglishAndRussianWords = async (group: number): Promise<void> => {
-    // const wrapperCardGame =
-    // document.querySelector('.wrapper-choose-level-sprint-game') as HTMLDivElement;
-    // const div = document.createElement('div');
-    // div.classList.add('loader');
-    // wrapperCardGame.append(div);
-    const loader = document.querySelector('.loader') as HTMLDListElement;
-    loader.classList.add('disabled-wrapper');
     await this.createArrayEnglishAndRussianWordsHelper(group);
-    loader.classList.remove('disabled-wrapper');
   };
 
   private writeEnglishAndRussianWord(RussianWord: string, EnglishWord: string): void {
@@ -300,12 +288,10 @@ export class LogicSprintGame {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     this.count = getRandomNumber(1, 0);
     this.getAnswer(this.count);
-    const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
     const volume = document.querySelector('.volume') as HTMLDivElement;
     volume.addEventListener('click', () => {
       volume.classList.toggle('mute');
     });
-    fullScreen.addEventListener('click', this.toggleFullscreen);
     buttonWrongRight[0].addEventListener('click', () => {
       this.count = this.writeDataForClickAnswer(
         this.finalyItemsSprintGameData[this.countProgressAnswer]
@@ -326,25 +312,30 @@ export class LogicSprintGame {
   private async drawSprintGameFromBookPageHelper(group: number) {
     const main = document.querySelector('.main') as HTMLDivElement;
     this.bestContinuousSeries = 0;
+    const loader = document.querySelector('.loader') as HTMLDListElement;
+    loader.classList.add('show-loader');
+    main.classList.add('disabled-wrapper');
+    await this.createArrayEnglishAndRussianWordsHelper(group);
     main.innerHTML = '';
     this.template.createTemplateCardGame(main);
-    await this.createArrayEnglishAndRussianWordsHelper(group);
     const wrapperCardGame = document.querySelector('.wrapper-card-sprint-game') as HTMLDivElement;
     wrapperCardGame.style.display = 'flex';
     this.timer();
     this.addTimer();
     this.countAnswer();
+    loader.classList.remove('show-loader');
+    main.classList.remove('disabled-wrapper');
   }
 
   drawSprintGameFromBookPage(): void {
-    const main = document.querySelector('.main') as HTMLDivElement;
-    this.resetTimer();
-    main.innerHTML = '';
     const header = document.querySelector('.header') as HTMLElement;
+    const main = document.querySelector('.main') as HTMLDivElement;
     if (header.classList.contains('sprint-game')) {
       const groupStorage = Number(localStorage.getItem('currGroup'));
       this.drawSprintGameFromBookPageHelper(groupStorage);
     }
+    this.resetTimer();
+    main.innerHTML = '';
   }
 
   drawSprintGame(): void {
@@ -390,7 +381,6 @@ export class LogicSprintGame {
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
       score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
-      // localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
       this.resultAnswer = [];
       this.time = 60;
       this.arrayEnglishWord = [];
@@ -427,17 +417,6 @@ export class LogicSprintGame {
         clearInterval(this.myInterval);
       }
     });
-  }
-
-  private toggleFullscreen(): void {
-    const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
-    if (!document.fullscreenElement) {
-      fullScreen.classList.add('full');
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-      fullScreen.classList.remove('full');
-    }
   }
 
   async getUserWordGame(wordId: string) {

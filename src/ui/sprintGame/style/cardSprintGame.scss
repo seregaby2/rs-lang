@@ -141,5 +141,40 @@
   color: $white-color;
 }
 
+@media (max-width: 500px) {
+  .card-sprint {
+    width: 250px;
+  }
+
+  .image-content-card-sprint-game {
+    display: none;
+  }
+
+  .header-card-sprint-game {
+    flex-direction: column;
+    height: 120px;
+  }
+
+  .control-panel {
+    max-width: 270px;
+  }
+
+  .content-card-spring-game {
+    height: 180px;
+    justify-content: space-around;
+  }
+  .item-footer-card-sprint-game {
+    width: 105px;
+  }
+
+  .item-content-card-sprint-game {
+    font-size: 34px;
+  }
+
+  .item-content-card-sprint-game:nth-child(1) {
+    font-size: 44px;
+  }
+}
+
 
 
