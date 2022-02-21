@@ -6,8 +6,8 @@ import { IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
-import { StartGame } from '../../common/startGames/startGames';
 import { ResultCard } from '../../common/resultCard/resultCard';
+import { StartGame } from '../../common/startGames/startGames';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -238,8 +238,9 @@ export class AudioGamePage {
 
   private startAudio(word: IWordsData): void {
     if (!this.isPlaying) {
+      // const btn = document.querySelector('.button-volume-audio-game');
       const audio = new Audio(this.url + word.audio);
-      audio.play();
+      audio.play().catch((err) => (console.log(err)));
       this.isPlaying = true;
       audio.addEventListener('ended', () => {
         this.isPlaying = false;
@@ -389,21 +390,24 @@ export class AudioGamePage {
         const token = localStorage.getItem('user_access_token') || '';
         if (userId && token) {
           this.controllerAggregated.getAggregatedLearnedWord(userId, token).then((learnWords) => {
-            const filerArr = words.filter((item) => learnWords[0].paginatedResults
+            const filteredWords = words.filter((item) => learnWords[0].paginatedResults
               .every((el) => item.word !== el.word));
-            this.drawBookGame(filerArr);
+            this.drawGameInTextbook(filteredWords);
           });
         } else {
-          this.drawBookGame(words);
+          this.drawGameInTextbook(words);
         }
       });
   }
 
-  private drawBookGame(words: IWordsData[]): void {
+  private drawGameInTextbook(words: IWordsData[]): void {
     this.draw();
     this.words = this.helpers.shuffleArray(words);
     this.activeWordIndex = 0;
     this.drawGameCard();
+    if (this.correctAnswer.length + this.incorrectAnswer.length === this.totalWord) {
+      this.resultCard.createResultGameCard(this.correctAnswer, this.incorrectAnswer);
+    }
     document.removeEventListener('keydown', this.handleKeyboardEvent);
     document.addEventListener('keydown', this.handleKeyboardEvent);
   }
