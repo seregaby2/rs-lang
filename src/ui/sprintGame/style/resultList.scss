@@ -7,18 +7,22 @@
   background-image: url("../assets/images/sprintGame/finish.jpg");
   background-size: cover;
   background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 2000px rgb(41 45 52 / 80%);
 }
 
 .wrapper-table {
   display: flex;
-  background-color: #51cbcb;
-  padding: 20px;
+  background-color: $accent-color;
+  padding: 20px 0 20px 20px;
   flex-direction: column;
   text-align: center;
   font-size: 18px;
   overflow: auto;
   max-height: 600px;
   vertical-align: middle;
+  -webkit-box-shadow: 4px 4px 8px 0px rgb(0 0 0 / 20%);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 8px 0px rgb(0 0 0 / 20%);
 }
 
 .wrapper-row {
@@ -31,14 +35,14 @@
 }
 
 .wrapper-row:nth-child(2n) {
-  background-color: aqua;
+  background-color: $second-level;
   border-right: 3px solid white;
   border-left: 3px solid white;
   border-top: 3px solid white;
 }
 
 .wrapper-row:nth-child(2n+1) {
-  background-color: #51cbcb;
+  background-color: $third-level;
   border-right: 3px solid white;
   border-left: 3px solid white;
   border-top: 3px solid white;

@@ -8,8 +8,13 @@
   background-image: url(../assets/images/Centre-for-Statistics.jpg);
   background-size: cover;
   color: white;
+  box-shadow: inset 0 0 0 2000px rgb(41 45 52 / 80%);
 }
-
+.wrapper-sprint div,
+.wrapper-audio div,
+.wrapper-book div{
+  height: 50px;
+}
 .wrapper-sprint,
 .wrapper-audio,
 .wrapper-book {
@@ -19,7 +24,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  background-color: #51cbcb;
+  background-color: $dark-gray-color;
 }
 
 .wrapper-sprint-total,
@@ -61,6 +66,7 @@
 .header-book {
   margin-bottom: 10px;
   font-size: 32px;
+  color: $accent-color;
 }
 
 .text-no-authorized {
