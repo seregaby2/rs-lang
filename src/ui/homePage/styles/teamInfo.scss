@@ -46,6 +46,20 @@
   -webkit-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+
+  ul {
+    margin: 40px 10px 10px 0px;
+  }
+
+  li {
+    display: flex;
+    gap: 10px;
+
+    p {
+      font-weight: bold;
+      color: $accent-color;
+    }
+  }
 }
 
 .member-info:after {
@@ -70,7 +84,7 @@
 .member {
   display: block;
   height: 120px;
-  width: 120px;
+  min-width: 120px;
   margin-left: 25px;
   border-radius: 50%;
   border: 5px solid $accent-color;
