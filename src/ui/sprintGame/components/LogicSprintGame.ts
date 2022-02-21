@@ -79,7 +79,6 @@ export class LogicSprintGame {
   private createArrayRussianWord(items: IWordsData[]): void {
     const newItems = items.slice();
     this.arrayRussianWords = [];
-    // const shuffleWordsData: IWordsData[] = shuffle(newItems);
     for (let j = 0; j < newItems.length; j += 1) {
       const arrayRussianWordsRandomAnswer: string[] = [];
       arrayRussianWordsRandomAnswer.push(newItems[j].wordTranslate || '');
@@ -103,16 +102,6 @@ export class LogicSprintGame {
           promiseArray.push(this.getWordsAtTransitionFromBookPage(group, i));
         }
       }
-      // if (pageStorage === 0) {
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 2));
-      // } else if (pageStorage === 29) {
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 2));
-      // } else {
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage + 1));
-      //   promiseArray.push(this.getWordsAtTransitionFromBookPage(group, pageStorage - 1));
-      // }
       const result = await Promise.all(promiseArray);
       this.itemsSprintGameData = result.flat(1);
 
@@ -299,12 +288,10 @@ export class LogicSprintGame {
     const buttonWrongRight = document.querySelectorAll('.item-footer-card-sprint-game') as NodeListOf<HTMLDivElement>;
     this.count = getRandomNumber(1, 0);
     this.getAnswer(this.count);
-    // const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
     const volume = document.querySelector('.volume') as HTMLDivElement;
     volume.addEventListener('click', () => {
       volume.classList.toggle('mute');
     });
-    // fullScreen.addEventListener('click', this.toggleFullscreen);
     buttonWrongRight[0].addEventListener('click', () => {
       this.count = this.writeDataForClickAnswer(
         this.finalyItemsSprintGameData[this.countProgressAnswer]
@@ -394,7 +381,6 @@ export class LogicSprintGame {
       const continuousSeries = document.querySelector('.best-continuous-series') as HTMLDListElement;
       score.textContent = `Счет: ${this.score}/${this.resultAnswer.length * 10}`;
       continuousSeries.textContent = `Лучшая непрерывная серия: ${this.bestContinuousSeries}`;
-      // localStorage.setItem('theBestContinuosSeries', this.bestContinuousSeries.toString());
       this.resultAnswer = [];
       this.time = 60;
       this.arrayEnglishWord = [];
@@ -432,17 +418,6 @@ export class LogicSprintGame {
       }
     });
   }
-
-  // private toggleFullscreen(): void {
-  //   const fullScreen = document.querySelector('.fullscreen') as HTMLDivElement;
-  //   if (!document.fullscreenElement) {
-  //     fullScreen.classList.add('full');
-  //     document.documentElement.requestFullscreen();
-  //   } else {
-  //     document.exitFullscreen();
-  //     fullScreen.classList.remove('full');
-  //   }
-  // }
 
   async getUserWordGame(wordId: string) {
     const userId = localStorage.getItem('user_id') || '';
