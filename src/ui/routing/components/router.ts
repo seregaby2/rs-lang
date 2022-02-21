@@ -76,8 +76,9 @@ export class Router {
     const headerLogo = document.querySelector('.header-logo') as HTMLElement;
 
     headerLogo.addEventListener('click', () => {
-      this.changeRoutes(CurrentPage.Home);
       this.homePage.drawHomePage();
+      this.changeRoutes(CurrentPage.Home);
+      this.footer.hideFooter();
     });
 
     menuAside.addEventListener('click', (event) => {
