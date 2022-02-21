@@ -122,24 +122,26 @@ export class AudioGamePage {
   }
 
   private handleButton(button: HTMLButtonElement): void {
-    const { id } = button.dataset;
-    const activeWord = this.words[this.activeWordIndex];
-    const isCorrect = activeWord.id === id;
-
-    if (isCorrect) {
-      button.classList.add('correct');
-      this.correctAnswer.push(this.words[this.activeWordIndex]);
-      this.soundGame.playSoundCorrectAnswer();
-      this.checkWordForSend(activeWord.id, true);
-    } else {
-      button.classList.add('incorrect');
-      this.incorrectAnswer.push(this.words[this.activeWordIndex]);
-      const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
-      correctButton.classList.add('correct');
-      this.soundGame.playSoundIncorrectAnswer();
-      this.checkWordForSend(activeWord.id, false);
+    const container = document.querySelector('.answer-info-container') as HTMLDivElement;
+    if (container !== null) {
+      const { id } = button.dataset;
+      const activeWord = this.words[this.activeWordIndex];
+      const isCorrect = activeWord.id === id;
+      if (isCorrect) {
+        button.classList.add('correct');
+        this.correctAnswer.push(this.words[this.activeWordIndex]);
+        this.soundGame.playSoundCorrectAnswer();
+        this.checkWordForSend(activeWord.id, true);
+      } else {
+        button.classList.add('incorrect');
+        this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+        const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
+        correctButton.classList.add('correct');
+        this.soundGame.playSoundIncorrectAnswer();
+        this.checkWordForSend(activeWord.id, false);
+      }
+      this.createAnswer();
     }
-    this.createAnswer();
   }
 
   private checkWordForSend(wordId: string, isCorrect: boolean): void {
