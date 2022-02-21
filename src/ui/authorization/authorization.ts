@@ -73,7 +73,7 @@ export class Authorization extends Controller {
             this.helper.closeAuthorizationForm();
           }
 
-          window.location.replace(window.location.origin);
+          window.location.replace(window.location.href);
         })
         .catch((error) => {
           if (error) {

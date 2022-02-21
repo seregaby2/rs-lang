@@ -19,6 +19,6 @@ export class LogOut {
   public logOut(): void {
     this.localStorageService.clear();
 
-    window.location.replace(window.location.origin);
+    window.location.replace(window.location.href);
   }
 }

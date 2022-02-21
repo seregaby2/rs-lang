@@ -193,8 +193,9 @@ export class TextbookPage {
 
     const nextBtn = document.querySelector('.next') as HTMLElement;
     const prevBtn = document.querySelector('.prev') as HTMLElement;
-    [nextBtn, prevBtn].forEach((btn) => {
-      btn.addEventListener('click', () => {
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
         if (this.localStorageService.get(CURRENT_PAGE)) {
           const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
           if (pageLocalS) {
@@ -207,6 +208,22 @@ export class TextbookPage {
         this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
         this.changePages();
       });
-    });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (this.localStorageService.get(CURRENT_PAGE)) {
+          const pageLocalS = this.localStorageService.get(CURRENT_PAGE);
+          if (pageLocalS) {
+            const currPage = parseInt(pageLocalS, 10) - 1;
+            this.currentPage = currPage;
+            this.localStorageService.set(CURRENT_PAGE, currPage);
+          }
+        }
+
+        this.textbookDisplay.toggleCards(this.currentGroup, this.currentPage);
+        this.changePages();
+      });
+    }
   }
 }
