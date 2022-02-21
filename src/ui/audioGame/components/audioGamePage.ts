@@ -2,12 +2,13 @@ import { ControllerAggregated } from '../../common/controller/controllerAggregat
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { TemplateHtmlAudioGame } from './templateHtmlAudioGame';
 import { AudioGameSound } from './audioGameSound';
-import { IWordsData } from '../../common/controller/model';
+import { IUserWord, IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
 import { ResultCard } from '../../common/resultCard/resultCard';
 import { StartGame } from '../../common/startGames/startGames';
+import { UsersData } from '../../common/usersData';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -35,11 +36,15 @@ export class AudioGamePage {
 
   private activeGroup = 0;
 
+  // private bestSeries = 0;
+
   private url = 'https://rs-lang-2022.herokuapp.com/';
 
   private isAnswer = false;
 
   private isPlaying = false;
+
+  private resultAnswer: number[] = [];
 
   public correctAnswer: ResultType[] = [];
 
@@ -60,6 +65,8 @@ export class AudioGamePage {
   private controllerUserWords = new ControllerUserWords();
 
   private controllerAggregated = new ControllerAggregated();
+
+  private userData: UsersData = new UsersData();
 
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
@@ -103,6 +110,8 @@ export class AudioGamePage {
     this.incorrectAnswer = [];
     this.words = [];
     this.activeWordIndex = 0;
+    // this.bestSeries = 0;
+    this.resultAnswer = [];
   }
 
   private setGameCardListener(): void {
@@ -130,18 +139,68 @@ export class AudioGamePage {
       if (isCorrect) {
         button.classList.add('correct');
         this.correctAnswer.push(this.words[this.activeWordIndex]);
+        this.resultAnswer.push(1);
+        // this.bestSeries += 1;
         this.soundGame.playSoundCorrectAnswer();
         this.checkWordForSend(activeWord.id, true);
       } else {
         button.classList.add('incorrect');
         this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+        this.resultAnswer.push(0);
+        // this.bestSeries = 0;
+
         const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
         correctButton.classList.add('correct');
         this.soundGame.playSoundIncorrectAnswer();
         this.checkWordForSend(activeWord.id, false);
       }
       this.createAnswer();
+      this.createUserWord(id as string);
     }
+  }
+
+  private createUserWord(id: string): void {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
+    let repeatWord: boolean = false;
+    const timesStamp = this.getDate();
+
+    if (userId && token) {
+      this.getUserWordsGame().then((item) => {
+        item.forEach((e) => {
+          if (e.wordId === id) {
+            repeatWord = true;
+            this.userData
+              .updateUserWordsGame(
+                id as string,
+                rightWrongAnswer,
+                e.difficulty,
+                e.optional.progress,
+                timesStamp,
+              );
+          }
+        });
+        if (!repeatWord || item.length === 0) {
+          this.userData.createUserWordsGame(id as string, rightWrongAnswer, 'audio', timesStamp);
+        }
+      });
+    }
+  }
+
+  private getDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  }
+
+  async getUserWordsGame(): Promise<IUserWord[]> {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const userWords: IUserWord[] = await this.controllerUserWords.getUserWords(userId, token);
+    return userWords;
   }
 
   private checkWordForSend(wordId: string, isCorrect: boolean): void {
@@ -212,7 +271,7 @@ export class AudioGamePage {
 
     buttonAnswer?.addEventListener('click', () => {
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
-
+      this.resultAnswer.push(0);
       const activeWord = this.words[this.activeWordIndex];
       const id = activeWord.id as string;
       const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
@@ -294,6 +353,7 @@ export class AudioGamePage {
           activeButton.classList.add('correct');
         }
         this.soundGame.playSoundIncorrectAnswer();
+        this.createUserWord(id);
         this.createAnswer();
         this.checkWordForSend(activeWord.id, false);
       } else if (!isLastWord) {
