@@ -81,15 +81,16 @@
 
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
+  border-top: 16px solid #FF6A2B; /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
   position: fixed;
-  top: 40%;
+  top: 50%;
   left: 50%;
   display: none;
+  z-index: 100;
 }
 
 .show-loader {
@@ -139,6 +140,41 @@
 .key-down-right {
   background-color: $right-color;
   color: $white-color;
+}
+
+@media (max-width: 500px) {
+  .card-sprint {
+    width: 250px;
+  }
+
+  .image-content-card-sprint-game {
+    display: none;
+  }
+
+  .header-card-sprint-game {
+    flex-direction: column;
+    height: 120px;
+  }
+
+  .control-panel {
+    max-width: 270px;
+  }
+
+  .content-card-spring-game {
+    height: 180px;
+    justify-content: space-around;
+  }
+  .item-footer-card-sprint-game {
+    width: 105px;
+  }
+
+  .item-content-card-sprint-game {
+    font-size: 34px;
+  }
+
+  .item-content-card-sprint-game:nth-child(1) {
+    font-size: 44px;
+  }
 }
 
 

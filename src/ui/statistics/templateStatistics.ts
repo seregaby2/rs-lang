@@ -1,5 +1,3 @@
-// import { ControllerSettings } from '../common/controller/controllerSettings';
-// import { ControllerStatistics } from '../common/controller/controllerStatistics';
 import { LogicStatistics } from './logicStatistics';
 
 export class TemplateStatistics {
@@ -45,7 +43,6 @@ export class TemplateStatistics {
 
   async drawStatistics() {
     const main = document.querySelector('.main') as HTMLDivElement;
-    // main.innerHTML = '';
     if (localStorage.getItem('user_access_token')) {
       const loader = document.querySelector('.loader') as HTMLDListElement;
       if (loader) {

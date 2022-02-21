@@ -1,3 +1,5 @@
+import { HOME_PATHNAME } from '../../url';
+
 export class Footer {
   public drawFooter() {
     const wrapper = document.querySelector('.wrapper') as HTMLElement;
@@ -36,6 +38,8 @@ export class Footer {
       || window.location.hash === '#/audiocall-textbook'
     ) {
       footer.style.display = 'none';
+    } else if (window.location.pathname === HOME_PATHNAME) {
+      footer.style.display = 'flex';
     } else {
       footer.style.display = 'flex';
     }

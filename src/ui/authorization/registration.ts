@@ -2,6 +2,7 @@ import { Controller } from './controller';
 import { UserDto } from './models';
 import { Authorization } from './authorization';
 import { AuthHelper } from './authHelper';
+import { HOME_PATHNAME } from '../common/url';
 
 export class Registration extends Controller {
   private signIn: Authorization = new Authorization();
@@ -45,7 +46,7 @@ export class Registration extends Controller {
               this.helper.saveUserInfoInLocalStorage(tokenInfo);
               this.helper.closeAuthorizationForm();
 
-              window.location.replace(window.location.origin);
+              window.location.replace(HOME_PATHNAME);
             });
         })
         .catch((error) => {
