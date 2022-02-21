@@ -71,7 +71,7 @@ export class LogicSprintGame {
   }
 
   private getWordsAtTransitionFromBookPage = async (group: number, page: number)
-    : Promise<IWordsData[]> => {
+  : Promise<IWordsData[]> => {
     const items = await this.controller.getWords(group, page);
     return items;
   };
