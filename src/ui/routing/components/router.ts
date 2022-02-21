@@ -5,6 +5,7 @@ import { TextbookPage } from '../../textbookPage/components/textbookPage';
 import { LogicSprintGame } from '../../sprintGame/components/LogicSprintGame';
 import { TemplateStatistics } from '../../statistics/templateStatistics';
 import { Footer } from '../../common/footer/components/footer';
+import { HOME_PATHNAME } from '../../common/url';
 
 enum CurrentPage {
   Team = 'team',
@@ -130,7 +131,7 @@ export class Router {
     window.history.pushState(
       {},
       pathname,
-      window.location.origin + pathname,
+      window.location.origin + HOME_PATHNAME + pathname,
     );
   }
 }

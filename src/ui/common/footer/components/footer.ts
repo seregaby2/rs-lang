@@ -36,7 +36,7 @@ export class Footer {
       || window.location.hash === '#/audiocall-textbook'
     ) {
       footer.style.display = 'none';
-    } else if (window.location.hash === ''){
+    } else if (window.location.hash === '') {
       footer.style.display = 'flex';
     }
   }
