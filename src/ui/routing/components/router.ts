@@ -75,7 +75,6 @@ export class Router {
   public changePages(): void {
     const menuAside = document.querySelector('.wrapper') as HTMLElement;
     const headerLogo = document.querySelector('.header-logo') as HTMLElement;
-
     headerLogo.addEventListener('click', () => {
       this.homePage.drawHomePage();
       this.changeRoutes(CurrentPage.Home);
@@ -84,11 +83,9 @@ export class Router {
 
     menuAside.addEventListener('click', (event) => {
       const pageBtn = event.target as HTMLElement;
-
       if (!pageBtn.dataset.route) {
         return;
       }
-
       const currentPath = `/#/${pageBtn.dataset.route}`;
       this.changeRoutes(currentPath);
 
