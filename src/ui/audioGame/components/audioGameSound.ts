@@ -4,7 +4,7 @@ export class AudioGameSound {
   public playSoundCorrectAnswer(): void {
     if (!this.isMuted) {
       const audio = new Audio();
-      audio.src = '../assets/sounds/RightAnswer.mp3';
+      audio.src = './assets/sounds/RightAnswer.mp3';
       audio.play();
     }
   }
@@ -12,7 +12,7 @@ export class AudioGameSound {
   public playSoundIncorrectAnswer(): void {
     if (!this.isMuted) {
       const audio = new Audio();
-      audio.src = '../assets/sounds/WrongAnswer.mp3';
+      audio.src = './assets/sounds/WrongAnswer.mp3';
       audio.play();
     }
   }

@@ -81,14 +81,14 @@
 
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
+  border-top: 16px solid $third-level; /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
   position: fixed;
-  top: 40%;
-  left: 50%;
+  top: calc(50% - 120px);
+  left: calc(50% - 60px);
   display: none;
 }
 
@@ -168,11 +168,11 @@
   }
 
   .item-content-card-sprint-game {
-    font-size: 34px;
+    font-size: 24px;
   }
 
   .item-content-card-sprint-game:nth-child(1) {
-    font-size: 44px;
+    font-size: 34px;
   }
 }
 

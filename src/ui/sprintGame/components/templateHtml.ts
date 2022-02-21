@@ -21,7 +21,7 @@ export class TemplateHtml {
     }
     for (let i = 0; i < 5; i += 1) {
       const img = (this.createElement('favorites-card-img', contentImageCardSprintGame, 'img') as HTMLImageElement);
-      img.src = '../assets/images/sprintGame/parrot1.png';
+      img.src = './assets/images/sprintGame/parrot1.png';
       img.alt = 'parrot';
       img.id = `parrot-${i}`;
     }
@@ -66,7 +66,7 @@ export class TemplateHtml {
   ) {
     const wrapperRowTableWithResult = this.createElement('wrapper-row', wrapperTable, 'div');
     const voice = this.createElement('column-voice', wrapperRowTableWithResult, 'div');
-    voice.style.backgroundImage = 'url(../assets/svg/voice.svg)';
+    voice.style.backgroundImage = 'url(./assets/svg/voice.svg)';
     const englishWord = this.createElement('column-english', wrapperRowTableWithResult, 'div');
     englishWord.textContent = arrayWordsForSprintGame[index].word?.toString() || '';
     const transcription = this.createElement('column-transcription', wrapperRowTableWithResult, 'div');
@@ -75,9 +75,9 @@ export class TemplateHtml {
     russianWord.textContent = arrayWordsForSprintGame[index].wordTranslate?.toString() || '';
     const answer = this.createElement('column-answer', wrapperRowTableWithResult, 'div');
     if (arrayResultAnswer[index] === 0) {
-      answer.style.backgroundImage = 'url(/../assets/svg/wrongAnswer.svg)';
+      answer.style.backgroundImage = 'url(./assets/svg/wrongAnswer.svg)';
     } else {
-      answer.style.backgroundImage = 'url(../assets/svg/rightAnswer.svg)';
+      answer.style.backgroundImage = 'url(./assets/svg/rightAnswer.svg)';
     }
   }
 

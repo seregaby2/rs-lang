@@ -106,7 +106,7 @@ export class LogicSprintGame {
       this.itemsSprintGameData = result.flat(1);
 
       const newItemSprintGameResult: IWordsData[] = [];
-      const arrayLearntUserWords:IUserWord[] = [];
+      const arrayLearntUserWords: IUserWord[] = [];
       const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
 
       if (userGreeting) {
@@ -126,7 +126,9 @@ export class LogicSprintGame {
             break;
           }
         }
-        if (repeatWord) { continue; }
+        if (repeatWord) {
+          continue;
+        }
         newItemSprintGameResult.push(this.itemsSprintGameData[j]);
       }
       this.finalyItemsSprintGameData = newItemSprintGameResult.slice(0, 60);
@@ -177,7 +179,7 @@ export class LogicSprintGame {
     const newAudio = audio;
     const volume = document.querySelector('.volume') as HTMLDivElement;
     newAudio.pause();
-    newAudio.src = `../assets/sounds/${answer}`;
+    newAudio.src = `./assets/sounds/${answer}`;
     newAudio.play();
     if (volume.classList.contains('mute')) {
       newAudio.muted = true;
@@ -440,7 +442,9 @@ export class LogicSprintGame {
     const date = this.getDate();
     let repeatWord: boolean = false;
     usersWordsGame.forEach((e) => {
-      if (e.id === wordId) { repeatWord = true; }
+      if (e.id === wordId) {
+        repeatWord = true;
+      }
     });
     if (!repeatWord) {
       const body: IUserWord = {

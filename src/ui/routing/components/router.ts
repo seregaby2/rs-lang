@@ -13,7 +13,6 @@ enum CurrentPage {
   SprintGame = 'sprint',
   AudioGame = 'audiocall',
   Home = '',
-  Vocabulary = 'vocabulary',
   Stats = 'stats',
   Book = 'book',
   Overview = 'overview',
@@ -88,7 +87,7 @@ export class Router {
       if (!pageBtn.dataset.route) {
         return;
       }
-      const currentPath = `/#/${pageBtn.dataset.route}`;
+      const currentPath = `#/${pageBtn.dataset.route}`;
       this.changeRoutes(currentPath);
 
       switch (pageBtn.dataset.route) {
