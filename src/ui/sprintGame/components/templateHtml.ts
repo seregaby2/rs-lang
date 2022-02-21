@@ -11,7 +11,7 @@ export class TemplateHtml {
     const wrapperCardSprintGame = this.createElement('wrapper-card-sprint-game', wrapperSprintGame, 'div');
     const controlPanel = this.createElement('control-panel', wrapperCardSprintGame, 'div');
     this.createElement('volume', controlPanel, 'div');
-    this.createElement('fullscreen', controlPanel, 'div');
+    // this.createElement('fullscreen', controlPanel, 'div');
     const cardSprintGame = this.createElement('card-sprint', wrapperCardSprintGame, 'div');
     const headerCardSprintGame = this.createElement('header-card-sprint-game', cardSprintGame, 'div');
     const contentImageCardSprintGame = this.createElement('image-content-card-sprint-game', cardSprintGame, 'div');
