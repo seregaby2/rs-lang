@@ -2,12 +2,14 @@ import { ControllerAggregated } from '../../common/controller/controllerAggregat
 import { ControllerUserWords } from '../../common/controller/controllerUserWords';
 import { TemplateHtmlAudioGame } from './templateHtmlAudioGame';
 import { AudioGameSound } from './audioGameSound';
-import { IWordsData } from '../../common/controller/model';
+import { ISettings, IUserWord, IWordsData } from '../../common/controller/model';
 import { HelpersAudioGame } from './helpersAudioGame';
 import { ControllerWords } from '../../common/controller/controllerWords';
 import { ResultType } from '../model';
 import { ResultCard } from '../../common/resultCard/resultCard';
 import { StartGame } from '../../common/startGames/startGames';
+import { UsersData } from '../../common/usersData';
+import { ControllerSettings } from '../../common/controller/controllerSettings';
 
 type OptionsType = Pick<IWordsData, 'id' | 'word'>;
 enum KeyCode {
@@ -35,11 +37,23 @@ export class AudioGamePage {
 
   private activeGroup = 0;
 
+  private continuousSeries = 0;
+
+  private correctAnswerAudio = 0;
+
+  private totalAnswerAudio = 0;
+
+  private bestContinuousSeries: number = 0;
+
+  private bestContinuousSeriesForDay: number = 0;
+
   private url = 'https://rs-lang-2022.herokuapp.com/';
 
   private isAnswer = false;
 
   private isPlaying = false;
+
+  private resultAnswer: number[] = [];
 
   public correctAnswer: ResultType[] = [];
 
@@ -61,6 +75,10 @@ export class AudioGamePage {
 
   private controllerAggregated = new ControllerAggregated();
 
+  private userData: UsersData = new UsersData();
+
+  private settingController = new ControllerSettings();
+
   private start = new StartGame((group) => this.startCallback(group), gameTitle, gameDescription);
 
   constructor() {
@@ -80,6 +98,7 @@ export class AudioGamePage {
   }
 
   private startCallback(group: number): void {
+    this.bestContinuousSeries = 0;
     this.activeGroup = group;
     this.startNewGame();
   }
@@ -103,6 +122,7 @@ export class AudioGamePage {
     this.incorrectAnswer = [];
     this.words = [];
     this.activeWordIndex = 0;
+    this.resultAnswer = [];
   }
 
   private setGameCardListener(): void {
@@ -122,62 +142,97 @@ export class AudioGamePage {
   }
 
   private handleButton(button: HTMLButtonElement): void {
-    const { id } = button.dataset;
-    const activeWord = this.words[this.activeWordIndex];
-    const isCorrect = activeWord.id === id;
+    const container = document.querySelector('.answer-info-container') as HTMLDivElement;
+    if (container !== null) {
+      const { id } = button.dataset;
+      const activeWord = this.words[this.activeWordIndex];
+      const isCorrect = activeWord.id === id;
+      if (isCorrect) {
+        button.classList.add('correct');
+        this.correctAnswer.push(this.words[this.activeWordIndex]);
+        this.resultAnswer.push(1);
+        this.correctAnswerAudio += 1;
+        this.continuousSeries += 1;
+        this.soundGame.playSoundCorrectAnswer();
+      } else {
+        button.classList.add('incorrect');
+        this.incorrectAnswer.push(this.words[this.activeWordIndex]);
+        this.resultAnswer.push(0);
+        this.continuousSeries = 0;
 
-    if (isCorrect) {
-      button.classList.add('correct');
-      this.correctAnswer.push(this.words[this.activeWordIndex]);
-      this.soundGame.playSoundCorrectAnswer();
-      this.checkWordForSend(activeWord.id, true);
-    } else {
-      button.classList.add('incorrect');
-      this.incorrectAnswer.push(this.words[this.activeWordIndex]);
-      const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
-      correctButton.classList.add('correct');
-      this.soundGame.playSoundIncorrectAnswer();
-      this.checkWordForSend(activeWord.id, false);
+        const correctButton = document.querySelector(`[data-id='${activeWord.id}']`) as HTMLElement;
+        correctButton.classList.add('correct');
+        this.soundGame.playSoundIncorrectAnswer();
+      }
+      this.totalAnswerAudio += 1;
+      this.createAnswer();
+      this.createUserWord(activeWord.id);
     }
-    this.createAnswer();
   }
 
-  private checkWordForSend(wordId: string, isCorrect: boolean): void {
+  private createUserWord(id: string): void {
+    const userGreeting = document.querySelector('.user-greeting') as HTMLDivElement;
     const userId = localStorage.getItem('user_id') || '';
     const token = localStorage.getItem('user_access_token') || '';
-    const maxSimpleWordProgress = 3;
-    const maxHardWordProgress = 5;
-    if (userId && token) {
-      this.controllerUserWords.getUserWord(userId, token, wordId).then((data) => {
-        let { progress } = data.optional;
-        const { difficulty } = data;
-        if (isCorrect) {
-          if (difficulty === 'simple' && progress < maxSimpleWordProgress) {
-            progress += 1;
-          } else if (difficulty === 'difficult' && progress < maxHardWordProgress) {
-            progress += 1;
-          }
-        } else if (progress > 0) {
-          progress -= 1;
-        }
-        this.controllerUserWords.updateUserWord(userId, token, wordId, {
-          difficulty: data.difficulty,
-          optional: {
-            new: data.optional.new,
-            progress,
-          },
-        });
-      }).catch(() => {
-        const progress = isCorrect ? 1 : 0;
-        this.controllerUserWords.createUserWord(userId, token, wordId, {
-          difficulty: 'simple',
-          optional: {
-            new: false,
-            progress,
-          },
-        });
-      });
+    const timesStamp = this.getDate();
+
+    if (this.bestContinuousSeries < this.continuousSeries) {
+      this.bestContinuousSeries = this.continuousSeries;
     }
+    if (this.bestContinuousSeriesForDay < this.bestContinuousSeries) {
+      this.bestContinuousSeriesForDay = this.bestContinuousSeries;
+    }
+
+    if (userGreeting) {
+      const body: ISettings = {
+        wordsPerDay: 1,
+        optional: {
+          countRightAnswerAudio: this.correctAnswerAudio,
+          countTotalAnswerAudio: this.totalAnswerAudio,
+          longestContinuosSeriesAudio: this.bestContinuousSeriesForDay,
+        },
+      };
+      this.settingController.updateSettings(userId, token, body);
+
+      const rightWrongAnswer = this.resultAnswer[this.resultAnswer.length - 1];
+      let repeatWord: boolean = false;
+
+      if (userId && token) {
+        this.getUserWordsGame().then((item) => {
+          item.forEach((e) => {
+            if (e.wordId === id) {
+              repeatWord = true;
+              this.userData
+                .updateUserWordsGame(
+                  id,
+                  rightWrongAnswer,
+                  e.difficulty,
+                  e.optional.progress,
+                  timesStamp,
+                );
+            }
+          });
+          if (!repeatWord || item.length === 0) {
+            this.userData.createUserWordsGame(id, rightWrongAnswer, 'audio', timesStamp);
+          }
+        });
+      }
+    }
+  }
+
+  private getDate(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  }
+
+  private async getUserWordsGame(): Promise<IUserWord[]> {
+    const userId = localStorage.getItem('user_id') || '';
+    const token = localStorage.getItem('user_access_token') || '';
+    const userWords: IUserWord[] = await this.controllerUserWords.getUserWords(userId, token);
+    return userWords;
   }
 
   private createAnswer(): void {
@@ -210,11 +265,10 @@ export class AudioGamePage {
 
     buttonAnswer?.addEventListener('click', () => {
       this.incorrectAnswer.push(this.words[this.activeWordIndex]);
-
+      this.resultAnswer.push(0);
       const activeWord = this.words[this.activeWordIndex];
       const id = activeWord.id as string;
       const activeButton = document.querySelector(`.button-word-audio-game[data-id='${id}']`);
-
       if (activeButton !== null) {
         activeButton.classList.add('correct');
       }
@@ -222,7 +276,6 @@ export class AudioGamePage {
       buttonNext.style.display = 'inline-block';
       this.soundGame.playSoundIncorrectAnswer();
       this.createAnswer();
-      this.checkWordForSend(activeWord.id, false);
     });
     buttonNext.addEventListener('click', () => {
       if (this.activeWordIndex < this.totalWord - 1) {
@@ -293,7 +346,7 @@ export class AudioGamePage {
         }
         this.soundGame.playSoundIncorrectAnswer();
         this.createAnswer();
-        this.checkWordForSend(activeWord.id, false);
+        this.createUserWord(activeWord.id);
       } else if (!isLastWord) {
         buttonAnswer.style.display = 'inline-block';
         buttonNext.style.display = 'none';
@@ -423,6 +476,7 @@ export class AudioGamePage {
   }
 
   private drawGameInTextbook(words: IWordsData[]): void {
+    this.bestContinuousSeries = 0;
     this.draw();
     this.words = this.helpers.shuffleArray(words);
     this.activeWordIndex = 0;
