@@ -168,11 +168,12 @@ export class AudioGamePage {
           },
         });
       }).catch(() => {
+        const progress = isCorrect ? 1 : 0;
         this.controllerUserWords.createUserWord(userId, token, wordId, {
           difficulty: 'simple',
           optional: {
             new: false,
-            progress: 0,
+            progress,
           },
         });
       });
@@ -391,28 +392,34 @@ export class AudioGamePage {
         const token = localStorage.getItem('user_access_token') || '';
         if (userId && token) {
           this.controllerAggregated.getAggregatedLearnedWord(userId, token).then((learnWords) => {
-            const filteredWords = words.filter((item) => learnWords[0].paginatedResults
-              .every((el) => item.word !== el.word));
-            if (filteredWords.length === 20) {
+            this.getGameWords(words, learnWords[0].paginatedResults).then((filteredWords) => {
               this.drawGameInTextbook(filteredWords);
-            }
-            if (filteredWords.length < 20 && currGroup > 0) {
-              this.controller.getWords(currGroup - 1, currPage).then((nextPageWords) => {
-                const newArr = filteredWords.concat(nextPageWords.slice(0, filteredWords.length));
-                this.drawGameInTextbook(newArr);
-              });
-            }
-            if (filteredWords.length < 20 && currGroup === 0 && currGroup < 29) {
-              this.controller.getWords(currGroup + 1, currPage).then((nextPageWords) => {
-                const newArr = filteredWords.concat(nextPageWords.slice(0, filteredWords.length));
-                this.drawGameInTextbook(newArr);
-              });
-            }
+            });
           });
         } else {
           this.drawGameInTextbook(words);
         }
       });
+  }
+
+  private async getGameWords(words: IWordsData[], learnWords: IWordsData[]): Promise<IWordsData[]> {
+    const maxPage = 29;
+    const currGroup = Number(localStorage.getItem('currGroup'));
+    let currPage = Number(localStorage.getItem('currPage'));
+    let filteredWords = words.filter((item) => learnWords.every((el) => item.word !== el.word));
+    while (filteredWords.length < this.totalWord) {
+      if (currPage === maxPage) {
+        currPage = 0;
+      } else {
+        currPage += 1;
+      }
+      // eslint-disable-next-line no-await-in-loop
+      const nextWords = await this.controller.getWords(currGroup, currPage);
+      const nextFilteredWords = nextWords
+        .filter((item) => learnWords.every((el) => item.word !== el.word));
+      filteredWords = filteredWords.concat(nextFilteredWords).slice(0, this.totalWord);
+    }
+    return filteredWords;
   }
 
   private drawGameInTextbook(words: IWordsData[]): void {
