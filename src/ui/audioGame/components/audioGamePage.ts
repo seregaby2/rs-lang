@@ -147,28 +147,27 @@ export class AudioGamePage {
     const token = localStorage.getItem('user_access_token') || '';
     const maxSimpleWordProgress = 3;
     const maxHardWordProgress = 5;
-
-    this.controllerUserWords.getUserWord(userId, token, wordId).then((data) => {
-      let { progress } = data.optional;
-      const { difficulty } = data;
-      if (isCorrect) {
-        if (difficulty === 'simple' && progress < maxSimpleWordProgress) {
-          progress += 1;
-        } else if (difficulty === 'difficult' && progress < maxHardWordProgress) {
-          progress += 1;
+    if (userId && token) {
+      this.controllerUserWords.getUserWord(userId, token, wordId).then((data) => {
+        let { progress } = data.optional;
+        const { difficulty } = data;
+        if (isCorrect) {
+          if (difficulty === 'simple' && progress < maxSimpleWordProgress) {
+            progress += 1;
+          } else if (difficulty === 'difficult' && progress < maxHardWordProgress) {
+            progress += 1;
+          }
+        } else if (progress > 0) {
+          progress -= 1;
         }
-      } else if (progress > 0) {
-        progress -= 1;
-      }
-      this.controllerUserWords.updateUserWord(userId, token, wordId, {
-        difficulty: data.difficulty,
-        optional: {
-          new: data.optional.new,
-          progress,
-        },
-      });
-    }).catch((err) => {
-      if (err) {
+        this.controllerUserWords.updateUserWord(userId, token, wordId, {
+          difficulty: data.difficulty,
+          optional: {
+            new: data.optional.new,
+            progress,
+          },
+        });
+      }).catch(() => {
         this.controllerUserWords.createUserWord(userId, token, wordId, {
           difficulty: 'simple',
           optional: {
@@ -176,8 +175,8 @@ export class AudioGamePage {
             progress: 0,
           },
         });
-      }
-    });
+      });
+    }
   }
 
   private createAnswer(): void {
@@ -238,16 +237,18 @@ export class AudioGamePage {
 
   private startAudio(word: IWordsData): void {
     if (!this.isPlaying) {
-      // const btn = document.querySelector('.button-volume-audio-game');
       const audio = new Audio(this.url + word.audio);
-      audio.play().catch((err) => (console.log(err)));
-      this.isPlaying = true;
-      audio.addEventListener('ended', () => {
-        this.isPlaying = false;
-      });
-      const containerResult = document.querySelector('.container-result-info-audio-game') as HTMLElement;
-      if (containerResult !== null) {
-        audio.pause();
+      const container = document.querySelector('.answer-info-container');
+      if (container !== null) {
+        audio.play();
+        this.isPlaying = true;
+        audio.addEventListener('ended', () => {
+          this.isPlaying = false;
+        });
+        const containerResult = document.querySelector('.container-result-info-audio-game') as HTMLElement;
+        if (containerResult !== null) {
+          audio.pause();
+        }
       }
     }
   }
@@ -392,7 +393,21 @@ export class AudioGamePage {
           this.controllerAggregated.getAggregatedLearnedWord(userId, token).then((learnWords) => {
             const filteredWords = words.filter((item) => learnWords[0].paginatedResults
               .every((el) => item.word !== el.word));
-            this.drawGameInTextbook(filteredWords);
+            if (filteredWords.length === 20) {
+              this.drawGameInTextbook(filteredWords);
+            }
+            if (filteredWords.length < 20 && currGroup > 0) {
+              this.controller.getWords(currGroup - 1, currPage).then((nextPageWords) => {
+                const newArr = filteredWords.concat(nextPageWords.slice(0, filteredWords.length));
+                this.drawGameInTextbook(newArr);
+              });
+            }
+            if (filteredWords.length < 20 && currGroup === 0 && currGroup < 29) {
+              this.controller.getWords(currGroup + 1, currPage).then((nextPageWords) => {
+                const newArr = filteredWords.concat(nextPageWords.slice(0, filteredWords.length));
+                this.drawGameInTextbook(newArr);
+              });
+            }
           });
         } else {
           this.drawGameInTextbook(words);
