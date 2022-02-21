@@ -1,0 +1,42 @@
+.overview-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $light-gray-color;
+}
+.overview-page {
+
+  iframe {
+    width: 640px;
+    height: 360px;
+  }
+}
+
+@media (max-width: 650px) {
+  .overview-page {
+    iframe {
+      width: 426px;
+      height: 240px;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .overview-page {
+    iframe {
+      width: 426px;
+      height: 240px;
+    }
+  }
+}
+
+@media (max-width: 440px) {
+  .overview-page {
+    iframe {
+      width: 300px;
+      height: 180px;
+    }
+  }
+}

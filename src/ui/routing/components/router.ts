@@ -6,6 +6,7 @@ import { LogicSprintGame } from '../../sprintGame/components/LogicSprintGame';
 import { TemplateStatistics } from '../../statistics/templateStatistics';
 import { Footer } from '../../common/footer/components/footer';
 import { HOME_PATHNAME } from '../../common/url';
+import { OverviewPage } from '../../overwiewPage/overviewPage';
 
 enum CurrentPage {
   Team = 'team',
@@ -33,6 +34,8 @@ export class Router {
 
   private templateStatistics: TemplateStatistics = new TemplateStatistics();
 
+  private overViewPage: OverviewPage = new OverviewPage();
+
   private footer: Footer = new Footer();
 
   public drawCurrentPage(): void {
@@ -42,8 +45,6 @@ export class Router {
       case `#/${CurrentPage.Book}`:
         this.textbookPage.drawTextbookPage();
         break;
-      case `#/${CurrentPage.Vocabulary}`:
-        break;
       case `#/${CurrentPage.Stats}`:
         this.templateStatistics.drawStatistics();
         break;
@@ -51,6 +52,7 @@ export class Router {
         this.team.drawTeamInfo();
         break;
       case `#/${CurrentPage.Overview}`:
+        this.overViewPage.drawOverviewPage();
         break;
       case `#/${CurrentPage.SprintGame}`:
         this.sprintGame.drawSprintGame();
@@ -93,8 +95,6 @@ export class Router {
         case CurrentPage.Book:
           this.textbookPage.drawTextbookPage();
           break;
-        case CurrentPage.Vocabulary:
-          break;
         case CurrentPage.Stats:
           this.templateStatistics.drawStatistics();
           break;
@@ -102,6 +102,7 @@ export class Router {
           this.team.drawTeamInfo();
           break;
         case CurrentPage.Overview:
+          this.overViewPage.drawOverviewPage();
           break;
         case CurrentPage.SprintGame:
           this.sprintGame.drawSprintGame();
