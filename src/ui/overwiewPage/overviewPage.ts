@@ -8,7 +8,7 @@ export class OverviewPage {
 
     const overview = document.createElement('div') as HTMLElement;
     overview.classList.add('overview-page');
-    overview.innerHTML = '<iframe src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>';
+    overview.innerHTML = '<iframe src="https://www.youtube.com/watch?v=KfigIlv2k38"></iframe>';
 
     overviewWrapper.append(overview);
     main.append(overviewWrapper);
