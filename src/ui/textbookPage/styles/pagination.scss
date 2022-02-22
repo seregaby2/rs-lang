@@ -1,0 +1,33 @@
+.textbook-pagination {
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  transition: visibility 0s;
+
+  &.invisible {
+    visibility: hidden;
+  }
+
+  .btn {
+    width: 25px;
+    height: 25px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.btn.active {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.pagination {
+  display: flex;
+  gap: 10px;
+  max-width: 700px;
+  justify-content: space-between;
+}

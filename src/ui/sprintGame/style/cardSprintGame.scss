@@ -1,0 +1,180 @@
+.wrapper-card-sprint-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  background-color: $light-gray-color;
+}
+
+.card-sprint {
+  width: 450px;
+  height: 450px;
+  background-color: $white-color;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.header-card-sprint-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-header-card-sprint-game {
+  font-size: 22px;
+  min-width: 140px;
+  text-align: center;
+}
+
+
+.content-card-spring-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-content-card-sprint-game {
+  width: 100%;
+  height: 50px;
+  font-size: 44px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.item-content-card-sprint-game:nth-child(1) {
+  font-size: 54px;
+  font-weight: bold;
+}
+
+.image-content-card-sprint-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-card-spring-game {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-footer-card-sprint-game {
+  width: 150px;
+  height: 42px;
+  background-color: $accent-color;
+  font-size: 22px;
+  &:hover {
+    background-color: $wrong-color;
+    color: $white-color;
+  }
+}
+
+.item-footer-card-sprint-game:nth-child(2) {
+  &:hover {
+    background-color: $right-color;
+    color: $white-color;
+  }
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid $third-level; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  position: fixed;
+  top: calc(50% - 120px);
+  left: calc(50% - 60px);
+  display: none;
+}
+
+.show-loader {
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.control-panel {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 470px;
+  margin-bottom: 10px;
+}
+
+.volume {
+  background-image: url("../assets/svg/voice.svg");
+  width: 36px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.mute {
+  background-image: url("../assets/svg/mute.svg");
+}
+
+.fullscreen {
+  background-image: url("../assets/svg/fullscreen.svg");
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.full {
+  background-image: url("../assets/svg/fullscreen_exit.svg");
+}
+
+.key-down-wrong {
+  background-color: $wrong-color;
+  color: $white-color;
+}
+
+.key-down-right {
+  background-color: $right-color;
+  color: $white-color;
+}
+
+@media (max-width: 500px) {
+  .card-sprint {
+    width: 250px;
+  }
+
+  .image-content-card-sprint-game {
+    display: none;
+  }
+
+  .header-card-sprint-game {
+    flex-direction: column;
+    height: 120px;
+  }
+
+  .control-panel {
+    max-width: 270px;
+  }
+
+  .content-card-spring-game {
+    height: 180px;
+    justify-content: space-around;
+  }
+  .item-footer-card-sprint-game {
+    width: 105px;
+  }
+
+  .item-content-card-sprint-game {
+    font-size: 24px;
+  }
+
+  .item-content-card-sprint-game:nth-child(1) {
+    font-size: 34px;
+  }
+}
+
+
+

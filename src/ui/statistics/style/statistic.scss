@@ -1,0 +1,108 @@
+.wrapper-stats {
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  font-size: 24px;
+  background-image: url(../assets/images/Centre-for-Statistics.jpg);
+  background-size: cover;
+  color: white;
+  box-shadow: inset 0 0 0 2000px rgb(41 45 52 / 80%);
+}
+.wrapper-sprint div,
+.wrapper-audio div,
+.wrapper-book div{
+  height: 50px;
+}
+.wrapper-sprint,
+.wrapper-audio,
+.wrapper-book {
+  width: 100%;
+  height: 150px;
+  border: 3px solid white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: $dark-gray-color;
+}
+
+.wrapper-sprint-total,
+.wrapper-audio-total,
+.wrapper-book-total {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.new-words-sprint,
+.percent-right-answer-sprint,
+.longest-series-sprint,
+.new-words-audio,
+.percent-right-answer-audio,
+.longest-series-audio,
+.new-words-book,
+.count-learnt-book,
+.percent-right-answer-book {
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid white;
+  width: 100%;
+  height: 30px;
+}
+
+.longest-series-sprint,
+.percent-right-answer-book,
+.longest-series-audio {
+  border-bottom: 0px;
+}
+
+.header-sprint,
+.header-audio,
+.header-book {
+  margin-bottom: 10px;
+  font-size: 32px;
+  color: $accent-color;
+}
+
+.text-no-authorized {
+  font-size: 40px;
+}
+
+@media (max-width: 610px) {
+  .wrapper-sprint-total,
+  .wrapper-audio-total,
+  .wrapper-book-total {
+    max-width: 300px;
+  }
+
+  .header-sprint,
+  .header-audio,
+  .header-book {
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+
+  .wrapper-sprint,
+  .wrapper-audio,
+  .wrapper-book {
+    height: 107px;
+  }
+
+  .new-words-sprint,
+  .percent-right-answer-sprint,
+  .longest-series-sprint,
+  .new-words-audio,
+  .percent-right-answer-audio,
+  .longest-series-audio,
+  .new-words-book,
+  .count-learnt-book,
+  .percent-right-answer-book {
+    font-size: 13px;
+  }
+}
+

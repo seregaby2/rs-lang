@@ -1,0 +1,134 @@
+.header-side-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 200px;
+  gap: 10px;
+}
+
+//MENU STARTS
+.menu-aside {
+  padding: 0 15px;
+  height: 100vh;
+  width: 220px;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  right: -100%;
+  background-color: $white-color;
+  -webkit-box-shadow: -9px 0px 8px 0px rgba(133, 141, 148, 0.2);
+  -moz-box-shadow: -9px 0px 8px 0px rgba(133, 141, 148, 0.2);
+  box-shadow: -9px 0px 8px 0px rgba(133, 141, 148, 0.2);
+  transition: right 0.3s ease-out;
+}
+
+.menu-aside.open {
+  right: 0;
+}
+
+.overlay {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer; /* Add a pointer on hover */
+  z-index: 100;
+}
+
+//MENU ENDS
+
+.menu-item {
+  width: 100%;
+  height: 48px;
+  text-transform: capitalize;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+
+  &:hover {
+    .menu-icon,
+    .menu-text {
+      color: $accent-color;
+    }
+
+    .menu-games:after {
+      border-color: $accent-color transparent;
+    }
+  }
+}
+
+.menu-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+
+.menu-games {
+  position: relative;
+}
+
+.menu-games .dropdown {
+  /* Size & position */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: none;
+  border-bottom: none;
+  list-style: none;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+
+  max-height: 0;
+  overflow: hidden;
+}
+
+.menu-games .dropdown li {
+  padding: 0 10px;
+}
+
+.menu-games .dropdown li div {
+  display: block;
+  text-decoration: none;
+  color: $black-color;
+  padding: 10px 0;
+  transition: all 0.3s ease-out;
+  border-bottom: 1px solid #e6e8ea;
+}
+
+.menu-games .dropdown li:last-of-type div {
+  border: none;
+}
+
+.menu-games .dropdown li i {
+  margin-right: 5px;
+  color: inherit;
+  vertical-align: middle;
+}
+
+
+.menu-games .dropdown li:hover div {
+  color: $accent-color;
+}
+
+.menu-games.active:after {
+  border-color: $accent-color transparent;
+}
+
+.menu-games.active .dropdown {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  max-height: 400px;
+}

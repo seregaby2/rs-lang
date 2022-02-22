@@ -1,0 +1,123 @@
+.container-result-info-audio-game {
+  border: 1px solid $light-gray-color;
+  margin: 0 auto 1rem;
+  padding: 30px 50px;
+  overflow: auto;
+  max-width: 400px;
+  max-height: 400px;
+  background-color: $white-color;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  -webkit-box-shadow: 4px 4px 8px 0px rgb(0 0 0 / 20%);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 8px 0px rgb(0 0 0 / 20%);
+}
+
+.correct-answer-title {
+  color: $right-color;
+  text-transform: uppercase;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.incorrect-answer-title {
+  color: $sixth-level;
+  text-transform: uppercase;
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.volume-correct-answer,
+.volume-incorrect-answer {
+  background-image: url("../assets/images/volume.png");
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-size: cover;
+  padding: 0;
+  margin: 0 0 5px 0;
+  align-self: center;
+  margin-right: 10px;
+}
+
+.incorrect-answer,
+.correct-answer {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-title-result-card {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.incorrect-answer-word,
+.correct-answer-word {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.incorrect-answer-translate,
+.correct-answer-translate {
+  font-size: 18px;
+}
+
+.correct-answer-list {
+  border-bottom: solid 1px $light-gray-color;
+}
+
+@media (max-width: 640px) {
+  .container-result-info-audio-game {
+    max-height: 290px;
+  }
+}
+
+@media (max-width: 540px) {
+
+  .main-wrapper-audio-game {
+    max-width: 320px;
+  }
+
+  .main-title-result-card {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .correct-answer-title,
+  .incorrect-answer-title {
+    font-size: 16px
+  }
+
+  .correct-answer-word,
+  .incorrect-answer-word {
+    font-size: 14px
+  }
+
+  .incorrect-answer-translate,
+  .correct-answer-translate {
+    font-size: 14px
+  }
+
+  .button-audio-game.button-game-list-audio-game,
+  .button-audio-game.button-play-again-audio-game {
+    padding: 2px 4px;
+  }
+
+  .volume-correct-answer,
+  .volume-incorrect-answer {
+    width: 16px;
+    height: 16px;
+  }
+
+  .answer-text {
+    font-size: 30px;
+  }
+
+  @media (max-width: 340px) {
+    .main-wrapper-audio-game {
+      max-width: 300px;
+    }
+  }
+}
